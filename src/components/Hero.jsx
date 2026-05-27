@@ -1,3 +1,5 @@
+import denisPhoto from '../images/Denis Picture.jpg';
+
 export default function Hero() {
   return (
     <section id="hero" className="hero">
@@ -26,7 +28,7 @@ export default function Hero() {
           </div>
           <div className="hero__image-wrap">
             <img
-              src="src/images/Denis Picture.jpg"
+              src={denisPhoto}
               alt="Heang Denis"
               className="hero__image"
             />
