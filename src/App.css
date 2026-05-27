@@ -440,8 +440,9 @@
   font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: #ffffff;
-  border: 1px solid transparent;
+  color: var(--chip-fg, #ffffff);
+  background: var(--chip-bg, var(--bg-card));
+  border: 1px solid var(--chip-border, var(--border-color));
   line-height: 1;
   white-space: nowrap;
   transition: transform 0.2s ease, filter 0.2s ease;
@@ -456,68 +457,45 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 20px;
+  width: 20px;
   height: 20px;
-  padding: 0 4px;
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.25);
-  font-size: 0.6rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.skill-chip__icon-img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  filter: var(--chip-icon-filter, brightness(0) invert(1));
+}
+
+.skill-chip__fallback {
+  display: none;
+  font-size: 0.55rem;
   font-weight: 700;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
+  color: currentColor;
+}
+
+.skill-chip--fallback .skill-chip__icon-img {
+  display: none;
+}
+
+.skill-chip--fallback .skill-chip__fallback {
+  display: inline-flex;
 }
 
 .skill-chip__label {
   line-height: 1;
 }
 
-.skill-chip--blue {
-  background: #1f4fd6;
-  border-color: #1f4fd6;
-}
-
-.skill-chip--indigo {
-  background: #3f5fbf;
-  border-color: #3f5fbf;
-}
-
-.skill-chip--teal {
-  background: #1c9cab;
-  border-color: #1c9cab;
-}
-
-.skill-chip--green {
-  background: #1e8f4f;
-  border-color: #1e8f4f;
-}
-
-.skill-chip--orange {
-  background: #e76f22;
-  border-color: #e76f22;
-}
-
-.skill-chip--red {
-  background: #d64045;
-  border-color: #d64045;
-}
-
-.skill-chip--yellow {
-  background: #f5b400;
-  border-color: #f5b400;
-  color: #121212;
-}
-
-.skill-chip--yellow .skill-chip__icon {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-.skill-chip--purple {
-  background: #5b3cc6;
-  border-color: #5b3cc6;
-}
-
-.skill-chip--cyan {
-  background: #27b7c5;
-  border-color: #27b7c5;
+.skill-chip--plain {
+  padding-left: 12px;
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+  filter: none;
 }
 
 .skills__methods {
