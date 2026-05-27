@@ -6,21 +6,21 @@ const projects = [
     title: 'Credit Risk Analysis, Prediction & RAG Assistant',
     desc: 'Processed 30,000+ loan records for credit risk modeling. Trained Logistic Regression, Neural Network, and CatBoost models to predict probability of default with Basel-aligned risk grades (A–F). Built a RAG chatbot using Llama 3.2, LangChain, and ChromaDB. Integrated Whisper for speech-to-text. Full-stack with FastAPI + React.',
     tags: ['Python', 'Scikit-learn', 'FastAPI', 'React', 'Llama', 'LangChain'],
-    url: 'https://github.com/heangdeniss',
+    url: 'https://github.com/heangdeniss/creditAnalysisAsistantChatbot',
   },
   {
     id: 2,
     title: 'House Price Prediction Web App',
     desc: 'Collected 8,100+ Florida property listings from Redfin using BeautifulSoup. Built a PyTorch neural network with full ML pipeline including IQR-based outlier removal. Deployed a Streamlit web app for property price prediction. Interactive data visualizations using Matplotlib.',
     tags: ['Python', 'PyTorch', 'Streamlit', 'BeautifulSoup', 'Pandas'],
-    url: 'https://github.com/heangdeniss',
+    url: 'https://github.com/heangdeniss/housePridePredFloridaIn2025',
   },
   {
     id: 3,
     title: 'AI Educational Chatbot',
     desc: 'Built an AI chatbot platform using Node.js, Express.js, Flask, and PostgreSQL for querying curriculum content. Implemented a RAG pipeline with LangChain and ChromaDB for Khmer literature retrieval. Designed PostgreSQL database with schemas, triggers, and functions for chat history and user session management. Team lead of 4 members.',
     tags: ['Node.js', 'Flask', 'PostgreSQL', 'LangChain', 'ChromaDB', 'Google Cloud'],
-    url: 'https://github.com/heangdeniss',
+    url: 'https://github.com/heangdeniss/AiEducationChatbot',
   },
 ];
 

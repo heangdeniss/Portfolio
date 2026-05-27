@@ -69,11 +69,11 @@ Built an AI chatbot platform using Node.js, Express.js, Flask, and PostgreSQL fo
 If you have questions, feedback, or collaboration opportunities, feel free to reach out.
 
 - Email: heangdenis011468@gmail.com
-- LinkedIn: https://www.linkedin.com/in/heangdenis
+- LinkedIn: https://www.linkedin.com/in/heang-denis-1a4b23369/
 - GitHub: https://github.com/heangdeniss
 
 ## Author
 
 - Heang Denis
 - GitHub: https://github.com/heangdeniss
-- LinkedIn: https://www.linkedin.com/in/heangdenis
+- LinkedIn: https://www.linkedin.com/in/heang-denis-1a4b23369/
