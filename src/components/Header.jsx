@@ -44,7 +44,7 @@ export default function Header() {
   return (
     <header className={`header${scrolled ? ' header--scrolled' : ''}`}>
       <div className="header__inner">
-        <a href="#hero" className="header__logo">Heang Denis</a>
+        <a href="#hero" className="header__logo"></a>
         <nav className="header__nav">
           {navLinks.map((link) => (
             <a
