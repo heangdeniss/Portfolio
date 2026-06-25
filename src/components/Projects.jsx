@@ -5,6 +5,9 @@ import creditRiskPred from '../images/creditrisk_pred.png';
 import creditRiskRag from '../images/creditrisk_rag.png';
 import llcAuC from '../images/LLC_AUC.png';
 import llcFeature from '../images/LLC_importance_feature.png';
+import llcBi1 from '../images/LLC_bi_1_(1).png';
+import llcBi2 from '../images/LLC_bi_1_(2).png';
+import llcBi3 from '../images/LLC_bi_1_(3).png';
 import khmerCourse from '../images/khmer_course.png';
 import khmerRag from '../images/khmer_rag.png';
 
@@ -23,7 +26,7 @@ const projects = [
     desc: 'Converted multi-CSV LendingClub data into Parquet with DuckDB for fast, reproducible analysis. Performed EDA and feature engineering with pandas and hvPlot, including missing values, outliers, date and ZIP extraction, and one-hot encoding. Compared XGBoost, Random Forest, and TensorFlow ANN models with RandomizedSearchCV and ROC-AUC evaluation.',
     tags: ['Python', 'pandas', 'NumPy', 'XGBoost', 'TensorFlow', 'DuckDB'],
     url: 'https://github.com/heangdeniss/LendingLoanClubDataAnalysis',
-    images: [llcAuC, llcFeature],
+    images: [llcAuC, llcFeature, llcBi1, llcBi2, llcBi3],
   },
   {
     id: 3,
