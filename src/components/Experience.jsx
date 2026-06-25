@@ -5,7 +5,7 @@ const experience = [
     type: 'Education',
     items: [
       {
-        title: 'Data Science',
+        title: 'Engineering Degree in Data Science',
         institution: 'Institute of Technology of Cambodia',
         year: 'Expected graduate 2027',
         note: '',
@@ -17,6 +17,13 @@ const experience = [
         year: '2025',
         note: '',
         desc: 'Completed comprehensive full-stack development bootcamp covering frontend and backend technologies.',
+      },
+      {
+        title: 'Data Visualization Hackathon',
+        institution: 'Above and Beyond School',
+        year: '2025',
+        note: '',
+        desc: 'Performed Data cleaning, Preprocessing and data visualization using Python.',
       },
     ],
   },

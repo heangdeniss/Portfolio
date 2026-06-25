@@ -1,4 +1,4 @@
-import denisPhoto from '../images/Denis Picture.jpg';
+import denisPhoto from '../images/Denis_picture.png';
 
 export default function Hero() {
   return (

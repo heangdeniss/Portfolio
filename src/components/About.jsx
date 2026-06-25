@@ -24,8 +24,7 @@ export default function About() {
               I specialize in building end-to-end machine learning pipelines —
               from data cleaning and feature engineering to model training,
               deployment, and building interactive interfaces. My projects span
-              credit risk analysis, house price prediction, and AI chatbots
-              with RAG pipelines.
+              credit risk analysis, and AI chatbots with RAG pipelines.
             </p>
             <p>
               I speak Khmer (native), English (B2), and French (A2).
