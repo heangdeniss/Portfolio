@@ -532,10 +532,10 @@
 
 .exp__type {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--gold);
-  letter-spacing: 3px;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
   margin-bottom: 24px;
 }
@@ -543,13 +543,13 @@
 .exp__timeline {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .exp__card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  padding: 24px;
+  padding: 28px;
   transition: all 0.3s ease;
 }
 
@@ -561,45 +561,46 @@
 .exp__year {
   display: inline-block;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   font-weight: 500;
   color: var(--gold);
   letter-spacing: 1px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .exp__title {
-  font-size: 1rem;
+  font-size: 1.22rem;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: var(--text-primary);
+  line-height: 1.35;
 }
 
 .exp__inst {
-  font-size: 0.85rem;
+  font-size: 0.98rem;
   color: var(--text-secondary);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .exp__note {
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--gold-dark);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .exp__desc {
-  font-size: 0.82rem;
+  font-size: 0.94rem;
   color: var(--text-muted);
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .exp__link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-  font-size: 0.82rem;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 0.92rem;
   font-weight: 500;
   color: var(--gold);
   text-decoration: none;
