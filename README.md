@@ -36,8 +36,9 @@ Welcome to my data analytics portfolio. This repository highlights selected proj
 
 - [Projects](#projects)
 - [Project 1: Credit Risk Analysis, Prediction and RAG Assistant](#project-1-credit-risk-analysis-prediction-and-rag-assistant)
-- [Project 2: House Price Prediction Web App](#project-2-house-price-prediction-web-app)
+- [Project 2: LendingClub Data Analysis](#project-2-lendingclub-data-analysis)
 - [Project 3: AI Educational Chatbot](#project-3-ai-educational-chatbot)
+- [Project 4: HMM Part-of-Speech Tagger & Text Segmentation (PGM)](#project-4-hmm-part-of-speech-tagger--text-segmentation-pgm)
 - [Contact](#contact)
 - [Author](#author)
 
@@ -50,11 +51,11 @@ Processed 30,000+ loan records for credit risk modeling. Trained Logistic Regres
 - Tech stack: Python, Scikit-learn, FastAPI, React, Llama, LangChain
 - Repo: https://github.com/heangdeniss
 
-### Project 2: House Price Prediction Web App
+### Project 2: LendingClub Data Analysis
 
-Collected 8,100+ Florida property listings from Redfin using BeautifulSoup. Built a PyTorch neural network with a full ML pipeline including IQR-based outlier removal. Deployed a Streamlit web app for property price prediction with interactive visualizations in Matplotlib.
+Converted multi-CSV LendingClub data into Parquet with DuckDB for fast, reproducible analysis. Performed EDA and feature engineering with pandas and hvPlot. Compared XGBoost, Random Forest, and TensorFlow ANN models with RandomizedSearchCV and ROC-AUC evaluation.
 
-- Tech stack: Python, PyTorch, Streamlit, BeautifulSoup, Pandas
+- Tech stack: Python, pandas, NumPy, XGBoost, TensorFlow, DuckDB
 - Repo: https://github.com/heangdeniss
 
 ### Project 3: AI Educational Chatbot
@@ -63,6 +64,13 @@ Built an AI chatbot platform using Node.js, Express.js, Flask, and PostgreSQL fo
 
 - Tech stack: Node.js, Flask, PostgreSQL, LangChain, ChromaDB, Google Cloud
 - Repo: https://github.com/heangdeniss
+
+### Project 4: HMM Part-of-Speech Tagger & Text Segmentation (PGM)
+
+Implemented a Hidden Markov Model (HMM) from mathematical first principles for sequence labeling and text segmentation on the Brown Corpus (232,000+ words). Formulated a log-space Viterbi decoding algorithm to eliminate numerical underflow on long sentences. Integrated Laplace smoothing with validation grid-search ($\alpha = 10^{-9}$), achieving 96.05% word-level accuracy across 12 Universal POS tags.
+
+- Tech stack: Python, NLP, PGM, HMM, Viterbi, NLTK
+- Repo: https://github.com/heangdeniss/HMM-Text_Segmentation
 
 ## Contact
 

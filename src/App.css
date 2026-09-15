@@ -594,6 +594,30 @@
   line-height: 1.6;
 }
 
+.exp__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--gold);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.exp__link svg {
+  transition: transform 0.2s ease;
+}
+
+.exp__link:hover {
+  color: var(--gold-light);
+}
+
+.exp__link:hover svg {
+  transform: translate(2px, -2px);
+}
+
 /* ==============================
    PROJECTS
    ============================== */

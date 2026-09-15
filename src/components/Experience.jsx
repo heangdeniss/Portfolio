@@ -31,6 +31,15 @@ const experience = [
     type: 'Experience',
     items: [
       {
+        title: 'Data Analyst & Web Developer Intern',
+        institution: 'Ministry of Post and Telecommunications (MPTC)',
+        year: 'July – October 2026',
+        note: 'Python, Pandas, RegEx, React, Recharts, Power BI, Excel',
+        desc: 'Conducted end-to-end data cleaning on both structured and unstructured survey data from teachers and students across Community Tech Centers (CTCs) using Python and RegEx. Built an interactive bilingual web analytics platform and Power BI reports to visualize key metrics and support leadership decision-making. Additionally, performed data entry in Excel, recording and compiling 2026 Bac II national exam results specifically for students from CTC high schools.',
+        url: 'https://ctc-teacher-student-analyst-web.vercel.app/',
+        linkText: 'View Live Web Platform',
+      },
+      {
         title: 'Project Showcase — Rain Prediction',
         institution: 'Scientific Day Phnom Penh',
         year: 'July 2025',
@@ -65,6 +74,20 @@ export default function Experience() {
                     <p className="exp__inst">{item.institution}</p>
                     {item.note && <span className="exp__note">{item.note}</span>}
                     <p className="exp__desc">{item.desc}</p>
+                    {item.url && (
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="exp__link"
+                      >
+                        {item.linkText || 'View Website'}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M7 17L17 7" />
+                          <path d="M7 7h10v10" />
+                        </svg>
+                      </a>
+                    )}
                   </div>
                 ))}
               </div>
