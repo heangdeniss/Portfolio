@@ -15,7 +15,7 @@ const skillsData = [
   },
   {
     title: 'Tools & Platforms',
-    items: ['Git', 'Hugging Face', 'VS Code', 'Power BI', 'Excel', 'Jupyter', 'ChromaDB', 'Google Cloud'],
+    items: ['Git', 'Hugging Face', 'VS Code', 'Antigravity', 'Power BI', 'Excel', 'Jupyter', 'ChromaDB', 'Google Cloud'],
   },
 ];
 
@@ -55,6 +55,7 @@ const skillMeta = {
   Git: { icon: devicon('git'), color: '#F05032' },
   'Hugging Face': { icon: simpleIcon('huggingface', '111111'), color: '#FFCC4D', textColor: '#1a1a1a', iconFilter: 'none' },
   'VS Code': { icon: devicon('vscode'), color: '#007ACC' },
+  Antigravity: { icon: simpleIcon('googlegemini', 'ffffff'), color: '#4E82EE', iconFilter: 'none' },
   'Power BI': { icon: simpleIcon('powerbi', '111111'), color: '#F2C811', textColor: '#1a1a1a', iconFilter: 'none' },
   Excel: { icon: simpleIcon('microsoftexcel', 'ffffff'), color: '#217346', iconFilter: 'none' },
   Jupyter: { icon: devicon('jupyter'), color: '#F37626' },
