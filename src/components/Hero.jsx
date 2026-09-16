@@ -1,4 +1,4 @@
-import denisPhoto from '../images/Denis_picture.png';
+import denisPhoto from '../images/HEANG Denis CTC.jpg';
 
 export default function Hero() {
   return (
