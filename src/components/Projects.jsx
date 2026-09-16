@@ -8,8 +8,6 @@ import llcFeature from '../images/LLC_importance_feature.png';
 import llcBi1 from '../images/LLC_bi_1_(1).png';
 import llcBi2 from '../images/LLC_bi_1_(2).png';
 import llcBi3 from '../images/LLC_bi_1_(3).png';
-import khmerCourse from '../images/khmer_course.png';
-import khmerRag from '../images/khmer_rag.png';
 import hmmMethodology from '../images/hmm_methodology.png';
 import hmmResults from '../images/hmm_results.png';
 
@@ -32,14 +30,6 @@ const projects = [
   },
   {
     id: 3,
-    title: 'AI Educational Chatbot',
-    desc: 'Built an AI chatbot platform using Node.js, Express.js, Flask, and PostgreSQL for querying curriculum content. Implemented a RAG pipeline with LangChain and ChromaDB for Khmer literature retrieval. Designed PostgreSQL database with schemas, triggers, and functions for chat history and user session management. Team lead of 4 members.',
-    tags: ['Node.js', 'Flask', 'PostgreSQL', 'LangChain', 'ChromaDB', 'Google Cloud'],
-    url: 'https://github.com/heangdeniss/AiEducationChatbot',
-    images: [khmerCourse, khmerRag],
-  },
-  {
-    id: 4,
     title: 'HMM Part-of-Speech Tagger & Text Segmentation (PGM)',
     desc: 'Implemented a Hidden Markov Model (HMM) from mathematical first principles for sequence labeling and text segmentation on the Brown Corpus (232,000+ words). Formulated a log-space Viterbi decoding algorithm to eliminate numerical underflow on long sentences. Integrated Laplace smoothing with validation grid-search (α = 1e-9), achieving 96.05% word-level accuracy across 12 Universal POS tags.',
     tags: ['Python', 'NLP', 'PGM', 'HMM', 'Viterbi', 'NLTK'],
