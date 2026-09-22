@@ -44,7 +44,10 @@ export default function Header() {
   return (
     <header className={`header${scrolled ? ' header--scrolled' : ''}`}>
       <div className="header__inner">
-        <a href="#hero" className="header__logo"></a>
+        <a href="#hero" className="header__logo" aria-label="Denis - Home">
+          <span className="header__logo-text">Denis</span>
+          <span className="header__logo-dot">.</span>
+        </a>
         <nav className="header__nav">
           {navLinks.map((link) => (
             <a
@@ -56,6 +59,12 @@ export default function Header() {
             </a>
           ))}
         </nav>
+        <a href="#contact" className="header__cta-btn">
+          <span>Let's Talk</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M7 17L17 7M7 7h10v10" />
+          </svg>
+        </a>
         <button
           className="header__hamburger"
           onClick={() => setMobileOpen(!mobileOpen)}

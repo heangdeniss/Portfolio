@@ -1,29 +1,5 @@
+import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
-
-const skillsData = [
-  {
-    title: 'Programming Languages',
-    items: ['Python', 'R', 'PostgreSQL', 'SQL', 'JavaScript'],
-  },
-  {
-    title: 'ML / Data Science',
-    items: ['Scikit-learn', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'TensorFlow', 'SciPy', 'LangChain', 'LLM'],
-  },
-  {
-    title: 'Frameworks',
-    items: ['FastAPI', 'Django', 'React', 'Node.js', 'Flask', 'Express.js'],
-  },
-  {
-    title: 'Tools & Platforms',
-    items: ['Git', 'Hugging Face', 'VS Code', 'Antigravity', 'Power BI', 'Excel', 'Jupyter', 'ChromaDB', 'Google Cloud'],
-  },
-];
-
-const methods = [
-  'EDA', 'Classification', 'Regression',
-  'Feature Engineering', 'Neural Networks', 'RAG',
-  'NLP', 'Clustering', 'Time Series',
-];
 
 const deviconBase = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
 const devicon = (name, variant = 'original') =>
@@ -32,36 +8,68 @@ const simpleIcon = (slug, color = 'ffffff') =>
   `https://cdn.simpleicons.org/${slug}/${color}`;
 
 const skillMeta = {
-  Python: { icon: devicon('python'), color: '#3776AB' },
-  R: { icon: devicon('r'), color: '#276DC3' },
-  PostgreSQL: { icon: devicon('postgresql'), color: '#336791' },
-  SQL: { icon: devicon('mysql'), color: '#00758F' },
-  JavaScript: { icon: devicon('javascript'), color: '#F7DF1E', textColor: '#1a1a1a', iconFilter: 'brightness(0)' },
-  'Scikit-learn': { icon: devicon('scikitlearn'), color: '#F7931E' },
-  Pandas: { icon: devicon('pandas'), color: '#150458' },
-  NumPy: { icon: devicon('numpy'), color: '#013243' },
-  Matplotlib: { icon: devicon('matplotlib'), color: '#11557C' },
-  Seaborn: { icon: simpleIcon('seaborn', 'ffffff'), color: '#4C72B0', iconFilter: 'none' },
-  TensorFlow: { icon: devicon('tensorflow'), color: '#FF6F00' },
-  SciPy: { icon: devicon('scipy'), color: '#8CAAE6', textColor: '#1a1a1a', iconFilter: 'brightness(0)' },
-  LangChain: { icon: simpleIcon('langchain', 'ffffff'), color: '#1C64F2', iconFilter: 'none' },
-  LLM: { icon: simpleIcon('openai', 'ffffff'), color: '#6B21A8', iconFilter: 'none' },
-  FastAPI: { icon: devicon('fastapi'), color: '#009688' },
-  Django: { icon: devicon('django', 'plain'), color: '#092E20' },
-  React: { icon: devicon('react'), color: '#61DAFB', textColor: '#0b0c1e', iconFilter: 'brightness(0)' },
-  'Node.js': { icon: devicon('nodejs'), color: '#339933' },
-  Flask: { icon: devicon('flask'), color: '#111827' },
-  'Express.js': { icon: devicon('express'), color: '#444444' },
-  Git: { icon: devicon('git'), color: '#F05032' },
-  'Hugging Face': { icon: simpleIcon('huggingface', '111111'), color: '#FFCC4D', textColor: '#1a1a1a', iconFilter: 'none' },
-  'VS Code': { icon: devicon('vscode'), color: '#007ACC' },
-  Antigravity: { icon: simpleIcon('googlegemini', 'ffffff'), color: '#4E82EE', iconFilter: 'none' },
-  'Power BI': { icon: simpleIcon('powerbi', '111111'), color: '#F2C811', textColor: '#1a1a1a', iconFilter: 'none' },
-  Excel: { icon: simpleIcon('microsoftexcel', 'ffffff'), color: '#217346', iconFilter: 'none' },
-  Jupyter: { icon: devicon('jupyter'), color: '#F37626' },
-  ChromaDB: { icon: simpleIcon('chromadb', 'ffffff'), color: '#6D28D9', iconFilter: 'none' },
-  'Google Cloud': { icon: devicon('googlecloud'), color: '#4285F4' },
+  Python: { icon: devicon('python'), color: '#3776AB', cat: 'Languages' },
+  R: { icon: devicon('r'), color: '#276DC3', cat: 'Languages' },
+  PostgreSQL: { icon: devicon('postgresql'), color: '#336791', cat: 'Languages' },
+  SQL: { icon: devicon('mysql'), color: '#00758F', cat: 'Languages' },
+  JavaScript: { icon: devicon('javascript'), color: '#F7DF1E', textColor: '#1a1a1a', iconFilter: 'brightness(0)', cat: 'Languages' },
+
+  'Scikit-learn': { icon: devicon('scikitlearn'), color: '#F7931E', cat: 'AI & Data Science' },
+  Pandas: { icon: devicon('pandas'), color: '#150458', cat: 'AI & Data Science' },
+  NumPy: { icon: devicon('numpy'), color: '#013243', cat: 'AI & Data Science' },
+  Matplotlib: { icon: devicon('matplotlib'), color: '#11557C', cat: 'AI & Data Science' },
+  Seaborn: { icon: simpleIcon('seaborn', 'ffffff'), color: '#4C72B0', iconFilter: 'none', cat: 'AI & Data Science' },
+  TensorFlow: { icon: devicon('tensorflow'), color: '#FF6F00', cat: 'AI & Data Science' },
+  SciPy: { icon: devicon('scipy'), color: '#8CAAE6', textColor: '#1a1a1a', iconFilter: 'brightness(0)', cat: 'AI & Data Science' },
+  LangChain: { icon: simpleIcon('langchain', 'ffffff'), color: '#1C64F2', iconFilter: 'none', cat: 'AI & Data Science' },
+  LLM: { icon: simpleIcon('openai', 'ffffff'), color: '#6B21A8', iconFilter: 'none', cat: 'AI & Data Science' },
+
+  FastAPI: { icon: devicon('fastapi'), color: '#009688', cat: 'Frameworks' },
+  Django: { icon: devicon('django', 'plain'), color: '#092E20', cat: 'Frameworks' },
+  React: { icon: devicon('react'), color: '#61DAFB', textColor: '#0b0c1e', iconFilter: 'brightness(0)', cat: 'Frameworks' },
+  'Node.js': { icon: devicon('nodejs'), color: '#339933', cat: 'Frameworks' },
+  Flask: { icon: devicon('flask'), color: '#111827', cat: 'Frameworks' },
+  'Express.js': { icon: devicon('express'), color: '#444444', cat: 'Frameworks' },
+
+  Git: { icon: devicon('git'), color: '#F05032', cat: 'Tools & Platforms' },
+  'Hugging Face': { icon: simpleIcon('huggingface', '111111'), color: '#FFCC4D', textColor: '#1a1a1a', iconFilter: 'none', cat: 'Tools & Platforms' },
+  'VS Code': { icon: devicon('vscode'), color: '#007ACC', cat: 'Tools & Platforms' },
+  Antigravity: { icon: simpleIcon('googlegemini', 'ffffff'), color: '#4E82EE', iconFilter: 'none', cat: 'Tools & Platforms' },
+  'Power BI': { icon: simpleIcon('powerbi', '111111'), color: '#F2C811', textColor: '#1a1a1a', iconFilter: 'none', cat: 'Tools & Platforms' },
+  Excel: { icon: simpleIcon('microsoftexcel', 'ffffff'), color: '#217346', iconFilter: 'none', cat: 'Tools & Platforms' },
+  Jupyter: { icon: devicon('jupyter'), color: '#F37626', cat: 'Tools & Platforms' },
+  ChromaDB: { icon: simpleIcon('chromadb', 'ffffff'), color: '#6D28D9', iconFilter: 'none', cat: 'Tools & Platforms' },
+  'Google Cloud': { icon: devicon('googlecloud'), color: '#4285F4', cat: 'Tools & Platforms' },
 };
+
+const allSkillsList = Object.keys(skillMeta).map((key) => ({
+  name: key,
+  ...skillMeta[key],
+}));
+
+const methodsList = [
+  'Exploratory Data Analysis (EDA)',
+  'Feature Engineering & Selection',
+  'Supervised Classification',
+  'Supervised Regression',
+  'Basel Probability of Default (PD)',
+  'Retrieval-Augmented Generation (RAG)',
+  'Natural Language Processing (NLP)',
+  'Hidden Markov Models (HMM)',
+  'Log-Space Viterbi Algorithm',
+  'Deep Neural Networks',
+  'Unsupervised Clustering',
+  'Time Series Forecasting',
+];
+
+const TABS = [
+  'All',
+  'Languages',
+  'AI & Data Science',
+  'Frameworks',
+  'Tools',
+  'Methods',
+];
 
 const metaFor = (label) => skillMeta[label] || { color: '#1f223f' };
 const initialsFor = (label) =>
@@ -69,72 +77,102 @@ const initialsFor = (label) =>
 
 export default function Skills() {
   const [ref, visible] = useReveal();
+  const [activeTab, setActiveTab] = useState('All');
+
+  const filteredSkills = allSkillsList.filter((item) => {
+    if (activeTab === 'All') return true;
+    if (activeTab === 'Tools') return item.cat === 'Tools & Platforms' || item.cat === 'Tools';
+    return item.cat === activeTab;
+  });
+
+  const showMethods = activeTab === 'All' || activeTab === 'Methods';
+  const showSkillsGrid = activeTab !== 'Methods';
+
   const handleIconError = (event) => {
-    const chip = event.currentTarget.closest('.skill-chip');
-    if (chip) chip.classList.add('skill-chip--fallback');
+    const chip = event.currentTarget.closest('.skill-card');
+    if (chip) chip.classList.add('skill-card--fallback');
   };
 
   return (
     <section id="skills" className="section">
       <div className="container" ref={ref}>
-        <div className={`reveal reveal-up${visible ? ' visible' : ''}`}>
-          <p className="section-label">Skills</p>
-          <h2 className="section-title">Technical Skills</h2>
-          <p className="section-subtitle">Core technologies, analytical libraries, and engineering frameworks</p>
+        <div className="section-header">
+          <p className="section-label">Skills & Stack</p>
+          <h2 className="section-title">Technical Expertise</h2>
+          <p className="section-subtitle">
+            Curated toolkit across machine learning engineering, statistical computing, and web architecture.
+          </p>
         </div>
 
-        <div className={`skills__categories stagger${visible ? ' visible' : ''}`}>
-          {skillsData.map((cat) => (
-            <div key={cat.title} className="skills__category">
-              <h3 className="skills__cat-title">{cat.title}</h3>
-              <div className="skills__items">
-                {cat.items.map((item) => {
-                  const meta = metaFor(item);
-                  const hasIcon = Boolean(meta.icon);
-                  const chipStyle = {
-                    '--chip-bg': meta.color,
-                    '--chip-fg': meta.textColor || '#ffffff',
-                    '--chip-border': meta.color,
-                    '--chip-icon-filter': meta.iconFilter || 'brightness(0) invert(1)',
-                  };
-
-                  return (
-                    <span
-                      key={item}
-                      className={`skills__item skill-chip${hasIcon ? '' : ' skill-chip--fallback'}`}
-                      style={chipStyle}
-                    >
-                      <span className="skill-chip__icon" aria-hidden="true">
-                        {hasIcon && (
-                          <img
-                            src={meta.icon}
-                            alt=""
-                            className="skill-chip__icon-img"
-                            loading="lazy"
-                            onError={handleIconError}
-                          />
-                        )}
-                        <span className="skill-chip__fallback">{initialsFor(item)}</span>
-                      </span>
-                      <span className="skill-chip__label">{item}</span>
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
+        {/* Filter Tabs */}
+        <div className="skills-tabs">
+          {TABS.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`skills-tab-btn${activeTab === tab ? ' skills-tab-btn--active' : ''}`}
+            >
+              <span>{tab}</span>
+            </button>
           ))}
         </div>
 
-        <div className={`skills__methods reveal reveal-up${visible ? ' visible' : ''}`}>
-          <h3 className="skills__cat-title">Methods & Techniques</h3>
-          <div className="skills__method-grid">
-            {methods.map((m) => (
-              <span key={m} className="skills__method skill-chip skill-chip--plain">
-                <span className="skill-chip__label">{m}</span>
-              </span>
-            ))}
+        {/* Dynamic Filterable Tech Cards Grid */}
+        {showSkillsGrid && (
+          <div key={activeTab} className={`skills-cards-grid stagger${visible ? ' visible' : ''}`}>
+            {filteredSkills.map((item) => {
+              const hasIcon = Boolean(item.icon);
+              return (
+                <div
+                  key={item.name}
+                  className="skill-card"
+                  style={{
+                    '--skill-accent': item.color,
+                  }}
+                >
+                  <div className="skill-card__glow" />
+                  <div className="skill-card__icon-box">
+                    {hasIcon ? (
+                      <img
+                        src={item.icon}
+                        alt=""
+                        className="skill-card__icon"
+                        loading="lazy"
+                        style={{ filter: item.iconFilter || 'none' }}
+                        onError={handleIconError}
+                      />
+                    ) : (
+                      <span className="skill-card__fallback">{initialsFor(item.name)}</span>
+                    )}
+                  </div>
+                  <div className="skill-card__info">
+                    <span className="skill-card__name">{item.name}</span>
+                    <span className="skill-card__category">{item.cat}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
+        )}
+
+        {/* Methods & Techniques Section */}
+        {showMethods && (
+          <div className="skills-methods-panel">
+            <div className="skills-methods-panel__header">
+              <span className="skills-methods-panel__tag">Analytical Rigor</span>
+              <h3 className="skills-methods-panel__title">Methods, Algorithms & Modeling</h3>
+            </div>
+            <div className="skills-methods-grid">
+              {methodsList.map((m) => (
+                <div key={m} className="method-pill">
+                  <span className="method-pill__dot" />
+                  <span className="method-pill__text">{m}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </section>
   );
