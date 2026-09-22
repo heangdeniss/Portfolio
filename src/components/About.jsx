@@ -16,20 +16,21 @@ export default function About() {
           <div className={`about__right reveal reveal-right${visible ? ' visible' : ''}`}>
             <p>
               I'm a Data Science student at the Institute of Technology of Cambodia,
-              expected to graduate in 2027. My coursework covers Data Structures,
-              Algorithms, Database Systems, Machine Learning, Linear Algebra,
-              and Probability & Statistics.
+              expected to graduate in 2027 (Engineering Degree). My core curriculum encompasses
+              Data Structures & Algorithms, Machine Learning, Database Management Systems,
+              Linear Algebra, Probability & Statistics, and Deep Learning.
             </p>
             <p>
-              I specialize in building end-to-end machine learning pipelines —
-              from data cleaning and feature engineering to model training,
-              deployment, and building interactive interfaces. My projects span
-              credit risk analysis, and AI chatbots with RAG pipelines.
+              I specialize in developing end-to-end machine learning and data pipelines —
+              from data preprocessing and feature engineering to statistical modeling,
+              evaluation, and interactive full-stack deployment. My work spans
+              credit risk forecasting, big-data tabular analytics, probabilistic graphical
+              models (HMMs), and intelligent RAG-powered chatbot systems.
             </p>
             <p>
-              I speak Khmer (native), English (B2), and French (A2).
-              I'm always eager to learn new technologies and take on
-              challenging problems.
+              I communicate in Khmer (Native), English (Professional Working / B2), and French (Elementary / A2).
+              I am always eager to master new technologies, tackle complex data challenges,
+              and build impactful software.
             </p>
             <a href="mailto:heangdenis011468@gmail.com" className="btn btn-primary" style={{ marginTop: 16 }}>
               Let's Talk

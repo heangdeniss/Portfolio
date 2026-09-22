@@ -16,10 +16,10 @@ export default function Hero() {
               <span className="hero__name-last">Denis</span>
             </div>
             <p className="hero__bio">
-              Data Science student at Institute of Technology of Cambodia.
-              Passionate about machine learning, AI, and building data-driven
-              solutions. Experienced in Python, SQL, Scikit-learn, and full-stack
-              development.
+              Data Science student at the Institute of Technology of Cambodia.
+              Specializing in machine learning, probabilistic graphical models,
+              and LLM/RAG pipelines. Experienced in data analytics,
+              predictive modeling, and full-stack software development.
             </p>
             <div className="hero__actions">
               <a href="#projects" className="btn btn-primary">View Projects</a>

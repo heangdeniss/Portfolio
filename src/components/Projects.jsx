@@ -15,15 +15,15 @@ const projects = [
   {
     id: 1,
     title: 'Credit Risk Analysis, Prediction & RAG Assistant',
-    desc: 'Processed 30,000+ loan records for credit risk modeling. Trained Logistic Regression, Neural Network, and CatBoost models to predict probability of default with Basel-aligned risk grades (A–F). Built a RAG chatbot using Llama 3.2, LangChain, and ChromaDB. Integrated Whisper for speech-to-text. Full-stack with FastAPI + React.',
+    desc: 'Processed 30,000+ loan records for credit risk modeling. Trained Logistic Regression, Neural Network, and CatBoost models to predict probability of default (PD) with Basel-aligned risk grades (A–F). Built a conversational RAG assistant using Llama 3.2, LangChain, and ChromaDB with Whisper speech-to-text integration, served via a full-stack FastAPI and React architecture.',
     tags: ['Python', 'Scikit-learn', 'FastAPI', 'React', 'Llama', 'LangChain'],
     url: 'https://github.com/heangdeniss/creditAnalysisAsistantChatbot',
     images: [creditRiskPred, creditRiskRag],
   },
   {
     id: 2,
-    title: 'LendingClub Data Analysis',
-    desc: 'Converted multi-CSV LendingClub data into Parquet with DuckDB for fast, reproducible analysis. Performed EDA and feature engineering with pandas and hvPlot, including missing values, outliers, date and ZIP extraction, and one-hot encoding. Compared XGBoost, Random Forest, and TensorFlow ANN models with RandomizedSearchCV and ROC-AUC evaluation.',
+    title: 'LendingClub Big Data Analysis & Default Prediction',
+    desc: 'Converted multi-CSV LendingClub loan datasets into columnar Parquet using DuckDB for high-throughput queries. Executed exploratory analysis and feature engineering with pandas and hvPlot (missing values, outlier clipping, datetime decomposition, and one-hot encoding). Benchmarked XGBoost, Random Forest, and TensorFlow ANN models tuned with RandomizedSearchCV and evaluated on ROC-AUC.',
     tags: ['Python', 'pandas', 'NumPy', 'XGBoost', 'TensorFlow', 'DuckDB'],
     url: 'https://github.com/heangdeniss/LendingLoanClubDataAnalysis',
     images: [llcAuC, llcFeature, llcBi1, llcBi2, llcBi3],
@@ -31,7 +31,7 @@ const projects = [
   {
     id: 3,
     title: 'HMM Part-of-Speech Tagger & Text Segmentation (PGM)',
-    desc: 'Implemented a Hidden Markov Model (HMM) from mathematical first principles for sequence labeling and text segmentation on the Brown Corpus (232,000+ words). Formulated a log-space Viterbi decoding algorithm to eliminate numerical underflow on long sentences. Integrated Laplace smoothing with validation grid-search (α = 1e-9), achieving 96.05% word-level accuracy across 12 Universal POS tags.',
+    desc: 'Implemented a Hidden Markov Model (HMM) from mathematical first principles for sequence labeling and text segmentation on the Brown Corpus (232,000+ tokens). Formulated a log-space Viterbi decoding algorithm to prevent numerical underflow on long sentences. Applied Laplace smoothing with grid-search validation (α = 10⁻⁹), achieving 96.05% word-level accuracy across 12 Universal POS tags.',
     tags: ['Python', 'NLP', 'PGM', 'HMM', 'Viterbi', 'NLTK'],
     url: 'https://github.com/heangdeniss/HMM-Text_Segmentation',
     images: [hmmMethodology, hmmResults],
@@ -91,7 +91,7 @@ export default function Projects() {
           <p className="section-label">Projects</p>
           <h2 className="section-title">Notable Projects</h2>
           <p className="section-subtitle">
-            A collection of data science projects showcasing my skills
+            Selected machine learning, statistical modeling, and data engineering projects
           </p>
         </div>
 

@@ -78,9 +78,9 @@ export default function Skills() {
     <section id="skills" className="section">
       <div className="container" ref={ref}>
         <div className={`reveal reveal-up${visible ? ' visible' : ''}`}>
-          <p className="section-label">Skill</p>
+          <p className="section-label">Skills</p>
           <h2 className="section-title">Technical Skills</h2>
-          <p className="section-subtitle">Tools and technologies I work with</p>
+          <p className="section-subtitle">Core technologies, analytical libraries, and engineering frameworks</p>
         </div>
 
         <div className={`skills__categories stagger${visible ? ' visible' : ''}`}>
