@@ -3,6 +3,7 @@ import denisPhoto from '../images/HEANG Denis CTC.jpg';
 
 const ROLES = [
   'Data Science Engineer',
+  'Data Analyst',
   'ML & RAG Developer',
   'Full-Stack Developer',
 ];
@@ -73,15 +74,42 @@ export default function Hero() {
               <span className="hero__name-last">Denis</span>
             </h1>
 
-            {/* Tagline */}
+            {/* Editorial Lead Tagline */}
             <p className="hero__tagline">
-              Bridging mathematical rigor with full-stack execution — specializing in <strong>predictive modeling</strong>, <strong>RAG architectures</strong>, <strong>probabilistic models (HMM/Viterbi)</strong>, and production-grade <strong>FastAPI & React</strong> platforms.
+              Bridging mathematical rigor with full-stack execution.
             </p>
+
+            {/* Specialized Engineering Capabilities */}
+            <div className="hero__specializations">
+              <span className="hero__spec-badge hero__spec-badge--amber">
+                <span className="hero__spec-dot" />
+                Predictive Modeling
+              </span>
+              <span className="hero__spec-badge hero__spec-badge--cyan">
+                <span className="hero__spec-dot" />
+                RAG Architectures
+              </span>
+              <span className="hero__spec-badge hero__spec-badge--purple">
+                <span className="hero__spec-dot" />
+                Probabilistic Models (HMM)
+              </span>
+              <span className="hero__spec-badge hero__spec-badge--blue">
+                <span className="hero__spec-dot" />
+                Data Analyst
+              </span>
+              <span className="hero__spec-badge hero__spec-badge--teal">
+                <span className="hero__spec-dot" />
+                Data Cleaning
+              </span>
+              <span className="hero__spec-badge hero__spec-badge--emerald">
+                <span className="hero__spec-dot" />
+                FastAPI & React
+              </span>
+            </div>
 
             {/* Bio Description */}
             <p className="hero__bio">
-              Data Science student at the <strong>Institute of Technology of Cambodia</strong> (Expected Graduation: 2027). 
-              Focused on engineering end-to-end machine learning pipelines, probabilistic computing, and high-performance web systems.
+              Data Science student at the <strong className="hero__bio-highlight">Institute of Technology of Cambodia</strong> (Expected Graduation: 2027). Focused on engineering end-to-end machine learning pipelines, probabilistic computing, and high-performance web systems.
             </p>
 
             {/* High-Converting CTA Buttons */}

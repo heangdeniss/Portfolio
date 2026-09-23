@@ -10,38 +10,102 @@ export default function Contact() {
   const [senderContact, setSenderContact] = useState('');
   const [message, setMessage] = useState('');
   const [formStatus, setFormStatus] = useState('idle'); // 'idle' | 'sending' | 'sent'
+  const [validationErrors, setValidationErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [toast, setToast] = useState(null);
 
   const copyToClipboard = (text, key) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedKey(key);
+      setToast({ message: 'Copied to clipboard!', type: 'success' });
       setTimeout(() => setCopiedKey(null), 2400);
+      setTimeout(() => setToast(null), 3000);
     });
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!name.trim()) {
+      errors.name = 'Please provide your name.';
+    } else if (name.trim().length < 2) {
+      errors.name = 'Name must be at least 2 characters.';
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const tgRegex = /^@?[a-zA-Z0-9_]{3,}$/;
+    if (!senderContact.trim()) {
+      errors.senderContact = 'Please provide your email or Telegram handle.';
+    } else if (!emailRegex.test(senderContact.trim()) && !tgRegex.test(senderContact.trim())) {
+      errors.senderContact = 'Please enter a valid email or Telegram username (@handle).';
+    }
+
+    if (!message.trim()) {
+      errors.message = 'Please enter a message.';
+    } else if (message.trim().length < 10) {
+      errors.message = `Message must be at least 10 characters (${message.trim().length}/10).`;
+    }
+
+    return errors;
+  };
+
+  const handleBlur = (field) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const errors = validateForm();
+    setValidationErrors(errors);
   };
 
   const handleSendEmail = (e) => {
     e.preventDefault();
+    setTouched({ name: true, senderContact: true, message: true });
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors({});
     setFormStatus('sending');
     setTimeout(() => {
-      const subject = encodeURIComponent(`Portfolio Inquiry from ${name || 'Prospective Collaborator'}`);
+      const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
       const body = encodeURIComponent(
         `Hello Denis,\n\n${message}\n\nBest regards,\n${name}\nContact: ${senderContact}`
       );
       window.location.href = `mailto:heangdenis011468@gmail.com?subject=${subject}&body=${body}`;
       setFormStatus('sent');
-      setTimeout(() => setFormStatus('idle'), 4500);
-    }, 500);
+      setToast({ message: 'Message dispatched to Denis!', type: 'success' });
+      setName('');
+      setSenderContact('');
+      setMessage('');
+      setTouched({});
+      setTimeout(() => setFormStatus('idle'), 4000);
+      setTimeout(() => setToast(null), 4000);
+    }, 600);
   };
 
   const handleSendTelegram = () => {
+    setTouched({ name: true, senderContact: true, message: true });
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors({});
     setFormStatus('sending');
     setTimeout(() => {
       const text = encodeURIComponent(
-        `Hi Denis, my name is ${name || 'a visitor'} (${senderContact || 'no contact provided'}).\n\n${message || 'I saw your portfolio and would love to connect!'}`
+        `Hi Denis, my name is ${name} (${senderContact}).\n\n${message}`
       );
       window.open(`https://t.me/heang_deniss?text=${text}`, '_blank', 'noopener,noreferrer');
       setFormStatus('sent');
-      setTimeout(() => setFormStatus('idle'), 4500);
-    }, 400);
+      setToast({ message: 'Message dispatched to Denis!', type: 'success' });
+      setName('');
+      setSenderContact('');
+      setMessage('');
+      setTouched({});
+      setTimeout(() => setFormStatus('idle'), 4000);
+      setTimeout(() => setToast(null), 4000);
+    }, 500);
   };
 
   return (
@@ -56,11 +120,11 @@ export default function Contact() {
         </div>
 
         <div className={`contact-layout stagger${visible ? ' visible' : ''}`}>
-          
+
           {/* Left Column: Instant One-Click Copy Hub */}
           <div className="contact-cards-column">
             <h3 className="contact-column-title">Direct Channels</h3>
-            
+
             {/* Email Card */}
             <div className="contact-interactive-card">
               <div className="contact-interactive-card__icon contact-interactive-card__icon--amber">
@@ -201,39 +265,72 @@ export default function Contact() {
           {/* Right Column: Interactive Quick Message Composer */}
           <div className="contact-composer-column">
             <h3 className="contact-column-title">Direct Message</h3>
-            
-            <form onSubmit={handleSendEmail} className="contact-form">
+
+            <form onSubmit={handleSendEmail} className="contact-form" noValidate>
               <div className="contact-form__group">
-                <label className="contact-form__label">Your Name</label>
+                <div className="contact-form__label-row">
+                  <label className="contact-form__label">Your Name</label>
+                  {validationErrors.name && touched.name && (
+                    <span className="contact-form__field-error">{validationErrors.name}</span>
+                  )}
+                </div>
                 <input
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="contact-form__input"
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (touched.name) setValidationErrors((prev) => ({ ...prev, name: undefined }));
+                  }}
+                  onBlur={() => handleBlur('name')}
+                  placeholder="e.g. Sokha Meng"
+                  className={`contact-form__input${validationErrors.name && touched.name ? ' contact-form__input--error' : ''}`}
                   required
                 />
               </div>
 
               <div className="contact-form__group">
-                <label className="contact-form__label">Your Email or Handle</label>
+                <div className="contact-form__label-row">
+                  <label className="contact-form__label">Your Email or Handle</label>
+                  {validationErrors.senderContact && touched.senderContact && (
+                    <span className="contact-form__field-error">{validationErrors.senderContact}</span>
+                  )}
+                </div>
                 <input
                   type="text"
                   value={senderContact}
-                  onChange={(e) => setSenderContact(e.target.value)}
-                  className="contact-form__input"
+                  onChange={(e) => {
+                    setSenderContact(e.target.value);
+                    if (touched.senderContact) setValidationErrors((prev) => ({ ...prev, senderContact: undefined }));
+                  }}
+                  onBlur={() => handleBlur('senderContact')}
+                  placeholder="name@company.com or @telegram_handle"
+                  className={`contact-form__input${validationErrors.senderContact && touched.senderContact ? ' contact-form__input--error' : ''}`}
                   required
                 />
               </div>
 
               <div className="contact-form__group">
-                <label className="contact-form__label">Your Message</label>
+                <div className="contact-form__label-row">
+                  <label className="contact-form__label">Your Message</label>
+                  {validationErrors.message && touched.message && (
+                    <span className="contact-form__field-error">{validationErrors.message}</span>
+                  )}
+                </div>
                 <textarea
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="contact-form__textarea"
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                    if (touched.message) setValidationErrors((prev) => ({ ...prev, message: undefined }));
+                  }}
+                  onBlur={() => handleBlur('message')}
+                  placeholder="Tell me about your project, team, or inquiry..."
+                  className={`contact-form__textarea${validationErrors.message && touched.message ? ' contact-form__textarea--error' : ''}`}
                   rows={4}
                   required
                 />
+                <div className="contact-form__char-count">
+                  <span>{message.trim().length} / 10 min chars</span>
+                </div>
               </div>
 
               {formStatus === 'sent' && (
@@ -286,14 +383,14 @@ export default function Contact() {
         </div>
       </div>
       {/* Floating Subtle Toast Notification */}
-      {copiedKey && (
+      {toast && (
         <div className="contact-toast" role="status" aria-live="polite">
           <span className="contact-toast__icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </span>
-          <span className="contact-toast__text">Copied to clipboard!</span>
+          <span className="contact-toast__text">{toast.message}</span>
         </div>
       )}
     </section>

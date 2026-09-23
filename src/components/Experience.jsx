@@ -1,11 +1,19 @@
 import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
+import mptcLogo from '../images/mptc-logo.png';
+import scientificLogo from '../images/scientific-logo.png';
+import itcLogo from '../images/itc-logo.png';
+import aceLogo from '../images/ACE-logo.png';
+import udemyLogo from '../images/udemy-logo.png';
+import anbLogo from '../images/anb-logo.png';
 
 const timelineData = [
   {
     type: 'Experience',
     title: 'Data Analyst & Web Developer Intern',
     institution: 'Ministry of Post and Telecommunications (MPTC)',
+    logo: mptcLogo,
+    logoBg: 'rgba(255, 255, 255, 0.05)',
     year: 'July – October 2026',
     metrics: '3,700 Students & 369 Teachers Surveyed • Bac II 2026 Data Entry',
     tech: 'Python, Pandas, RegEx, React, Recharts, Power BI, Excel, Google Forms',
@@ -17,7 +25,9 @@ const timelineData = [
     type: 'Experience',
     title: 'Project Lead — AI Educational Chatbot',
     institution: 'Scientific Day Phnom Penh',
-    year: '7 July 2025',
+    logo: scientificLogo,
+    logoBg: '#ffffff',
+    year: '4–5 June 2026',
     metrics: '4-Person Team Led • RAG Retrieval Architecture',
     tech: 'Python, Node.js, Express.js, Flask, PostgreSQL, LangChain, ChromaDB',
     desc: 'Served as Team Lead for a 4-member engineering team. Architected an AI-driven educational platform integrating Node.js, Express.js, Flask, and PostgreSQL. Engineered a semantic Retrieval-Augmented Generation (RAG) pipeline utilizing LangChain and ChromaDB for Khmer curriculum querying, backed by optimized relational schemas with triggers and stored procedures.',
@@ -28,6 +38,8 @@ const timelineData = [
     type: 'Education',
     title: 'Engineering Degree in Data Science',
     institution: 'Institute of Technology of Cambodia (ITC)',
+    logo: itcLogo,
+    logoBg: '#ffffff',
     year: 'Expected Graduation: 2027',
     metrics: '5-Year Engineering Track • Data Structures & AI Specialization',
     tech: 'Algorithms, ML, PGM, Probability & Statistics, Linear Algebra',
@@ -38,6 +50,8 @@ const timelineData = [
     type: 'Education',
     title: 'Advanced English Language Program',
     institution: 'Australian Centre for Education (ACE)',
+    logo: aceLogo,
+    logoBg: '#ffffff',
     year: 'September 2026 – Present',
     metrics: 'Professional Working Proficiency (B2+)',
     tech: 'Academic Writing, Technical Documentation, Executive Presentation',
@@ -48,6 +62,8 @@ const timelineData = [
     type: 'Education',
     title: 'Full Stack Web Development Bootcamp',
     institution: 'Udemy',
+    logo: udemyLogo,
+    logoBg: '#ffffff',
     year: '2025',
     metrics: 'Full-Stack Architecture & API Design',
     tech: 'React, Node.js, REST APIs, PostgreSQL, Modern Web Systems',
@@ -58,6 +74,8 @@ const timelineData = [
     type: 'Education',
     title: 'Data Visualization Hackathon',
     institution: 'Above and Beyond School',
+    logo: anbLogo,
+    logoBg: '#ffffff',
     year: '2025',
     metrics: 'Competitive EDA & Visual Analytics Under Tight Deadlines',
     tech: 'Python, Matplotlib, Seaborn, Feature Engineering',
@@ -136,8 +154,24 @@ export default function Experience() {
                     )}
                   </div>
 
-                  <h3 className="timeline-card__title">{item.title}</h3>
-                  <p className="timeline-card__institution">{item.institution}</p>
+                  <div className="timeline-card__header-main">
+                    {item.logo && (
+                      <div
+                        className="timeline-card__logo-wrap"
+                        style={{ background: item.logoBg || 'rgba(255, 255, 255, 0.05)' }}
+                      >
+                        <img
+                          src={item.logo}
+                          alt={`${item.institution} logo`}
+                          className="timeline-card__logo"
+                        />
+                      </div>
+                    )}
+                    <div className="timeline-card__title-group">
+                      <h3 className="timeline-card__title">{item.title}</h3>
+                      <p className="timeline-card__institution">{item.institution}</p>
+                    </div>
+                  </div>
 
                   {item.tech && (
                     <div className="timeline-card__tech">
@@ -152,10 +186,22 @@ export default function Experience() {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="timeline-card__link"
+                      className={`timeline-card__btn ${item.url.includes('github') ? 'timeline-card__btn--github' : 'timeline-card__btn--live'}`}
+                      title={item.linkText}
                     >
+                      {!item.url.includes('github') && (
+                        <span className="timeline-btn__beacon">
+                          <span className="timeline-btn__beacon-ping" />
+                          <span className="timeline-btn__beacon-core" />
+                        </span>
+                      )}
+                      {item.url.includes('github') && (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                        </svg>
+                      )}
                       <span>{item.linkText}</span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="timeline-btn__arrow">
                         <path d="M7 17L17 7M7 7h10v10" />
                       </svg>
                     </a>
