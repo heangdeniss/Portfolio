@@ -9,6 +9,7 @@ export default function Contact() {
   const [name, setName] = useState('');
   const [senderContact, setSenderContact] = useState('');
   const [message, setMessage] = useState('');
+  const [formStatus, setFormStatus] = useState('idle'); // 'idle' | 'sending' | 'sent'
 
   const copyToClipboard = (text, key) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -19,18 +20,28 @@ export default function Contact() {
 
   const handleSendEmail = (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Portfolio Inquiry from ${name || 'Prospective Collaborator'}`);
-    const body = encodeURIComponent(
-      `Hello Denis,\n\n${message}\n\nBest regards,\n${name}\nContact: ${senderContact}`
-    );
-    window.location.href = `mailto:heangdenis011468@gmail.com?subject=${subject}&body=${body}`;
+    setFormStatus('sending');
+    setTimeout(() => {
+      const subject = encodeURIComponent(`Portfolio Inquiry from ${name || 'Prospective Collaborator'}`);
+      const body = encodeURIComponent(
+        `Hello Denis,\n\n${message}\n\nBest regards,\n${name}\nContact: ${senderContact}`
+      );
+      window.location.href = `mailto:heangdenis011468@gmail.com?subject=${subject}&body=${body}`;
+      setFormStatus('sent');
+      setTimeout(() => setFormStatus('idle'), 4500);
+    }, 500);
   };
 
   const handleSendTelegram = () => {
-    const text = encodeURIComponent(
-      `Hi Denis, my name is ${name || 'a visitor'} (${senderContact || 'no contact provided'}).\n\n${message || 'I saw your portfolio and would love to connect!'}`
-    );
-    window.open(`https://t.me/heang_deniss?text=${text}`, '_blank', 'noopener,noreferrer');
+    setFormStatus('sending');
+    setTimeout(() => {
+      const text = encodeURIComponent(
+        `Hi Denis, my name is ${name || 'a visitor'} (${senderContact || 'no contact provided'}).\n\n${message || 'I saw your portfolio and would love to connect!'}`
+      );
+      window.open(`https://t.me/heang_deniss?text=${text}`, '_blank', 'noopener,noreferrer');
+      setFormStatus('sent');
+      setTimeout(() => setFormStatus('idle'), 4500);
+    }, 400);
   };
 
   return (
@@ -225,17 +236,41 @@ export default function Contact() {
                 />
               </div>
 
-              <div className="contact-form__actions">
-                <button type="submit" className="btn btn-primary contact-form__btn">
-                  <span>Send via Email</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <line x1="22" y1="2" x2="11" y2="13" />
-                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              {formStatus === 'sent' && (
+                <div className="contact-form__feedback contact-form__feedback--success">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
+                  <span>Dispatching communication channel...</span>
+                </div>
+              )}
+
+              <div className="contact-form__actions">
+                <button
+                  type="submit"
+                  disabled={formStatus === 'sending'}
+                  className="btn btn-primary contact-form__btn"
+                >
+                  {formStatus === 'sending' ? (
+                    <>
+                      <span className="contact-form__spinner" />
+                      <span>Preparing Email...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Send via Email</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                      </svg>
+                    </>
+                  )}
                 </button>
 
                 <button
                   type="button"
+                  disabled={formStatus === 'sending'}
                   onClick={handleSendTelegram}
                   className="btn btn-outline contact-form__btn"
                 >

@@ -1,10 +1,7 @@
-import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
-import seabornIcon from '../images/skills/seaborn.svg';
 import chromadbIcon from '../images/skills/chromadb.svg';
 import powerbiIcon from '../images/skills/powerbi.svg';
-import excelIcon from '../images/skills/excel.svg';
-import llmIcon from '../images/skills/llm.svg';
+import scipyIcon from '../images/skills/scipy.svg';
 
 const deviconBase = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
 const devicon = (name, variant = 'original') =>
@@ -12,45 +9,107 @@ const devicon = (name, variant = 'original') =>
 const simpleIcon = (slug, color = 'ffffff') =>
   `https://cdn.simpleicons.org/${slug}/${color}`;
 
-const skillMeta = {
-  Python: { icon: devicon('python'), color: '#3776AB', cat: 'Languages' },
-  R: { icon: devicon('r'), color: '#276DC3', cat: 'Languages' },
-  PostgreSQL: { icon: devicon('postgresql'), color: '#336791', cat: 'Languages' },
-  SQL: { icon: devicon('mysql'), color: '#00758F', cat: 'Languages' },
-  JavaScript: { icon: devicon('javascript'), color: '#F7DF1E', cat: 'Languages' },
-
-  'Scikit-learn': { icon: devicon('scikitlearn'), color: '#F7931E', cat: 'AI & Data Science' },
-  Pandas: { icon: devicon('pandas'), color: '#150458', cat: 'AI & Data Science' },
-  NumPy: { icon: devicon('numpy'), color: '#013243', cat: 'AI & Data Science' },
-  Matplotlib: { icon: devicon('matplotlib'), color: '#11557C', cat: 'AI & Data Science' },
-  Seaborn: { icon: seabornIcon, color: '#4C72B0', cat: 'AI & Data Science' },
-  TensorFlow: { icon: devicon('tensorflow'), color: '#FF6F00', cat: 'AI & Data Science' },
-  SciPy: { icon: devicon('scipy'), color: '#8CAAE6', cat: 'AI & Data Science' },
-  LangChain: { icon: simpleIcon('langchain', 'ffffff'), color: '#1C64F2', cat: 'AI & Data Science' },
-  LLM: { icon: llmIcon, color: '#8B5CF6', cat: 'AI & Data Science' },
-
-  FastAPI: { icon: devicon('fastapi'), color: '#009688', cat: 'Frameworks' },
-  Django: { icon: devicon('django', 'plain'), color: '#092E20', cat: 'Frameworks' },
-  React: { icon: devicon('react'), color: '#61DAFB', cat: 'Frameworks' },
-  'Node.js': { icon: devicon('nodejs'), color: '#339933', cat: 'Frameworks' },
-  Flask: { icon: devicon('flask'), color: '#111827', cat: 'Frameworks' },
-  'Express.js': { icon: devicon('express'), color: '#444444', cat: 'Frameworks' },
-
-  Git: { icon: devicon('git'), color: '#F05032', cat: 'Tools & Platforms' },
-  'Hugging Face': { icon: simpleIcon('huggingface', '111111'), color: '#FFCC4D', cat: 'Tools & Platforms' },
-  'VS Code': { icon: devicon('vscode'), color: '#007ACC', cat: 'Tools & Platforms' },
-  Antigravity: { icon: simpleIcon('googlegemini', 'ffffff'), color: '#4E82EE', cat: 'Tools & Platforms' },
-  'Power BI': { icon: powerbiIcon, color: '#F2C811', cat: 'Tools & Platforms' },
-  Excel: { icon: excelIcon, color: '#217346', cat: 'Tools & Platforms' },
-  Jupyter: { icon: devicon('jupyter'), color: '#F37626', cat: 'Tools & Platforms' },
-  ChromaDB: { icon: chromadbIcon, color: '#FF6446', cat: 'Tools & Platforms' },
-  'Google Cloud': { icon: devicon('googlecloud'), color: '#4285F4', cat: 'Tools & Platforms' },
-};
-
-const allSkillsList = Object.keys(skillMeta).map((key) => ({
-  name: key,
-  ...skillMeta[key],
-}));
+const SKILL_GROUPS = [
+  {
+    id: 'ml-ai',
+    title: 'ML & AI',
+    subtitle: 'Deep learning, neural architectures, vector retrieval & LLM agent pipelines',
+    accent: '#8b5cf6',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" />
+        <polygon points="12 6 16 14 8 14" />
+      </svg>
+    ),
+    skills: [
+      { name: 'Scikit-learn', icon: devicon('scikitlearn'), color: '#F7931E' },
+      { name: 'TensorFlow', icon: devicon('tensorflow'), color: '#FF6F00' },
+      { name: 'LangChain', icon: simpleIcon('langchain', 'ffffff'), color: '#1C64F2' },
+      { name: 'Llama', icon: simpleIcon('meta', 'ffffff'), color: '#0081FB' },
+      { name: 'ChromaDB', icon: chromadbIcon, color: '#FF6446' },
+      { name: 'Hugging Face', icon: simpleIcon('huggingface', '111111'), color: '#FFCC4D' },
+    ],
+  },
+  {
+    id: 'data-analytics',
+    title: 'Data & Analytics',
+    subtitle: 'High-throughput data transformations, statistical modeling & analytics dashboards',
+    accent: '#06b6d4',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <ellipse cx="12" cy="5" rx="9" ry="3" />
+        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+      </svg>
+    ),
+    skills: [
+      { name: 'Pandas', icon: devicon('pandas'), color: '#150458' },
+      { name: 'NumPy', icon: devicon('numpy'), color: '#013243' },
+      { name: 'SciPy', icon: scipyIcon, color: '#8CAAE6' },
+      { name: 'Power BI', icon: powerbiIcon, color: '#F2C811' },
+      { name: 'SQL', icon: devicon('mysql'), color: '#00758F' },
+      { name: 'PostgreSQL', icon: devicon('postgresql'), color: '#336791' },
+      { name: 'DuckDB', icon: devicon('duckdb'), color: '#FFF000' },
+    ],
+  },
+  {
+    id: 'web-backend',
+    title: 'Web & Backend',
+    subtitle: 'High-performance REST APIs, full-stack microservices & reactive user interfaces',
+    accent: '#10b981',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect width="18" height="18" x="3" y="3" rx="2" />
+        <path d="M3 9h18" />
+        <path d="M9 21V9" />
+      </svg>
+    ),
+    skills: [
+      { name: 'Python', icon: devicon('python'), color: '#3776AB' },
+      { name: 'FastAPI', icon: devicon('fastapi'), color: '#009688' },
+      { name: 'Django', icon: devicon('django', 'plain'), color: '#092E20' },
+      { name: 'React', icon: devicon('react'), color: '#61DAFB' },
+      { name: 'Node.js', icon: devicon('nodejs'), color: '#339933' },
+      { name: 'Express.js', icon: devicon('express'), color: '#444444' },
+      { name: 'Flask', icon: devicon('flask'), color: '#111827' },
+    ],
+  },
+  {
+    id: 'programming-languages',
+    title: 'Programming Languages',
+    subtitle: 'Core programming languages for statistical computing, data analysis & systems',
+    accent: '#f59e0b',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polyline points="16 18 22 12 16 6" />
+        <polyline points="8 6 2 12 8 18" />
+      </svg>
+    ),
+    skills: [
+      { name: 'Python', icon: devicon('python'), color: '#3776AB' },
+      { name: 'R', icon: devicon('r'), color: '#276DC3' },
+      { name: 'JavaScript', icon: devicon('javascript'), color: '#F7DF1E' },
+      { name: 'SQL', icon: devicon('mysql'), color: '#00758F' },
+    ],
+  },
+  {
+    id: 'tools-environment',
+    title: 'Tools & Environment',
+    subtitle: 'Developer environments, version control, cloud computing & reproducible research',
+    accent: '#6366f1',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+      </svg>
+    ),
+    skills: [
+      { name: 'Git', icon: devicon('git'), color: '#F05032' },
+      { name: 'VS Code', icon: devicon('vscode'), color: '#007ACC' },
+      { name: 'Jupyter', icon: devicon('jupyter'), color: '#F37626' },
+      { name: 'Google Cloud', icon: devicon('googlecloud'), color: '#4285F4' },
+    ],
+  },
+];
 
 const methodsList = [
   'Exploratory Data Analysis (EDA)',
@@ -67,116 +126,85 @@ const methodsList = [
   'Time Series Forecasting',
 ];
 
-const TABS = [
-  'All',
-  'Languages',
-  'AI & Data Science',
-  'Frameworks',
-  'Tools',
-  'Methods',
-];
-
-const metaFor = (label) => skillMeta[label] || { color: '#1f223f' };
-const initialsFor = (label) =>
-  label.replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase();
-
 export default function Skills() {
   const [ref, visible] = useReveal();
-  const [activeTab, setActiveTab] = useState('All');
-
-  const filteredSkills = allSkillsList.filter((item) => {
-    if (activeTab === 'All') return true;
-    if (activeTab === 'Tools') return item.cat === 'Tools & Platforms' || item.cat === 'Tools';
-    return item.cat === activeTab;
-  });
-
-  const showMethods = activeTab === 'All' || activeTab === 'Methods';
-  const showSkillsGrid = activeTab !== 'Methods';
 
   const handleIconError = (event) => {
-    const chip = event.currentTarget.closest('.skill-card');
-    if (chip) chip.classList.add('skill-card--fallback');
+    const chip = event.currentTarget.closest('.skill-bento-chip');
+    if (chip) chip.classList.add('skill-bento-chip--fallback');
   };
 
   return (
     <section id="skills" className="section">
       <div className="container" ref={ref}>
         <div className="section-header">
-          <p className="section-label">Skills & Stack</p>
+          <p className="section-label">Skills & Tech Stack</p>
           <h2 className="section-title">Technical Expertise</h2>
           <p className="section-subtitle">
-            Curated toolkit across machine learning engineering, statistical computing, and web architecture.
+            Curated toolkit organized across machine learning engineering, statistical computing, web architecture, and cloud tooling.
           </p>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="skills-tabs">
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`skills-tab-btn${activeTab === tab ? ' skills-tab-btn--active' : ''}`}
+        {/* 5 Distinct Bento Cards */}
+        <div className={`skills-bento-grid stagger${visible ? ' visible' : ''}`}>
+          {SKILL_GROUPS.map((group) => (
+            <div
+              key={group.id}
+              className={`skill-bento-card skill-bento-card--${group.id}`}
+              style={{ '--group-accent': group.accent }}
             >
-              <span>{tab}</span>
-            </button>
+              <div className="skill-bento-card__glow" />
+              
+              <div className="skill-bento-card__header">
+                <div className="skill-bento-card__icon-box">
+                  {group.icon}
+                </div>
+                <div className="skill-bento-card__titles">
+                  <h3 className="skill-bento-card__title">{group.title}</h3>
+                  <p className="skill-bento-card__subtitle">{group.subtitle}</p>
+                </div>
+                <span className="skill-bento-card__count">{group.skills.length} Tech</span>
+              </div>
+
+              <div className="skill-bento-card__items">
+                {group.skills.map((skill) => (
+                  <div
+                    key={skill.name}
+                    className="skill-bento-chip"
+                    style={{ '--skill-color': skill.color }}
+                  >
+                    <div className="skill-bento-chip__icon-wrap">
+                      <img
+                        src={skill.icon}
+                        alt={skill.name}
+                        className="skill-bento-chip__icon"
+                        loading="lazy"
+                        onError={handleIconError}
+                      />
+                    </div>
+                    <span className="skill-bento-chip__name">{skill.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 
-        {/* Dynamic Filterable Tech Cards Grid */}
-        {showSkillsGrid && (
-          <div key={activeTab} className={`skills-cards-grid stagger${visible ? ' visible' : ''}`}>
-            {filteredSkills.map((item) => {
-              const hasIcon = Boolean(item.icon);
-              return (
-                <div
-                  key={item.name}
-                  className="skill-card"
-                  style={{
-                    '--skill-accent': item.color,
-                  }}
-                >
-                  <div className="skill-card__glow" />
-                  <div className="skill-card__icon-box">
-                    {hasIcon ? (
-                      <img
-                        src={item.icon}
-                        alt=""
-                        className="skill-card__icon"
-                        loading="lazy"
-                        style={{ filter: item.iconFilter || 'none' }}
-                        onError={handleIconError}
-                      />
-                    ) : (
-                      <span className="skill-card__fallback">{initialsFor(item.name)}</span>
-                    )}
-                  </div>
-                  <div className="skill-card__info">
-                    <span className="skill-card__name">{item.name}</span>
-                    <span className="skill-card__category">{item.cat}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
         {/* Methods & Techniques Section */}
-        {showMethods && (
-          <div className="skills-methods-panel">
-            <div className="skills-methods-panel__header">
-              <span className="skills-methods-panel__tag">Analytical Rigor</span>
-              <h3 className="skills-methods-panel__title">Methods, Algorithms & Modeling</h3>
-            </div>
-            <div className="skills-methods-grid">
-              {methodsList.map((m) => (
-                <div key={m} className="method-pill">
-                  <span className="method-pill__dot" />
-                  <span className="method-pill__text">{m}</span>
-                </div>
-              ))}
-            </div>
+        <div className="skills-methods-panel">
+          <div className="skills-methods-panel__header">
+            <span className="skills-methods-panel__tag">Analytical Rigor</span>
+            <h3 className="skills-methods-panel__title">Methods, Algorithms & Modeling</h3>
           </div>
-        )}
+          <div className="skills-methods-grid">
+            {methodsList.map((m) => (
+              <div key={m} className="method-pill">
+                <span className="method-pill__dot" />
+                <span className="method-pill__text">{m}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
       </div>
     </section>

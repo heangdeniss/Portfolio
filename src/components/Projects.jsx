@@ -15,25 +15,31 @@ const projects = [
   {
     id: 1,
     title: 'Credit Risk Analysis, Prediction & RAG Assistant',
-    desc: 'Processed 30,000+ loan records for credit risk modeling. Trained Logistic Regression, Neural Network, and CatBoost models to predict probability of default (PD) with Basel-aligned risk grades (A–F). Built a conversational RAG assistant using Llama 3.2, LangChain, and ChromaDB with Whisper speech-to-text integration, served via a full-stack FastAPI and React architecture.',
-    tags: ['Python', 'Scikit-learn', 'FastAPI', 'React', 'Llama', 'LangChain'],
-    url: 'https://github.com/heangdeniss/creditAnalysisAsistantChatbot',
+    metric: '30k+ Loan Records Processed • Basel Grades (A–F)',
+    desc: 'Trained gradient-boosted CatBoost and Neural Network classifiers on 30,000+ financial records to forecast probability of default (PD) categorized into Basel-compliant risk ratings. Integrated a conversational Llama 3.2 RAG agent backed by LangChain and ChromaDB with Whisper speech-to-text, deployed via a high-throughput FastAPI and React platform.',
+    tags: ['FastAPI', 'React', 'Llama 3.2', 'ChromaDB', 'LangChain', 'CatBoost', 'Scikit-learn'],
+    githubUrl: 'https://github.com/heangdeniss/creditAnalysisAsistantChatbot',
+    demoUrl: 'https://github.com/heangdeniss/creditAnalysisAsistantChatbot',
     images: [creditRiskPred, creditRiskRag],
   },
   {
     id: 2,
-    title: 'LendingClub Big Data Analysis & Default Prediction',
-    desc: 'Converted multi-CSV LendingClub loan datasets into columnar Parquet using DuckDB for high-throughput queries. Executed exploratory analysis and feature engineering with pandas and hvPlot (missing values, outlier clipping, datetime decomposition, and one-hot encoding). Benchmarked XGBoost, Random Forest, and TensorFlow ANN models tuned with RandomizedSearchCV and evaluated on ROC-AUC.',
-    tags: ['Python', 'pandas', 'NumPy', 'XGBoost', 'TensorFlow', 'DuckDB'],
-    url: 'https://github.com/heangdeniss/LendingLoanClubDataAnalysis',
+    title: 'LendingClub Big Data Pipeline & Default Prediction',
+    metric: 'Columnar Parquet • ROC-AUC Optimization',
+    desc: 'Converted massive multi-CSV loan datasets into high-performance columnar Parquet using DuckDB, drastically reducing memory overhead for exploratory analysis and feature engineering. Benchmarked hyperparameter-tuned XGBoost, Random Forest, and TensorFlow ANN architectures with RandomizedSearchCV, optimizing for maximum ROC-AUC discrimination.',
+    tags: ['DuckDB', 'Python', 'XGBoost', 'TensorFlow', 'Pandas', 'NumPy', 'hvPlot'],
+    githubUrl: 'https://github.com/heangdeniss/LendingLoanClubDataAnalysis',
+    demoUrl: 'https://github.com/heangdeniss/LendingLoanClubDataAnalysis',
     images: [llcAuC, llcFeature, llcBi1, llcBi2, llcBi3],
   },
   {
     id: 3,
     title: 'HMM Part-of-Speech Tagger & Text Segmentation (PGM)',
-    desc: 'Implemented a Hidden Markov Model (HMM) from mathematical first principles for sequence labeling and text segmentation on the Brown Corpus (232,000+ tokens). Formulated a log-space Viterbi decoding algorithm to prevent numerical underflow on long sentences. Applied Laplace smoothing with grid-search validation (α = 10⁻⁹), achieving 96.05% word-level accuracy across 12 Universal POS tags.',
-    tags: ['Python', 'NLP', 'PGM', 'HMM', 'Viterbi', 'NLTK'],
-    url: 'https://github.com/heangdeniss/HMM-Text_Segmentation',
+    metric: '96.05% Accuracy • 232k+ Tokens Processed',
+    desc: 'Formulated a first-principles Hidden Markov Model (HMM) with log-space Viterbi dynamic programming to overcome numerical underflow on sequence labeling across 232,000+ Brown Corpus tokens. Engineered Laplace smoothing with grid-search cross-validation (α = 10⁻⁹), achieving 96.05% test accuracy across 12 Universal POS categories.',
+    tags: ['Python', 'Probabilistic Graphical Models', 'HMM', 'Viterbi Algorithm', 'NLP', 'NLTK'],
+    githubUrl: 'https://github.com/heangdeniss/HMM-Text_Segmentation',
+    demoUrl: 'https://github.com/heangdeniss/HMM-Text_Segmentation',
     images: [hmmMethodology, hmmResults],
   },
 ];
@@ -45,37 +51,41 @@ const ImageSlider = ({ images, onImageClick }) => {
     if (!images || images.length === 0) return;
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 3000);
+    }, 3200);
     return () => clearInterval(interval);
   }, [images]);
 
   if (!images || images.length === 0) return null;
 
   return (
-    <div className="project-card__image-slider" style={{ width: '100%', height: '350px', overflow: 'hidden', position: 'relative', borderRadius: '8px', marginBottom: '20px', backgroundColor: '#0f172a' }}>
+    <div className="project-card__image-slider">
       {images.map((img, index) => (
         <img
           key={index}
           src={img}
-          alt={`Slide ${index}`}
+          alt={`Project Slide ${index + 1}`}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             onImageClick(img);
           }}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            opacity: index === currentIndex ? 1 : 0,
-            transition: 'opacity 0.5s ease-in-out',
-            cursor: 'zoom-in'
-          }}
+          className={`project-card__slider-img${index === currentIndex ? ' active' : ''}`}
         />
       ))}
+      {images.length > 1 && (
+        <div className="project-card__slider-dots">
+          {images.map((_, i) => (
+            <span
+              key={i}
+              className={`project-card__slider-dot${i === currentIndex ? ' active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentIndex(i);
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -87,62 +97,80 @@ export default function Projects() {
   return (
     <section id="projects" className="section">
       <div className="container" ref={ref}>
-        <div className={`reveal reveal-up${visible ? ' visible' : ''}`}>
-          <p className="section-label">Projects</p>
-          <h2 className="section-title">Notable Projects</h2>
+        <div className="section-header">
+          <p className="section-label">Featured Projects</p>
+          <h2 className="section-title">Engineering & Research Highlights</h2>
           <p className="section-subtitle">
-            Selected machine learning, statistical modeling, and data engineering projects
+            Selected machine learning architectures, statistical computing pipelines, and data systems engineered for real-world impact.
           </p>
         </div>
 
         <div className={`projects__list stagger${visible ? ' visible' : ''}`}>
           {projects.map((p) => (
-            <a
-              key={p.id}
-              href={p.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="project-card"
-            >
-              <span className="project-card__num">
-                {String(p.id).padStart(2, '0')}
-              </span>
-              <div className="project-card__body">
-                <ImageSlider images={p.images} onImageClick={setFullScreenImage} />
+            <div key={p.id} className="project-card">
+              {/* Header Bar: Number + Impact Metric Badge */}
+              <div className="project-card__header-bar">
+                <span className="project-card__num">PROJECT {String(p.id).padStart(2, '0')}</span>
+                <div className="project-card__metric-badge">
+                  <span className="project-card__metric-pulse" />
+                  <span className="project-card__metric-text">{p.metric}</span>
+                </div>
+              </div>
+
+              {/* Interactive Image Showcase */}
+              <ImageSlider images={p.images} onImageClick={setFullScreenImage} />
+
+              {/* Content Section */}
+              <div className="project-card__content">
                 <h3 className="project-card__title">{p.title}</h3>
                 <p className="project-card__desc">{p.desc}</p>
+
+                {/* Interactive Tech Stack Chips */}
                 <div className="project-card__tags">
                   {p.tags.map((tag) => (
                     <span key={tag} className="project-card__tag">{tag}</span>
                   ))}
                 </div>
+
+                {/* Dual Call-to-Action Buttons */}
+                <div className="project-card__actions">
+                  <a
+                    href={p.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-outline project-btn project-btn--github"
+                    title="View GitHub Repository"
+                  >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                    </svg>
+                    <span>View GitHub Repo</span>
+                  </a>
+
+                  {p.demoUrl && (
+                    <a
+                      href={p.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary project-btn project-btn--demo"
+                      title="Open Demonstration"
+                    >
+                      <span>Live Demo</span>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M7 17L17 7M7 7h10v10" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
               </div>
-              <div className="project-card__arrow">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M7 17L17 7" />
-                  <path d="M7 7h10v10" />
-                </svg>
-              </div>
-            </a>
+            </div>
           ))}
         </div>
       </div>
 
       {fullScreenImage && (
         <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0, 0, 0, 0.9)',
-            zIndex: 9999,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'zoom-out'
-          }}
+          className="project-modal"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -151,26 +179,11 @@ export default function Projects() {
         >
           <img
             src={fullScreenImage}
-            alt="Full Screen"
-            style={{
-              maxWidth: '90%',
-              maxHeight: '90%',
-              objectFit: 'contain',
-              borderRadius: '8px',
-            }}
+            alt="Full Screen Preview"
+            className="project-modal__img"
           />
           <button
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '30px',
-              background: 'none',
-              border: 'none',
-              color: 'white',
-              fontSize: '2.5rem',
-              cursor: 'pointer',
-              padding: '10px'
-            }}
+            className="project-modal__close"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
