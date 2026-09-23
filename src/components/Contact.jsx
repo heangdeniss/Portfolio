@@ -196,7 +196,6 @@ export default function Contact() {
                 <label className="contact-form__label">Your Name</label>
                 <input
                   type="text"
-                  placeholder="e.g. Sarah Connor"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="contact-form__input"
@@ -208,7 +207,6 @@ export default function Contact() {
                 <label className="contact-form__label">Your Email or Handle</label>
                 <input
                   type="text"
-                  placeholder="e.g. sarah@example.com or @telegram"
                   value={senderContact}
                   onChange={(e) => setSenderContact(e.target.value)}
                   className="contact-form__input"
@@ -219,7 +217,6 @@ export default function Contact() {
               <div className="contact-form__group">
                 <label className="contact-form__label">Your Message</label>
                 <textarea
-                  placeholder="Tell me about your project, idea, or role opportunity..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="contact-form__textarea"

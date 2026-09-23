@@ -1,5 +1,10 @@
 import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
+import seabornIcon from '../images/skills/seaborn.svg';
+import chromadbIcon from '../images/skills/chromadb.svg';
+import powerbiIcon from '../images/skills/powerbi.svg';
+import excelIcon from '../images/skills/excel.svg';
+import llmIcon from '../images/skills/llm.svg';
 
 const deviconBase = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
 const devicon = (name, variant = 'original') =>
@@ -12,33 +17,33 @@ const skillMeta = {
   R: { icon: devicon('r'), color: '#276DC3', cat: 'Languages' },
   PostgreSQL: { icon: devicon('postgresql'), color: '#336791', cat: 'Languages' },
   SQL: { icon: devicon('mysql'), color: '#00758F', cat: 'Languages' },
-  JavaScript: { icon: devicon('javascript'), color: '#F7DF1E', textColor: '#1a1a1a', iconFilter: 'brightness(0)', cat: 'Languages' },
+  JavaScript: { icon: devicon('javascript'), color: '#F7DF1E', cat: 'Languages' },
 
   'Scikit-learn': { icon: devicon('scikitlearn'), color: '#F7931E', cat: 'AI & Data Science' },
   Pandas: { icon: devicon('pandas'), color: '#150458', cat: 'AI & Data Science' },
   NumPy: { icon: devicon('numpy'), color: '#013243', cat: 'AI & Data Science' },
   Matplotlib: { icon: devicon('matplotlib'), color: '#11557C', cat: 'AI & Data Science' },
-  Seaborn: { icon: simpleIcon('seaborn', 'ffffff'), color: '#4C72B0', iconFilter: 'none', cat: 'AI & Data Science' },
+  Seaborn: { icon: seabornIcon, color: '#4C72B0', cat: 'AI & Data Science' },
   TensorFlow: { icon: devicon('tensorflow'), color: '#FF6F00', cat: 'AI & Data Science' },
-  SciPy: { icon: devicon('scipy'), color: '#8CAAE6', textColor: '#1a1a1a', iconFilter: 'brightness(0)', cat: 'AI & Data Science' },
-  LangChain: { icon: simpleIcon('langchain', 'ffffff'), color: '#1C64F2', iconFilter: 'none', cat: 'AI & Data Science' },
-  LLM: { icon: simpleIcon('openai', 'ffffff'), color: '#6B21A8', iconFilter: 'none', cat: 'AI & Data Science' },
+  SciPy: { icon: devicon('scipy'), color: '#8CAAE6', cat: 'AI & Data Science' },
+  LangChain: { icon: simpleIcon('langchain', 'ffffff'), color: '#1C64F2', cat: 'AI & Data Science' },
+  LLM: { icon: llmIcon, color: '#8B5CF6', cat: 'AI & Data Science' },
 
   FastAPI: { icon: devicon('fastapi'), color: '#009688', cat: 'Frameworks' },
   Django: { icon: devicon('django', 'plain'), color: '#092E20', cat: 'Frameworks' },
-  React: { icon: devicon('react'), color: '#61DAFB', textColor: '#0b0c1e', iconFilter: 'brightness(0)', cat: 'Frameworks' },
+  React: { icon: devicon('react'), color: '#61DAFB', cat: 'Frameworks' },
   'Node.js': { icon: devicon('nodejs'), color: '#339933', cat: 'Frameworks' },
   Flask: { icon: devicon('flask'), color: '#111827', cat: 'Frameworks' },
   'Express.js': { icon: devicon('express'), color: '#444444', cat: 'Frameworks' },
 
   Git: { icon: devicon('git'), color: '#F05032', cat: 'Tools & Platforms' },
-  'Hugging Face': { icon: simpleIcon('huggingface', '111111'), color: '#FFCC4D', textColor: '#1a1a1a', iconFilter: 'none', cat: 'Tools & Platforms' },
+  'Hugging Face': { icon: simpleIcon('huggingface', '111111'), color: '#FFCC4D', cat: 'Tools & Platforms' },
   'VS Code': { icon: devicon('vscode'), color: '#007ACC', cat: 'Tools & Platforms' },
-  Antigravity: { icon: simpleIcon('googlegemini', 'ffffff'), color: '#4E82EE', iconFilter: 'none', cat: 'Tools & Platforms' },
-  'Power BI': { icon: simpleIcon('powerbi', '111111'), color: '#F2C811', textColor: '#1a1a1a', iconFilter: 'none', cat: 'Tools & Platforms' },
-  Excel: { icon: simpleIcon('microsoftexcel', 'ffffff'), color: '#217346', iconFilter: 'none', cat: 'Tools & Platforms' },
+  Antigravity: { icon: simpleIcon('googlegemini', 'ffffff'), color: '#4E82EE', cat: 'Tools & Platforms' },
+  'Power BI': { icon: powerbiIcon, color: '#F2C811', cat: 'Tools & Platforms' },
+  Excel: { icon: excelIcon, color: '#217346', cat: 'Tools & Platforms' },
   Jupyter: { icon: devicon('jupyter'), color: '#F37626', cat: 'Tools & Platforms' },
-  ChromaDB: { icon: simpleIcon('chromadb', 'ffffff'), color: '#6D28D9', iconFilter: 'none', cat: 'Tools & Platforms' },
+  ChromaDB: { icon: chromadbIcon, color: '#FF6446', cat: 'Tools & Platforms' },
   'Google Cloud': { icon: devicon('googlecloud'), color: '#4285F4', cat: 'Tools & Platforms' },
 };
 
