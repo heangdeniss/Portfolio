@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import denisPhoto from '../images/HEANG Denis CTC.jpg';
+import denisPhoto from '../images/HEANG Denis good image.jpg';
 
 const ROLES = [
   'Data Science Engineer',
