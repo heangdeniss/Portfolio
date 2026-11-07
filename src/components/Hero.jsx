@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import denisPhoto from '../images/HEANG Denis good image.jpg';
 
 const ROLES = [
@@ -12,20 +13,28 @@ export default function Hero() {
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const currentRole = ROLES[roleIndex];
-  const rolePrefix = currentRole.startsWith('ML') ? 'I build as an' : 'I build as a';
+  const rolePrefix = (prefersReducedMotion ? ROLES[0] : currentRole).startsWith('ML')
+    ? 'I build as an'
+    : 'I build as a';
+  const visibleRoleText = prefersReducedMotion ? ROLES[0] : displayedText;
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     let timer;
 
     if (!isDeleting && displayedText === currentRole) {
       // Pause when full role is typed
       timer = setTimeout(() => setIsDeleting(true), 2200);
     } else if (isDeleting && displayedText === '') {
-      // Advance to next role
-      setIsDeleting(false);
-      setRoleIndex((prev) => (prev + 1) % ROLES.length);
+      // Brief pause, then advance to the next role
+      timer = setTimeout(() => {
+        setIsDeleting(false);
+        setRoleIndex((prev) => (prev + 1) % ROLES.length);
+      }, 180);
     } else {
       // Typing or deleting
       const speed = isDeleting ? 40 : 85;
@@ -39,7 +48,7 @@ export default function Hero() {
     }
 
     return () => clearTimeout(timer);
-  }, [displayedText, isDeleting, roleIndex, currentRole]);
+  }, [displayedText, isDeleting, roleIndex, currentRole, prefersReducedMotion]);
 
   return (
     <section id="hero" className="hero">
@@ -61,9 +70,12 @@ export default function Hero() {
 
             {/* Dynamic Role Switcher */}
             <div className="hero__role-wrapper">
-              <span className="hero__role-prefix">{rolePrefix}</span>
-              <span className="hero__role-text">
-                {displayedText}
+              <span className="sr-only">
+                I work as a Data Science Engineer, Data Analyst, ML and RAG Developer, and Full-Stack Developer.
+              </span>
+              <span className="hero__role-prefix" aria-hidden="true">{rolePrefix}</span>
+              <span className="hero__role-text" aria-hidden="true">
+                {visibleRoleText}
                 <span className="hero__cursor">|</span>
               </span>
             </div>
@@ -153,15 +165,19 @@ export default function Hero() {
                   <span className="hero__status-ping" />
                   <span className="hero__status-core" />
                 </span>
-                <span className="hero__portrait-status-text">Open for Opportunities</span>
+                <span className="hero__portrait-status-text">Phnom Penh, Cambodia</span>
               </div>
 
               <div className="hero__image-container">
                 <img
                   src={denisPhoto}
-                  alt="Heang Denis - Data Science & ML Engineer"
+                  alt="Portrait of Heang Denis, Data Science and Machine Learning Engineer"
                   className="hero__portrait-img"
+                  width="900"
+                  height="1200"
                   loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                 />
                 <div className="hero__image-overlay" />
               </div>
@@ -169,6 +185,14 @@ export default function Hero() {
           </div>
         </div>
       </div>
+
+      {/* Scroll-down hint */}
+      <a href="#about" className="hero__scroll-hint" aria-label="Scroll to About section">
+        <span className="hero__scroll-hint-text">Scroll</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <path d="M12 5v14M5 12l7 7 7-7" />
+        </svg>
+      </a>
     </section>
   );
 }

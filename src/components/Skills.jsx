@@ -112,27 +112,32 @@ const SKILL_GROUPS = [
 ];
 
 const methodsList = [
-  'Exploratory Data Analysis (EDA)',
-  'Feature Engineering & Selection',
-  'Supervised Classification',
-  'Supervised Regression',
-  'Basel Probability of Default (PD)',
-  'Retrieval-Augmented Generation (RAG)',
-  'Natural Language Processing (NLP)',
-  'Hidden Markov Models (HMM)',
-  'Log-Space Viterbi Algorithm',
-  'Deep Neural Networks',
-  'Unsupervised Clustering',
-  'Time Series Forecasting',
+  { text: 'Exploratory Data Analysis (EDA)', color: '#06b6d4' },
+  { text: 'Feature Engineering & Selection', color: '#06b6d4' },
+  { text: 'Supervised Classification', color: '#f59e0b' },
+  { text: 'Supervised Regression', color: '#f59e0b' },
+  { text: 'Basel Probability of Default (PD)', color: '#f59e0b' },
+  { text: 'Retrieval-Augmented Generation (RAG)', color: '#8b5cf6' },
+  { text: 'Natural Language Processing (NLP)', color: '#8b5cf6' },
+  { text: 'Hidden Markov Models (HMM)', color: '#10b981' },
+  { text: 'Log-Space Viterbi Algorithm', color: '#10b981' },
+  { text: 'Deep Neural Networks', color: '#6366f1' },
+  { text: 'Unsupervised Clustering', color: '#6366f1' },
+  { text: 'Time Series Forecasting', color: '#ec4899' },
 ];
+
+const getInitials = (name) =>
+  name
+    .replace(/[^a-zA-Z0-9 ]/g, '')
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
 
 export default function Skills() {
   const [ref, visible] = useReveal();
-
-  const handleIconError = (event) => {
-    const chip = event.currentTarget.closest('.skill-bento-chip');
-    if (chip) chip.classList.add('skill-bento-chip--fallback');
-  };
 
   return (
     <section id="skills" className="section">
@@ -172,15 +177,22 @@ export default function Skills() {
                     key={skill.name}
                     className="skill-bento-chip"
                     style={{ '--skill-color': skill.color }}
+                    title={skill.name}
                   >
                     <div className="skill-bento-chip__icon-wrap">
                       <img
                         src={skill.icon}
-                        alt={skill.name}
+                        alt=""
                         className="skill-bento-chip__icon"
                         loading="lazy"
-                        onError={handleIconError}
+                        decoding="async"
+                        onError={(event) => {
+                          event.currentTarget.hidden = true;
+                        }}
                       />
+                      <span className="skill-bento-chip__fallback" aria-hidden="true">
+                        {getInitials(skill.name)}
+                      </span>
                     </div>
                     <span className="skill-bento-chip__name">{skill.name}</span>
                   </div>
@@ -198,9 +210,9 @@ export default function Skills() {
           </div>
           <div className="skills-methods-grid">
             {methodsList.map((m) => (
-              <div key={m} className="method-pill">
+              <div key={m.text} className="method-pill" style={{ '--method-color': m.color }}>
                 <span className="method-pill__dot" />
-                <span className="method-pill__text">{m}</span>
+                <span className="method-pill__text">{m.text}</span>
               </div>
             ))}
           </div>

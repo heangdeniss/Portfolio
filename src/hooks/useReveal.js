@@ -20,6 +20,8 @@ export default function useReveal(options = {}) {
 
     observer.observe(el);
     return () => observer.disconnect();
+    // Options are intentionally read once on mount; passing a fresh object would re-create the observer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return [ref, visible];

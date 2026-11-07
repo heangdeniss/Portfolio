@@ -28,9 +28,10 @@ export default function App() {
 
   return (
     <>
-      <div className="progress-bar" style={{ width: `${scrollProgress}%` }} />
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+      <div className="progress-bar" style={{ width: `${scrollProgress}%` }} aria-hidden="true" />
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <About />
         <Skills />

@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
-import mptcLogo from '../images/mptc-logo.png';
-import scientificLogo from '../images/scientific-logo.png';
-import itcLogo from '../images/itc-logo.png';
-import aceLogo from '../images/ACE-logo.png';
-import udemyLogo from '../images/udemy-logo.png';
-import anbLogo from '../images/anb-logo.png';
+import mptcLogo from '../images/mptc-logo-opt.png';
+import scientificLogo from '../images/scientific-logo-opt.png';
+import itcLogo from '../images/itc-logo-opt.png';
+import aceLogo from '../images/ACE-logo-opt.png';
+import udemyLogo from '../images/udemy-logo-opt.png';
+import anbLogo from '../images/anb-logo-opt.png';
+import mptcCert from '../certificate/2-Mr. Heang Denis.pdf';
+import scientificCert from '../certificate/Heang Denis Scientific day Certificate.pdf';
+import anbCert from '../certificate/Certificate of Completion_Heang DENIS_ANBPTMD12024014.pdf';
+import udemyCert from '../certificate/Udemy Heang Denis Certificate.pdf';
 
 const timelineData = [
   {
@@ -20,19 +24,23 @@ const timelineData = [
     desc: 'Conducted end-to-end data cleaning and transformation on Google Forms survey data collected from 369 teachers and 3,700 students across Community Tech Centers (CTCs) using Python and RegEx. Developed an interactive bilingual web analytics platform (React, Recharts) and Power BI dashboards to track key performance indicators for leadership review. Additionally performed data entry to compile, audit, and organize all 2026 Bac II national examination results for students under Community Tech Centers (CTCs).',
     url: 'https://ctc-teacher-student-analyst-web.vercel.app/',
     linkText: 'Explore Live Analytics Platform',
+    certUrl: mptcCert,
+    certLabel: 'View MPTC Certificate',
   },
   {
     type: 'Experience',
-    title: 'Project Lead — AI Educational Chatbot',
+    title: 'Project Showcase — AI Educational Chatbot',
     institution: 'Scientific Day Phnom Penh',
     logo: scientificLogo,
     logoBg: '#ffffff',
-    year: '4–5 June 2026',
+    year: '5–6 June 2025',
     metrics: '4-Person Team Led • RAG Retrieval Architecture',
     tech: 'Python, Node.js, Express.js, Flask, PostgreSQL, LangChain, ChromaDB',
     desc: 'Served as Team Lead for a 4-member engineering team. Architected an AI-driven educational platform integrating Node.js, Express.js, Flask, and PostgreSQL. Engineered a semantic Retrieval-Augmented Generation (RAG) pipeline utilizing LangChain and ChromaDB for Khmer curriculum querying, backed by optimized relational schemas with triggers and stored procedures.',
     url: 'https://github.com/heangdeniss/AiEducationChatbot',
     linkText: 'View Project Repository',
+    certUrl: scientificCert,
+    certLabel: 'View Certificate',
   },
   {
     type: 'Education',
@@ -69,6 +77,8 @@ const timelineData = [
     tech: 'React, Node.js, REST APIs, PostgreSQL, Modern Web Systems',
     desc: 'Comprehensive training in full-stack software development, RESTful API architecture, modern frontend frameworks, and relational database management.',
     url: null,
+    certUrl: udemyCert,
+    certLabel: 'View Udemy Certificate',
   },
   {
     type: 'Education',
@@ -81,6 +91,8 @@ const timelineData = [
     tech: 'Python, Matplotlib, Seaborn, Feature Engineering',
     desc: 'Executed end-to-end data cleaning, preprocessing, exploratory data analysis (EDA), and data visualization using Python under competitive hackathon timelines.',
     url: null,
+    certUrl: anbCert,
+    certLabel: 'View Certificate of Completion',
   },
 ];
 
@@ -105,24 +117,40 @@ export default function Experience() {
         </div>
 
         {/* Filter Toggle Controls */}
-        <div className="timeline-filter">
-          {['All', 'Experience', 'Education'].map((type) => (
-            <button
-              key={type}
-              onClick={() => setFilter(type)}
-              className={`timeline-filter-btn${filter === type ? ' timeline-filter-btn--active' : ''}`}
-            >
-              {type === 'All' ? 'All Milestones' : type}
-            </button>
-          ))}
+        <div className="timeline-filter" role="group" aria-label="Filter milestones by type">
+          {['All', 'Experience', 'Education'].map((type) => {
+            const count = type === 'All'
+              ? timelineData.length
+              : timelineData.filter((d) => d.type === type).length;
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setFilter(type)}
+                className={`timeline-filter-btn${filter === type ? ' timeline-filter-btn--active' : ''}`}
+                aria-pressed={filter === type}
+              >
+                {type === 'All' ? 'All Milestones' : type}
+                <span className="timeline-filter-btn__count">{count}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Illuminated Vertical Timeline */}
         <div className={`timeline-track-wrap${visible ? ' visible' : ''}`}>
           <div className="timeline-spine" />
+          <div aria-live="polite" aria-atomic="true" className="sr-only">
+            Showing {filteredItems.length} {filter === 'All' ? 'total' : filter.toLowerCase()} milestone{filteredItems.length !== 1 ? 's' : ''}
+          </div>
 
           <div className="timeline-items">
-            {filteredItems.map((item, index) => (
+            {filteredItems.length === 0 ? (
+              <div className="timeline-empty">
+                <p>No milestones found for this filter.</p>
+              </div>
+            ) : (
+              filteredItems.map((item, index) => (
               <div
                 key={item.title + index}
                 className="timeline-item"
@@ -181,6 +209,7 @@ export default function Experience() {
 
                   <p className="timeline-card__desc">{item.desc}</p>
 
+                  <div className="timeline-card__btn-row">
                   {item.url && (
                     <a
                       href={item.url}
@@ -206,9 +235,32 @@ export default function Experience() {
                       </svg>
                     </a>
                   )}
+
+                  {/* Certificate Button */}
+                  {item.certUrl && (
+                    <a
+                      href={item.certUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="timeline-card__btn timeline-card__btn--cert"
+                      title={item.certLabel}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <path d="M9 15l2 2 4-4" />
+                      </svg>
+                      <span>{item.certLabel}</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="timeline-btn__arrow" aria-hidden="true">
+                        <path d="M7 17L17 7M7 7h10v10" />
+                      </svg>
+                    </a>
+                  )}
+                  </div>
                 </div>
               </div>
-            ))}
+            ))
+            )}
           </div>
         </div>
 

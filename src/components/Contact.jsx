@@ -15,12 +15,26 @@ export default function Contact() {
   const [toast, setToast] = useState(null);
 
   const copyToClipboard = (text, key) => {
-    navigator.clipboard.writeText(text).then(() => {
+    const markCopied = () => {
       setCopiedKey(key);
-      setToast({ message: 'Copied to clipboard!', type: 'success' });
+      setToast({ message: 'Copied to clipboard', type: 'success' });
       setTimeout(() => setCopiedKey(null), 2400);
       setTimeout(() => setToast(null), 3000);
-    });
+    };
+
+    if (!navigator.clipboard) {
+      setToast({ message: 'Copy unavailable — select the text manually.', type: 'error' });
+      setTimeout(() => setToast(null), 3500);
+      return;
+    }
+
+    navigator.clipboard
+      .writeText(text)
+      .then(markCopied)
+      .catch(() => {
+        setToast({ message: 'Copy failed — select the text manually.', type: 'error' });
+        setTimeout(() => setToast(null), 3500);
+      });
   };
 
   const validateForm = () => {
@@ -72,7 +86,7 @@ export default function Contact() {
       );
       window.location.href = `mailto:heangdenis011468@gmail.com?subject=${subject}&body=${body}`;
       setFormStatus('sent');
-      setToast({ message: 'Message dispatched to Denis!', type: 'success' });
+      setToast({ message: 'Email app opened — review and send.', type: 'success' });
       setName('');
       setSenderContact('');
       setMessage('');
@@ -98,7 +112,7 @@ export default function Contact() {
       );
       window.open(`https://t.me/heang_deniss?text=${text}`, '_blank', 'noopener,noreferrer');
       setFormStatus('sent');
-      setToast({ message: 'Message dispatched to Denis!', type: 'success' });
+      setToast({ message: 'Telegram opened — review and send.', type: 'success' });
       setName('');
       setSenderContact('');
       setMessage('');
@@ -123,7 +137,13 @@ export default function Contact() {
 
           {/* Left Column: Instant One-Click Copy Hub */}
           <div className="contact-cards-column">
-            <h3 className="contact-column-title">Direct Channels</h3>
+            <div className="contact-column-header">
+              <h3 className="contact-column-title">Direct Channels</h3>
+              <div className="contact-response-badge">
+                <span className="contact-response-dot" />
+                <span>Replies within 24h</span>
+              </div>
+            </div>
 
             {/* Email Card */}
             <div className="contact-interactive-card">
@@ -269,13 +289,18 @@ export default function Contact() {
             <form onSubmit={handleSendEmail} className="contact-form" noValidate>
               <div className="contact-form__group">
                 <div className="contact-form__label-row">
-                  <label className="contact-form__label">Your Name</label>
+                  <label className="contact-form__label" htmlFor="contact-name">Your Name</label>
                   {validationErrors.name && touched.name && (
-                    <span className="contact-form__field-error">{validationErrors.name}</span>
+                    <span className="contact-form__field-error" id="contact-name-error" role="alert">
+                      {validationErrors.name}
+                    </span>
                   )}
                 </div>
                 <input
+                  id="contact-name"
+                  name="name"
                   type="text"
+                  autoComplete="name"
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
@@ -284,19 +309,28 @@ export default function Contact() {
                   onBlur={() => handleBlur('name')}
                   placeholder="e.g. Sokha Meng"
                   className={`contact-form__input${validationErrors.name && touched.name ? ' contact-form__input--error' : ''}`}
+                  aria-invalid={Boolean(validationErrors.name && touched.name)}
+                  aria-describedby={validationErrors.name && touched.name ? 'contact-name-error' : undefined}
+                  aria-required="true"
                   required
                 />
               </div>
 
               <div className="contact-form__group">
                 <div className="contact-form__label-row">
-                  <label className="contact-form__label">Your Email or Handle</label>
+                  <label className="contact-form__label" htmlFor="contact-handle">Your Email or Handle</label>
                   {validationErrors.senderContact && touched.senderContact && (
-                    <span className="contact-form__field-error">{validationErrors.senderContact}</span>
+                    <span className="contact-form__field-error" id="contact-handle-error" role="alert">
+                      {validationErrors.senderContact}
+                    </span>
                   )}
                 </div>
                 <input
+                  id="contact-handle"
+                  name="contact"
                   type="text"
+                  autoComplete="email"
+                  inputMode="email"
                   value={senderContact}
                   onChange={(e) => {
                     setSenderContact(e.target.value);
@@ -305,41 +339,62 @@ export default function Contact() {
                   onBlur={() => handleBlur('senderContact')}
                   placeholder="name@company.com or @telegram_handle"
                   className={`contact-form__input${validationErrors.senderContact && touched.senderContact ? ' contact-form__input--error' : ''}`}
+                  aria-invalid={Boolean(validationErrors.senderContact && touched.senderContact)}
+                  aria-describedby={validationErrors.senderContact && touched.senderContact ? 'contact-handle-error' : undefined}
+                  aria-required="true"
                   required
                 />
               </div>
 
               <div className="contact-form__group">
                 <div className="contact-form__label-row">
-                  <label className="contact-form__label">Your Message</label>
+                  <label className="contact-form__label" htmlFor="contact-message">Your Message</label>
                   {validationErrors.message && touched.message && (
-                    <span className="contact-form__field-error">{validationErrors.message}</span>
+                    <span className="contact-form__field-error" id="contact-message-error" role="alert">
+                      {validationErrors.message}
+                    </span>
                   )}
                 </div>
                 <textarea
+                  id="contact-message"
+                  name="message"
                   value={message}
                   onChange={(e) => {
                     setMessage(e.target.value);
+                    // Auto-resize
+                    e.target.style.height = 'auto';
+                    e.target.style.height = `${Math.min(e.target.scrollHeight, 220)}px`;
                     if (touched.message) setValidationErrors((prev) => ({ ...prev, message: undefined }));
                   }}
                   onBlur={() => handleBlur('message')}
                   placeholder="Tell me about your project, team, or inquiry..."
                   className={`contact-form__textarea${validationErrors.message && touched.message ? ' contact-form__textarea--error' : ''}`}
+                  aria-invalid={Boolean(validationErrors.message && touched.message)}
+                  aria-describedby={validationErrors.message && touched.message ? 'contact-message-error' : undefined}
+                  aria-required="true"
                   rows={4}
                   required
+                  style={{ resize: 'none', overflow: 'hidden' }}
                 />
-                <div className="contact-form__char-count">
-                  <span>{message.trim().length} / 10 min chars</span>
+                <div className="contact-form__char-count" aria-hidden="true">
+                  <span>
+                    {message.trim().length} characters
+                    {message.trim().length > 0 && message.trim().length < 10
+                      ? ` · ${10 - message.trim().length} more required`
+                      : message.trim().length >= 10
+                      ? ' · minimum met ✓'
+                      : ''}
+                  </span>
                 </div>
               </div>
 
               {formStatus === 'sent' && (
-                <div className="contact-form__feedback contact-form__feedback--success">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <div className="contact-form__feedback contact-form__feedback--success" role="status">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
-                  <span>Dispatching communication channel...</span>
+                  <span>Draft opened — review and press send in the app.</span>
                 </div>
               )}
 
@@ -384,11 +439,19 @@ export default function Contact() {
       </div>
       {/* Floating Subtle Toast Notification */}
       {toast && (
-        <div className="contact-toast" role="status" aria-live="polite">
+        <div className={`contact-toast contact-toast--${toast.type}`} role="status" aria-live="polite">
           <span className="contact-toast__icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
+            {toast.type === 'error' ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+                <line x1="12" y1="8" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+                <circle cx="12" cy="12" r="10" strokeWidth="2" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
           </span>
           <span className="contact-toast__text">{toast.message}</span>
         </div>

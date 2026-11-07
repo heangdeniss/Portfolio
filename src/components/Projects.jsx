@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import useReveal from '../hooks/useReveal';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 
-import creditRiskPred from '../images/creditrisk_pred.png';
-import creditRiskRag from '../images/creditrisk_rag.png';
+import creditRiskPred from '../images/creditrisk_pred.jpg';
+import creditRiskRag from '../images/creditrisk_rag.jpg';
 import llcAuC from '../images/LLC_AUC.png';
 import llcFeature from '../images/LLC_importance_feature.png';
 import llcBi1 from '../images/LLC_bi_1_(1).png';
 import llcBi2 from '../images/LLC_bi_1_(2).png';
 import llcBi3 from '../images/LLC_bi_1_(3).png';
-import hmmMethodology from '../images/hmm_methodology.png';
-import hmmResults from '../images/hmm_results.png';
+import hmmMethodology from '../images/hmm_methodology.jpg';
+import hmmResults from '../images/hmm_results.jpg';
 
 const projects = [
   {
@@ -85,47 +86,95 @@ const projects = [
   },
 ];
 
-const ImageSlider = ({ images, onImageClick }) => {
+const ImageSlider = ({ images, title, onImageClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (!images || images.length === 0) return;
+    if (!images || images.length < 2 || paused || prefersReducedMotion) return undefined;
+
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 3200);
+    }, 5000);
+
     return () => clearInterval(interval);
-  }, [images]);
+  }, [images, paused, prefersReducedMotion]);
 
   if (!images || images.length === 0) return null;
 
+  const step = (delta) =>
+    setCurrentIndex((prevIndex) => (prevIndex + delta + images.length) % images.length);
+
   return (
-    <div className="project-card__image-slider">
+    <div
+      className="project-card__image-slider"
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={`${title} image gallery`}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
       {images.map((img, index) => (
         <img
           key={index}
           src={img}
-          alt={`Project Slide ${index + 1}`}
+          alt={`${title} — visual ${index + 1} of ${images.length}`}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onImageClick(img);
+            onImageClick({ src: img, alt: `${title} — visual ${index + 1}` });
           }}
           className={`project-card__slider-img${index === currentIndex ? ' active' : ''}`}
+          loading="lazy"
+          decoding="async"
+          aria-hidden={index !== currentIndex}
         />
       ))}
+
       {images.length > 1 && (
-        <div className="project-card__slider-dots">
-          {images.map((_, i) => (
-            <span
-              key={i}
-              className={`project-card__slider-dot${i === currentIndex ? ' active' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrentIndex(i);
-              }}
-            />
-          ))}
-        </div>
+        <>
+          <button
+            type="button"
+            className="project-card__slider-nav project-card__slider-nav--prev"
+            onClick={() => step(-1)}
+            aria-label="Previous image"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            className="project-card__slider-nav project-card__slider-nav--next"
+            onClick={() => step(1)}
+            aria-label="Next image"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+
+          <span className="project-card__slider-count" aria-hidden="true">
+            {currentIndex + 1} / {images.length}
+          </span>
+
+          <div className="project-card__slider-dots">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`project-card__slider-dot${i === currentIndex ? ' active' : ''}`}
+                onClick={() => setCurrentIndex(i)}
+                aria-label={`Show image ${i + 1} of ${images.length}`}
+                aria-current={i === currentIndex ? 'true' : undefined}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
@@ -135,6 +184,28 @@ export default function Projects() {
   const [ref, visible] = useReveal();
   const [fullScreenImage, setFullScreenImage] = useState(null);
   const [expandedArchId, setExpandedArchId] = useState(null);
+  const closeButtonRef = useRef(null);
+
+  // Lock background scroll, support Escape, and move focus into the lightbox.
+  useEffect(() => {
+    if (!fullScreenImage) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setFullScreenImage(null);
+    };
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKeyDown);
+    closeButtonRef.current?.focus();
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [fullScreenImage]);
+
+  const closeLightbox = () => setFullScreenImage(null);
 
   return (
     <section id="projects" className="section">
@@ -160,7 +231,7 @@ export default function Projects() {
               </div>
 
               {/* Interactive Image Showcase */}
-              <ImageSlider images={p.images} onImageClick={setFullScreenImage} />
+              <ImageSlider images={p.images} title={p.title} onImageClick={setFullScreenImage} />
 
               {/* Content Section */}
               <div className="project-card__content">
@@ -181,6 +252,7 @@ export default function Projects() {
                     onClick={() => setExpandedArchId(expandedArchId === p.id ? null : p.id)}
                     className={`project-card__arch-toggle${expandedArchId === p.id ? ' active' : ''}`}
                     aria-expanded={expandedArchId === p.id}
+                    aria-controls={`arch-drawer-${p.id}`}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polygon points="12 2 2 7 12 12 22 7 12 2" />
@@ -210,7 +282,7 @@ export default function Projects() {
                   </button>
 
                   {expandedArchId === p.id && (
-                    <div className="project-card__arch-drawer">
+                    <div className="project-card__arch-drawer" id={`arch-drawer-${p.id}`}>
                       <div className="project-card__arch-flow">
                         <span className="project-card__arch-label">System Data Pipeline</span>
                         <div className="project-card__flow-steps">
@@ -238,7 +310,7 @@ export default function Projects() {
 
                 {/* Dual Call-to-Action Buttons */}
                 <div className="project-card__actions">
-                  {p.demoUrl && (
+                  {p.demoUrl && p.demoUrl !== p.githubUrl && (
                     <a
                       href={p.demoUrl}
                       target="_blank"
@@ -275,24 +347,23 @@ export default function Projects() {
       {fullScreenImage && (
         <div
           className="project-modal"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setFullScreenImage(null);
-          }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Project image preview"
+          onClick={closeLightbox}
         >
           <img
-            src={fullScreenImage}
-            alt="Full Screen Preview"
+            src={fullScreenImage.src}
+            alt={fullScreenImage.alt}
             className="project-modal__img"
+            onClick={(e) => e.stopPropagation()}
           />
           <button
+            ref={closeButtonRef}
+            type="button"
             className="project-modal__close"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setFullScreenImage(null);
-            }}
+            onClick={closeLightbox}
+            aria-label="Close image preview"
           >
             &times;
           </button>

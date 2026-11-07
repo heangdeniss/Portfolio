@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Heang Denis monogram">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbbf24" />
+      <stop offset="1" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0b0d19" />
+  <rect x="1" y="1" width="62" height="62" rx="13" fill="none" stroke="#f59e0b" stroke-opacity="0.28" />
+  <path
+    fill="url(#gold)"
+    fill-rule="evenodd"
+    d="M16 12H30A20 20 0 0 1 30 52H16V12Zm8 8v24h6A12 12 0 0 0 30 20h-6Z"
+  />
+  <circle cx="49" cy="49" r="3.5" fill="#fbbf24" />
+</svg>
