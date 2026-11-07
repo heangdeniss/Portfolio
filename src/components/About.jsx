@@ -1,56 +1,12 @@
 import { useEffect, useState } from 'react';
 import useReveal from '../hooks/useReveal';
 
-function useCountUp(target, duration = 1200, start = false) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!start) return;
-    let startTime = null;
-    const step = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(ease * target));
-      if (progress < 1) requestAnimationFrame(step);
-      else setCount(target);
-    };
-    requestAnimationFrame(step);
-  }, [target, duration, start]);
-  return count;
-}
-
 export default function About() {
   const [ref, visible] = useReveal();
-  const projectCount = useCountUp(5, 1000, visible);
-  const studentCount = useCountUp(3700, 1400, visible);
-  const accuracyCount = useCountUp(96, 900, visible);
 
   return (
     <section id="about" className="section">
       <div className="container" ref={ref}>
-
-        {/* Animated Stat Strip */}
-        <div className={`about__stats-strip stagger${visible ? ' visible' : ''}`}>
-          <div className="about__stat">
-            <span className="about__stat-value">{projectCount}+</span>
-            <span className="about__stat-label">ML Projects</span>
-          </div>
-          <div className="about__stat-divider" />
-          <div className="about__stat">
-            <span className="about__stat-value">{studentCount.toLocaleString()}+</span>
-            <span className="about__stat-label">Data Points Surveyed</span>
-          </div>
-          <div className="about__stat-divider" />
-          <div className="about__stat">
-            <span className="about__stat-value">{accuracyCount}%</span>
-            <span className="about__stat-label">HMM POS Accuracy</span>
-          </div>
-          <div className="about__stat-divider" />
-          <div className="about__stat">
-            <span className="about__stat-value">3</span>
-            <span className="about__stat-label">Languages Spoken</span>
-          </div>
-        </div>
 
         <div className={`about__layout stagger${visible ? ' visible' : ''}`}>
 
