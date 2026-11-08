@@ -141,7 +141,7 @@ export default function Skills() {
 
   return (
     <section id="skills" className="section">
-      <div className="container" ref={ref}>
+      <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Skills & Tech Stack</p>
           <h2 className="section-title">Technical Expertise</h2>

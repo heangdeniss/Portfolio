@@ -124,7 +124,7 @@ export default function Contact() {
 
   return (
     <section id="contact" className="section">
-      <div className="container" ref={ref}>
+      <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Get in Touch</p>
           <h2 className="section-title">Let's Connect & Collaborate</h2>

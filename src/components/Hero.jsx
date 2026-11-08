@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
+import usePointerTilt from '../hooks/usePointerTilt';
+import CountUp from './CountUp';
 import denisPhoto from '../images/HEANG Denis good image.jpg';
 
 const ROLES = [
@@ -14,6 +16,40 @@ export default function Hero() {
   const [displayedText, setDisplayedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const sectionRef = useRef(null);
+  const tiltRef = usePointerTilt(4.5);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
+    let rafId = 0;
+
+    const update = () => {
+      rafId = 0;
+      if (sectionRef.current) {
+        const scroll = Math.min(window.scrollY, 900);
+        const style = sectionRef.current.style;
+        style.setProperty('--hero-parallax-slow', `${(scroll * 0.05).toFixed(1)}px`);
+        style.setProperty('--hero-parallax-glow-x', `${(scroll * 0.12).toFixed(1)}px`);
+        style.setProperty('--hero-parallax-glow-y', `${(scroll * 0.2).toFixed(1)}px`);
+        style.setProperty('--hero-parallax-glow-x-reverse', `${(scroll * -0.09).toFixed(1)}px`);
+        style.setProperty('--hero-parallax-glow-y-reverse', `${(scroll * 0.1).toFixed(1)}px`);
+      }
+    };
+
+    const onScroll = () => {
+      if (!rafId) rafId = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [prefersReducedMotion]);
+
 
   const currentRole = ROLES[roleIndex];
   const rolePrefix = (prefersReducedMotion ? ROLES[0] : currentRole).startsWith('ML')
@@ -51,7 +87,7 @@ export default function Hero() {
   }, [displayedText, isDeleting, roleIndex, currentRole, prefersReducedMotion]);
 
   return (
-    <section id="hero" className="hero">
+    <section id="hero" className="hero" ref={sectionRef}>
       <div className="hero__glow-top" />
       <div className="hero__glow-right" />
 
@@ -83,7 +119,26 @@ export default function Hero() {
             {/* Prominent Name */}
             <h1 className="hero__name">
               <span className="hero__name-first">Heang</span>{' '}
-              <span className="hero__name-last">Denis</span>
+              <span className="hero__name-last">
+                Denis
+                <svg className="hero__name-underline" viewBox="0 0 240 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M4 11.5C58 4.5 164 2.5 236 8.5"
+                    stroke="url(#heroNameUnderline)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    pathLength="1"
+                  />
+                  <defs>
+                    <linearGradient id="heroNameUnderline" x1="0" y1="0" x2="240" y2="0" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#f59e0b" stopOpacity="0" />
+                      <stop offset="0.2" stopColor="#fbbf24" />
+                      <stop offset="0.8" stopColor="#f59e0b" />
+                      <stop offset="1" stopColor="#f59e0b" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </span>
             </h1>
 
             {/* Editorial Lead Tagline */}
@@ -101,6 +156,10 @@ export default function Hero() {
                 <span className="hero__spec-dot" />
                 RAG Architectures
               </span>
+              <span className="hero__spec-badge hero__spec-badge--emerald">
+                <span className="hero__spec-dot" />
+                FastAPI & React
+              </span>
               <span className="hero__spec-badge hero__spec-badge--purple">
                 <span className="hero__spec-dot" />
                 Probabilistic Models (HMM)
@@ -112,10 +171,6 @@ export default function Hero() {
               <span className="hero__spec-badge hero__spec-badge--teal">
                 <span className="hero__spec-dot" />
                 Data Cleaning
-              </span>
-              <span className="hero__spec-badge hero__spec-badge--emerald">
-                <span className="hero__spec-dot" />
-                FastAPI & React
               </span>
             </div>
 
@@ -152,34 +207,75 @@ export default function Hero() {
                 <span>Download CV (PDF)</span>
               </a>
             </div>
+
+            {/* Animated proof-of-work signals */}
+            <div className="hero__signals" aria-label="Selected results">
+              <div className="hero__signal">
+                <span className="hero__signal-value">
+                  <CountUp end={96.05} decimals={2} suffix="%" />
+                </span>
+                <span className="hero__signal-label">HMM POS accuracy</span>
+              </div>
+              <span className="hero__signal-divider" aria-hidden="true" />
+              <div className="hero__signal">
+                <span className="hero__signal-value">
+                  <CountUp end={232} suffix="k+" />
+                </span>
+                <span className="hero__signal-label">Tokens processed</span>
+              </div>
+              <span className="hero__signal-divider" aria-hidden="true" />
+              <div className="hero__signal">
+                <span className="hero__signal-value">
+                  <CountUp end={30} suffix="k+" />
+                </span>
+                <span className="hero__signal-label">Records modeled</span>
+              </div>
+            </div>
           </div>
 
           {/* Right Column: Clean Glassmorphic Portrait Container with Top-Right Status */}
           <div className="hero__visual">
-            <div className="hero__glass-card">
-              <div className="hero__glass-card-glow" />
-              
-              {/* Single Top-Right Live Status Pill */}
-              <div className="hero__portrait-status">
-                <span className="hero__status-indicator">
-                  <span className="hero__status-ping" />
-                  <span className="hero__status-core" />
-                </span>
-                <span className="hero__portrait-status-text">Phnom Penh, Cambodia</span>
-              </div>
+            <div className="hero__orbits" aria-hidden="true">
+              <span className="hero__orbit hero__orbit--outer" />
+              <span className="hero__orbit hero__orbit--inner" />
+            </div>
 
-              <div className="hero__image-container">
-                <img
-                  src={denisPhoto}
-                  alt="Portrait of Heang Denis, Data Science and Machine Learning Engineer"
-                  className="hero__portrait-img"
-                  width="900"
-                  height="1200"
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                />
-                <div className="hero__image-overlay" />
+            <span className="hero__float-chip hero__float-chip--one" style={{ '--chip-color': '#3776AB' }} aria-hidden="true">
+              Python
+            </span>
+            <span className="hero__float-chip hero__float-chip--two" style={{ '--chip-color': '#8b5cf6' }} aria-hidden="true">
+              RAG
+            </span>
+            <span className="hero__float-chip hero__float-chip--three" style={{ '--chip-color': '#10b981' }} aria-hidden="true">
+              FastAPI
+            </span>
+
+            <div className="hero__card-tilt" ref={tiltRef}>
+              <div className="hero__glass-card">
+                <div className="hero__glass-card-glow" />
+                
+                {/* Single Top-Right Live Status Pill */}
+                <div className="hero__portrait-status">
+                  <span className="hero__status-indicator">
+                    <span className="hero__status-ping" />
+                    <span className="hero__status-core" />
+                  </span>
+                  <span className="hero__portrait-status-text">Phnom Penh, Cambodia</span>
+                </div>
+
+                <div className="hero__image-container">
+                  <img
+                    src={denisPhoto}
+                    alt="Portrait of Heang Denis, Data Science and Machine Learning Engineer"
+                    className="hero__portrait-img"
+                    width="900"
+                    height="1200"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                  />
+                  <div className="hero__image-overlay" />
+                </div>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ export default function Footer() {
 
   return (
     <footer className="footer">
+      <span className="footer__watermark" aria-hidden="true">Denis</span>
       <div className="container">
         <div className="footer__layout">
           {/* Brand & Mission */}

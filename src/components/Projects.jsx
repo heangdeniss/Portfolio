@@ -116,6 +116,11 @@ const ImageSlider = ({ images, title, onImageClick }) => {
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
+      onPointerMove={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        event.currentTarget.style.setProperty('--glare-x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+        event.currentTarget.style.setProperty('--glare-y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+      }}
     >
       {images.map((img, index) => (
         <img
@@ -209,7 +214,7 @@ export default function Projects() {
 
   return (
     <section id="projects" className="section">
-      <div className="container" ref={ref}>
+      <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Featured Projects</p>
           <h2 className="section-title">Engineering & Research Highlights</h2>

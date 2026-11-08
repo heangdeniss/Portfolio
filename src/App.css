@@ -2571,6 +2571,10 @@
   gap: 40px;
 }
 
+.contact-layout > * {
+  min-width: 0;
+}
+
 .contact-column-title {
   font-family: var(--font-heading);
   font-size: 1.25rem;
@@ -2672,6 +2676,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .contact-interactive-card__val {
+    font-size: 0.9rem;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+  }
 }
 
 .contact-interactive-card__val:hover {

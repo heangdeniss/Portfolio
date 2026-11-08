@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useReveal from '../hooks/useReveal';
 import mptcLogo from '../images/mptc-logo-opt.png';
 import scientificLogo from '../images/scientific-logo-opt.png';
@@ -99,6 +99,42 @@ const timelineData = [
 export default function Experience() {
   const [ref, visible] = useReveal();
   const [filter, setFilter] = useState('All');
+  const trackRef = useRef(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return undefined;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let rafId = 0;
+
+    const update = () => {
+      rafId = 0;
+      if (prefersReduced) {
+        track.style.setProperty('--timeline-progress', '100%');
+        return;
+      }
+
+      const rect = track.getBoundingClientRect();
+      const anchor = window.innerHeight * 0.55;
+      const progress = Math.min(Math.max((anchor - rect.top) / Math.max(rect.height, 1), 0), 1);
+      track.style.setProperty('--timeline-progress', `${(progress * 100).toFixed(1)}%`);
+    };
+
+    const onScroll = () => {
+      if (!rafId) rafId = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [filter, visible]);
 
   const filteredItems = timelineData.filter((item) => {
     if (filter === 'All') return true;
@@ -107,7 +143,7 @@ export default function Experience() {
 
   return (
     <section id="background" className="section">
-      <div className="container" ref={ref}>
+      <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Trajectory</p>
           <h2 className="section-title">Experience & Education</h2>
@@ -138,13 +174,13 @@ export default function Experience() {
         </div>
 
         {/* Illuminated Vertical Timeline */}
-        <div className={`timeline-track-wrap${visible ? ' visible' : ''}`}>
+        <div className={`timeline-track-wrap${visible ? ' visible' : ''}`} ref={trackRef}>
           <div className="timeline-spine" />
           <div aria-live="polite" aria-atomic="true" className="sr-only">
             Showing {filteredItems.length} {filter === 'All' ? 'total' : filter.toLowerCase()} milestone{filteredItems.length !== 1 ? 's' : ''}
           </div>
 
-          <div className="timeline-items">
+          <div className="timeline-items" key={filter}>
             {filteredItems.length === 0 ? (
               <div className="timeline-empty">
                 <p>No milestones found for this filter.</p>

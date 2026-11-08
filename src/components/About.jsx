@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import useReveal from '../hooks/useReveal';
 
 export default function About() {
@@ -6,7 +5,7 @@ export default function About() {
 
   return (
     <section id="about" className="section">
-      <div className="container" ref={ref}>
+      <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
 
         <div className={`about__layout stagger${visible ? ' visible' : ''}`}>
 
