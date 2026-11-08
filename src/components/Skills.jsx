@@ -140,7 +140,7 @@ export default function Skills() {
   const [ref, visible] = useReveal();
 
   return (
-    <section id="skills" className="section">
+    <section id="skills" className="section" data-ghost="STACK">
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Skills & Tech Stack</p>

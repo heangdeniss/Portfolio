@@ -10,10 +10,12 @@ const PARTICLE_COLORS = [
 
 export default function AmbientBackground() {
   const canvasRef = useRef(null);
+  const ambientRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    const ambient = ambientRef.current;
     if (!canvas || prefersReducedMotion) return undefined;
 
     const ctx = canvas.getContext('2d');
@@ -136,11 +138,20 @@ export default function AmbientBackground() {
     const onPointerMove = (event) => {
       mouse.x = event.clientX;
       mouse.y = event.clientY;
+
+      if (ambient) {
+        ambient.style.setProperty('--pointer-x', ((event.clientX / width) - 0.5).toFixed(3));
+        ambient.style.setProperty('--pointer-y', ((event.clientY / height) - 0.5).toFixed(3));
+      }
     };
 
     const onPointerLeave = () => {
       mouse.x = -9999;
       mouse.y = -9999;
+      if (ambient) {
+        ambient.style.setProperty('--pointer-x', '0');
+        ambient.style.setProperty('--pointer-y', '0');
+      }
     };
 
     const onVisibilityChange = () => {
@@ -179,11 +190,12 @@ export default function AmbientBackground() {
   }, [prefersReducedMotion]);
 
   return (
-    <div className="ambient" aria-hidden="true">
+    <div className="ambient" aria-hidden="true" ref={ambientRef}>
       <span className="ambient__orb ambient__orb--one" />
       <span className="ambient__orb ambient__orb--two" />
       <span className="ambient__orb ambient__orb--three" />
       <canvas ref={canvasRef} className="ambient__canvas" />
+      <span className="ambient__vignette" />
     </div>
   );
 }

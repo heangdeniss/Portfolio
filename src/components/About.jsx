@@ -4,7 +4,7 @@ export default function About() {
   const [ref, visible] = useReveal();
 
   return (
-    <section id="about" className="section">
+    <section id="about" className="section" data-ghost="ABOUT">
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
 
         <div className={`about__layout stagger${visible ? ' visible' : ''}`}>
@@ -14,8 +14,8 @@ export default function About() {
             <div>
               <p className="section-label">About Me</p>
               <h2 className="about__headline">
-                Driven by Mathematics,<br />
-                Crafted in Code.
+                <span className="about__headline-line"><span>Driven by Mathematics,</span></span>
+                <span className="about__headline-line"><span>Crafted in Code.</span></span>
               </h2>
 
               <p className="about__text">
@@ -50,7 +50,7 @@ export default function About() {
               </div>
 
               <div className="about__cta-row">
-                <a href="mailto:heangdenis011468@gmail.com" className="btn btn-primary">
+                <a href="mailto:heangdenis011468@gmail.com" className="btn btn-primary" data-magnetic>
                   <span>Start a Conversation</span>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M7 17L17 7M7 7h10v10" />

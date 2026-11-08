@@ -112,6 +112,9 @@ export default function Experience() {
       rafId = 0;
       if (prefersReduced) {
         track.style.setProperty('--timeline-progress', '100%');
+        track.querySelectorAll('.timeline-item.is-current').forEach((item) => {
+          item.classList.remove('is-current');
+        });
         return;
       }
 
@@ -119,6 +122,23 @@ export default function Experience() {
       const anchor = window.innerHeight * 0.55;
       const progress = Math.min(Math.max((anchor - rect.top) / Math.max(rect.height, 1), 0), 1);
       track.style.setProperty('--timeline-progress', `${(progress * 100).toFixed(1)}%`);
+
+      const items = track.querySelectorAll('.timeline-item');
+      let current = null;
+      let closestDistance = Infinity;
+
+      items.forEach((item) => {
+        const itemRect = item.getBoundingClientRect();
+        const distance = Math.abs(itemRect.top + itemRect.height / 2 - anchor);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          current = item;
+        }
+      });
+
+      items.forEach((item) => {
+        item.classList.toggle('is-current', item === current);
+      });
     };
 
     const onScroll = () => {
@@ -142,7 +162,7 @@ export default function Experience() {
   });
 
   return (
-    <section id="background" className="section">
+    <section id="background" className="section" data-ghost="JOURNEY">
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Trajectory</p>

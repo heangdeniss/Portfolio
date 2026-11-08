@@ -123,7 +123,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="section">
+    <section id="contact" className="section" data-ghost="HELLO">
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Get in Touch</p>
@@ -403,6 +403,7 @@ export default function Contact() {
                   type="submit"
                   disabled={formStatus === 'sending'}
                   className="btn btn-primary contact-form__btn"
+                  data-magnetic
                 >
                   {formStatus === 'sending' ? (
                     <>

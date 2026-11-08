@@ -109,6 +109,7 @@ const ImageSlider = ({ images, title, onImageClick }) => {
   return (
     <div
       className="project-card__image-slider"
+      data-cursor="View"
       role="group"
       aria-roledescription="carousel"
       aria-label={`${title} image gallery`}
@@ -213,7 +214,7 @@ export default function Projects() {
   const closeLightbox = () => setFullScreenImage(null);
 
   return (
-    <section id="projects" className="section">
+    <section id="projects" className="section" data-ghost="WORK">
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Featured Projects</p>
