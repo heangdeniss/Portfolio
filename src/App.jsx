@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -11,26 +11,39 @@ import AmbientBackground from './components/AmbientBackground';
 import CursorAura from './components/CursorAura';
 import IntroCurtain from './components/IntroCurtain';
 import Marquee from './components/Marquee';
+import TypeRibbon from './components/TypeRibbon';
 import SceneRail from './components/SceneRail';
 import useSpotlight from './hooks/useSpotlight';
 import useMagnetic from './hooks/useMagnetic';
+import useKineticScroll from './hooks/useKineticScroll';
 import usePrefersReducedMotion from './hooks/usePrefersReducedMotion';
 import './App.css';
 import './animations.css';
 import './act-two.css';
+import './act-three.css';
+import './act-four.css';
 
 const RING_RADIUS = 21;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+const RIBBON_ONE = {
+  top: ['ANALYZE', 'MODEL', 'BUILD', 'SHIP'],
+  bottom: ['DATA SCIENCE', 'MACHINE LEARNING', 'RAG SYSTEMS', 'FULL-STACK'],
+};
+
+const RIBBON_TWO = {
+  top: ['RESEARCH', 'ENGINEER', 'DEPLOY', 'ITERATE'],
+  bottom: ['PIPELINES', 'DASHBOARDS', 'EXPERIMENTS', 'IMPACT'],
+};
 
 export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const lastScrollY = useRef(0);
-  const velocityTimer = useRef(0);
 
   useSpotlight(!prefersReducedMotion);
   useMagnetic(!prefersReducedMotion);
+  useKineticScroll(!prefersReducedMotion);
 
   useEffect(() => {
     const onScroll = () => {
@@ -39,23 +52,10 @@ export default function App() {
       const progress = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
       setScrollProgress(progress);
       setShowBackToTop(scrollTop > 500);
-
-      const delta = scrollTop - lastScrollY.current;
-      lastScrollY.current = scrollTop;
-      const velocity = Math.max(-1, Math.min(1, delta / 55));
-      document.documentElement.style.setProperty('--scroll-velocity', velocity.toFixed(3));
-
-      window.clearTimeout(velocityTimer.current);
-      velocityTimer.current = window.setTimeout(() => {
-        document.documentElement.style.setProperty('--scroll-velocity', '0');
-      }, 90);
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.clearTimeout(velocityTimer.current);
-    };
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
@@ -71,8 +71,10 @@ export default function App() {
         <Hero />
         <Marquee />
         <About />
+        <TypeRibbon top={RIBBON_ONE.top} bottom={RIBBON_ONE.bottom} />
         <Skills />
         <Experience />
+        <TypeRibbon top={RIBBON_TWO.top} bottom={RIBBON_TWO.bottom} />
         <Projects />
         <Contact />
       </main>

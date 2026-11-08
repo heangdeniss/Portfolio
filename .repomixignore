@@ -1,0 +1,16 @@
+# Ignore lock files (huge token wasters)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore build & cache directories
+dist/
+build/
+.next/
+.cache/
+
+# Ignore media and logs
+*.png
+*.jpg
+*.svg
+*.log

@@ -1,3 +1,5 @@
+import RollText from './RollText';
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -22,12 +24,12 @@ export default function Footer() {
           <div className="footer__links-col">
             <span className="footer__col-heading">Navigation</span>
             <div className="footer__links-grid">
-              <a href="#hero">Home</a>
-              <a href="#about">About Me</a>
-              <a href="#skills">Skills</a>
-              <a href="#background">Experience</a>
-              <a href="#projects">Projects</a>
-              <a href="#contact">Contact</a>
+              <a href="#hero"><RollText>Home</RollText></a>
+              <a href="#about"><RollText>About Me</RollText></a>
+              <a href="#skills"><RollText>Skills</RollText></a>
+              <a href="#background"><RollText>Experience</RollText></a>
+              <a href="#projects"><RollText>Projects</RollText></a>
+              <a href="#contact"><RollText>Contact</RollText></a>
             </div>
           </div>
 

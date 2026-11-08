@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
+import SectionTitle from './SectionTitle';
 
 export default function Contact() {
   const [ref, visible] = useReveal();
@@ -82,7 +83,7 @@ export default function Contact() {
     setTimeout(() => {
       const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
       const body = encodeURIComponent(
-        `Hello Denis,\n\n${message}\n\nBest regards,\n${name}\nContact: ${senderContact}`
+        `Hello Denis,\n\n${message}\n\nBest regards,\n${name}\nContact: ${senderContact}`,
       );
       window.location.href = `mailto:heangdenis011468@gmail.com?subject=${subject}&body=${body}`;
       setFormStatus('sent');
@@ -108,7 +109,7 @@ export default function Contact() {
     setFormStatus('sending');
     setTimeout(() => {
       const text = encodeURIComponent(
-        `Hi Denis, my name is ${name} (${senderContact}).\n\n${message}`
+        `Hi Denis, my name is ${name} (${senderContact}).\n\n${message}`,
       );
       window.open(`https://t.me/heang_deniss?text=${text}`, '_blank', 'noopener,noreferrer');
       setFormStatus('sent');
@@ -127,14 +128,14 @@ export default function Contact() {
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Get in Touch</p>
-          <h2 className="section-title">Let's Connect & Collaborate</h2>
+          <SectionTitle>Let's Connect & Collaborate</SectionTitle>
           <p className="section-subtitle">
-            Whether you have an inquiry, open role, machine learning project, or just want to discuss AI systems, my inbox is always open.
+            Whether you have an inquiry, open role, machine learning project, or just want to
+            discuss AI systems, my inbox is always open.
           </p>
         </div>
 
         <div className={`contact-layout stagger${visible ? ' visible' : ''}`}>
-
           {/* Left Column: Instant One-Click Copy Hub */}
           <div className="contact-cards-column">
             <div className="contact-column-header">
@@ -148,15 +149,25 @@ export default function Contact() {
             {/* Email Card */}
             <div className="contact-interactive-card">
               <div className="contact-interactive-card__icon contact-interactive-card__icon--amber">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <rect width="20" height="16" x="2" y="4" rx="2" />
                   <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                 </svg>
               </div>
               <div className="contact-interactive-card__body">
                 <span className="contact-interactive-card__lbl">Email Address</span>
-                <a href="mailto:heangdenis011468@gmail.com" className="contact-interactive-card__val">
-                  heangdenis011468@gmail.com
+                <a
+                  href="mailto:heang.denis.eng@gmail.com"
+                  className="contact-interactive-card__val"
+                >
+                  heang.denis.eng@gmail.com
                 </a>
               </div>
               <button
@@ -168,7 +179,14 @@ export default function Contact() {
                 {copiedKey === 'email' ? (
                   <span className="copied-tag">✓ Copied</span>
                 ) : (
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
                     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                   </svg>
@@ -203,7 +221,14 @@ export default function Contact() {
                 {copiedKey === 'telegram' ? (
                   <span className="copied-tag">✓ Copied</span>
                 ) : (
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
                     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                   </svg>
@@ -230,7 +255,9 @@ export default function Contact() {
                 </a>
               </div>
               <button
-                onClick={() => copyToClipboard('https://www.linkedin.com/in/heang-denis-1a4b23369/', 'linkedin')}
+                onClick={() =>
+                  copyToClipboard('https://www.linkedin.com/in/heang-denis-1a4b23369/', 'linkedin')
+                }
                 className="contact-copy-btn"
                 title="Copy LinkedIn URL"
                 aria-label="Copy LinkedIn URL"
@@ -238,7 +265,14 @@ export default function Contact() {
                 {copiedKey === 'linkedin' ? (
                   <span className="copied-tag">✓ Copied</span>
                 ) : (
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
                     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                   </svg>
@@ -273,7 +307,14 @@ export default function Contact() {
                 {copiedKey === 'github' ? (
                   <span className="copied-tag">✓ Copied</span>
                 ) : (
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
                     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                   </svg>
@@ -289,9 +330,15 @@ export default function Contact() {
             <form onSubmit={handleSendEmail} className="contact-form" noValidate>
               <div className="contact-form__group">
                 <div className="contact-form__label-row">
-                  <label className="contact-form__label" htmlFor="contact-name">Your Name</label>
+                  <label className="contact-form__label" htmlFor="contact-name">
+                    Your Name
+                  </label>
                   {validationErrors.name && touched.name && (
-                    <span className="contact-form__field-error" id="contact-name-error" role="alert">
+                    <span
+                      className="contact-form__field-error"
+                      id="contact-name-error"
+                      role="alert"
+                    >
                       {validationErrors.name}
                     </span>
                   )}
@@ -310,7 +357,9 @@ export default function Contact() {
                   placeholder="e.g. Sokha Meng"
                   className={`contact-form__input${validationErrors.name && touched.name ? ' contact-form__input--error' : ''}`}
                   aria-invalid={Boolean(validationErrors.name && touched.name)}
-                  aria-describedby={validationErrors.name && touched.name ? 'contact-name-error' : undefined}
+                  aria-describedby={
+                    validationErrors.name && touched.name ? 'contact-name-error' : undefined
+                  }
                   aria-required="true"
                   required
                 />
@@ -318,9 +367,15 @@ export default function Contact() {
 
               <div className="contact-form__group">
                 <div className="contact-form__label-row">
-                  <label className="contact-form__label" htmlFor="contact-handle">Your Email or Handle</label>
+                  <label className="contact-form__label" htmlFor="contact-handle">
+                    Your Email or Handle
+                  </label>
                   {validationErrors.senderContact && touched.senderContact && (
-                    <span className="contact-form__field-error" id="contact-handle-error" role="alert">
+                    <span
+                      className="contact-form__field-error"
+                      id="contact-handle-error"
+                      role="alert"
+                    >
                       {validationErrors.senderContact}
                     </span>
                   )}
@@ -334,13 +389,18 @@ export default function Contact() {
                   value={senderContact}
                   onChange={(e) => {
                     setSenderContact(e.target.value);
-                    if (touched.senderContact) setValidationErrors((prev) => ({ ...prev, senderContact: undefined }));
+                    if (touched.senderContact)
+                      setValidationErrors((prev) => ({ ...prev, senderContact: undefined }));
                   }}
                   onBlur={() => handleBlur('senderContact')}
                   placeholder="name@company.com or @telegram_handle"
                   className={`contact-form__input${validationErrors.senderContact && touched.senderContact ? ' contact-form__input--error' : ''}`}
                   aria-invalid={Boolean(validationErrors.senderContact && touched.senderContact)}
-                  aria-describedby={validationErrors.senderContact && touched.senderContact ? 'contact-handle-error' : undefined}
+                  aria-describedby={
+                    validationErrors.senderContact && touched.senderContact
+                      ? 'contact-handle-error'
+                      : undefined
+                  }
                   aria-required="true"
                   required
                 />
@@ -348,9 +408,15 @@ export default function Contact() {
 
               <div className="contact-form__group">
                 <div className="contact-form__label-row">
-                  <label className="contact-form__label" htmlFor="contact-message">Your Message</label>
+                  <label className="contact-form__label" htmlFor="contact-message">
+                    Your Message
+                  </label>
                   {validationErrors.message && touched.message && (
-                    <span className="contact-form__field-error" id="contact-message-error" role="alert">
+                    <span
+                      className="contact-form__field-error"
+                      id="contact-message-error"
+                      role="alert"
+                    >
                       {validationErrors.message}
                     </span>
                   )}
@@ -364,13 +430,18 @@ export default function Contact() {
                     // Auto-resize
                     e.target.style.height = 'auto';
                     e.target.style.height = `${Math.min(e.target.scrollHeight, 220)}px`;
-                    if (touched.message) setValidationErrors((prev) => ({ ...prev, message: undefined }));
+                    if (touched.message)
+                      setValidationErrors((prev) => ({ ...prev, message: undefined }));
                   }}
                   onBlur={() => handleBlur('message')}
                   placeholder="Tell me about your project, team, or inquiry..."
                   className={`contact-form__textarea${validationErrors.message && touched.message ? ' contact-form__textarea--error' : ''}`}
                   aria-invalid={Boolean(validationErrors.message && touched.message)}
-                  aria-describedby={validationErrors.message && touched.message ? 'contact-message-error' : undefined}
+                  aria-describedby={
+                    validationErrors.message && touched.message
+                      ? 'contact-message-error'
+                      : undefined
+                  }
                   aria-required="true"
                   rows={4}
                   required
@@ -382,15 +453,26 @@ export default function Contact() {
                     {message.trim().length > 0 && message.trim().length < 10
                       ? ` · ${10 - message.trim().length} more required`
                       : message.trim().length >= 10
-                      ? ' · minimum met ✓'
-                      : ''}
+                        ? ' · minimum met ✓'
+                        : ''}
                   </span>
                 </div>
               </div>
 
               {formStatus === 'sent' && (
-                <div className="contact-form__feedback contact-form__feedback--success" role="status">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                <div
+                  className="contact-form__feedback contact-form__feedback--success"
+                  role="status"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    aria-hidden="true"
+                  >
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
@@ -413,7 +495,14 @@ export default function Contact() {
                   ) : (
                     <>
                       <span>Send via Email</span>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                      >
                         <line x1="22" y1="2" x2="11" y2="13" />
                         <polygon points="22 2 15 22 11 13 2 9 22 2" />
                       </svg>
@@ -435,21 +524,40 @@ export default function Contact() {
               </div>
             </form>
           </div>
-
         </div>
       </div>
       {/* Floating Subtle Toast Notification */}
       {toast && (
-        <div className={`contact-toast contact-toast--${toast.type}`} role="status" aria-live="polite">
+        <div
+          className={`contact-toast contact-toast--${toast.type}`}
+          role="status"
+          aria-live="polite"
+        >
           <span className="contact-toast__icon">
             {toast.type === 'error' ? (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                aria-hidden="true"
+              >
                 <line x1="12" y1="8" x2="12" y2="13" />
                 <line x1="12" y1="17" x2="12.01" y2="17" />
                 <circle cx="12" cy="12" r="10" strokeWidth="2" />
               </svg>
             ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                aria-hidden="true"
+              >
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             )}

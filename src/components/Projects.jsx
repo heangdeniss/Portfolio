@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useReveal from '../hooks/useReveal';
+import SectionTitle from './SectionTitle';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 
 import creditRiskPred from '../images/creditrisk_pred.jpg';
@@ -134,6 +135,7 @@ const ImageSlider = ({ images, title, onImageClick }) => {
             onImageClick({ src: img, alt: `${title} — visual ${index + 1}` });
           }}
           className={`project-card__slider-img${index === currentIndex ? ' active' : ''}`}
+          data-scroll-parallax
           loading="lazy"
           decoding="async"
           aria-hidden={index !== currentIndex}
@@ -218,7 +220,7 @@ export default function Projects() {
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Featured Projects</p>
-          <h2 className="section-title">Engineering & Research Highlights</h2>
+          <SectionTitle>Engineering & Research Highlights</SectionTitle>
           <p className="section-subtitle">
             Selected machine learning architectures, statistical computing pipelines, and data systems engineered for real-world impact.
           </p>

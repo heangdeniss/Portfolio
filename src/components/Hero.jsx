@@ -301,6 +301,7 @@ export default function Hero() {
                     src={denisPhoto}
                     alt="Portrait of Heang Denis, Data Science and Machine Learning Engineer"
                     className="hero__portrait-img"
+                    data-scroll-parallax
                     width="900"
                     height="1200"
                     loading="eager"

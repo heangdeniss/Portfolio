@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import RollText from './RollText';
 
 const navLinks = [
   { label: 'Home', href: '#hero' },
@@ -92,14 +93,14 @@ export default function Header() {
                 className={`header__link${isActive ? ' header__link--active' : ''}`}
                 aria-current={isActive ? 'location' : undefined}
               >
-                {link.label}
+                <RollText>{link.label}</RollText>
               </a>
             );
           })}
         </nav>
 
         <a href="#contact" className="header__cta-btn">
-          <span>Let&apos;s Talk</span>
+          <RollText>Let&apos;s Talk</RollText>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
             <path d="M7 17L17 7M7 7h10v10" />
           </svg>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import useReveal from '../hooks/useReveal';
+import SectionTitle from './SectionTitle';
 import mptcLogo from '../images/mptc-logo-opt.png';
 import scientificLogo from '../images/scientific-logo-opt.png';
 import itcLogo from '../images/itc-logo-opt.png';
@@ -166,7 +167,7 @@ export default function Experience() {
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Trajectory</p>
-          <h2 className="section-title">Experience & Education</h2>
+          <SectionTitle>Experience & Education</SectionTitle>
           <p className="section-subtitle">
             A chronological timeline of hands-on industry roles, leadership projects, and academic achievements.
           </p>

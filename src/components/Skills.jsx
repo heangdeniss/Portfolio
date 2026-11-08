@@ -1,4 +1,5 @@
 import useReveal from '../hooks/useReveal';
+import SectionTitle from './SectionTitle';
 import chromadbIcon from '../images/skills/chromadb.svg';
 import powerbiIcon from '../images/skills/powerbi.svg';
 import scipyIcon from '../images/skills/scipy.svg';
@@ -144,7 +145,7 @@ export default function Skills() {
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Skills & Tech Stack</p>
-          <h2 className="section-title">Technical Expertise</h2>
+          <SectionTitle>Technical Expertise</SectionTitle>
           <p className="section-subtitle">
             Curated toolkit organized across machine learning engineering, statistical computing, web architecture, and cloud tooling.
           </p>

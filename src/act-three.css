@@ -1,0 +1,204 @@
+/* ============================================================
+   ACT III — INERTIA
+   Damped scroll-reactive motion inspired by studio sites:
+   media that drifts inside its mask, frames that shear with
+   scroll speed, word-masked headings and rolling link labels.
+   Layered after Act II; native scrolling is never hijacked.
+   ============================================================ */
+
+/* ---------- Scroll-reactive media ---------- */
+[data-scroll-parallax] {
+  translate: 0 var(--parallax-y, 0px);
+  will-change: translate;
+}
+
+.hero__portrait-img {
+  scale: 1.06;
+}
+
+/* Free the transform channel for velocity shear and move the hover zoom to scale */
+.project-card__slider-img {
+  scale: 1.06;
+  transform: skewY(calc(var(--scroll-velocity, 0) * 0.9deg));
+  transition: opacity 0.55s ease-in-out, scale 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, translate, opacity;
+}
+
+.project-card:hover .project-card__slider-img.active {
+  transform: skewY(calc(var(--scroll-velocity, 0) * 0.9deg));
+  scale: 1.085;
+}
+
+/* ---------- Velocity-reactive surfaces ---------- */
+.marquee {
+  rotate: calc(var(--scroll-velocity, 0) * -1.1deg);
+}
+
+.marquee__track {
+  translate: 0 calc(var(--scroll-velocity, 0) * -6px);
+}
+
+.footer__watermark {
+  transform: skewX(calc(var(--scroll-velocity, 0) * -1.6deg));
+}
+
+/* ---------- Hero: depth exit ---------- */
+.hero__content {
+  scale: calc(1 - var(--hero-exit, 0) * 0.05);
+}
+
+.hero__visual {
+  scale: calc(1 + var(--hero-exit, 0) * 0.03);
+}
+
+/* ---------- Word-masked section headings ---------- */
+.section-title--kinetic {
+  background: none;
+  color: #ffffff;
+  -webkit-text-fill-color: currentColor;
+  text-shadow: none;
+}
+
+.section-header .section-title.section-title--kinetic {
+  clip-path: none;
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+
+.kinetic-word-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.02em 0.04em 0.14em;
+  margin: -0.02em -0.04em -0.14em;
+  vertical-align: bottom;
+}
+
+.kinetic-word {
+  display: inline-block;
+  background-image: linear-gradient(135deg, #ffffff 20%, #7dd3fc 65%, #c084fc 100%);
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 13s ease-in-out infinite;
+  transform: translate3d(0, 130%, 0) rotate(2deg);
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.is-visible .kinetic-word {
+  transform: translate3d(0, 0, 0) rotate(0deg);
+  transition-delay: calc(var(--word-index, 0) * 55ms + 120ms);
+}
+
+/* ---------- Rolling link labels ---------- */
+.roll-text {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1.4;
+}
+
+.roll-text__inner,
+.roll-text__clone {
+  display: block;
+  white-space: nowrap;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.roll-text__clone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(130%);
+  user-select: none;
+}
+
+a:hover .roll-text__inner,
+a:focus-visible .roll-text__inner {
+  transform: translateY(-130%);
+}
+
+a:hover .roll-text__clone,
+a:focus-visible .roll-text__clone {
+  transform: translateY(0);
+}
+
+/* ---------- Responsive tuning ---------- */
+@media (max-width: 760px) {
+  .project-card__slider-img {
+    transform: none;
+  }
+
+  .project-card:hover .project-card__slider-img.active {
+    transform: none;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll-parallax] {
+    translate: none !important;
+  }
+
+  .hero__portrait-img,
+  .project-card__slider-img,
+  .project-card:hover .project-card__slider-img.active {
+    scale: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .hero__content,
+  .hero__visual {
+    scale: none !important;
+  }
+
+  .marquee {
+    rotate: none !important;
+  }
+
+  .marquee__track,
+  .footer__watermark {
+    translate: none !important;
+    transform: none !important;
+  }
+
+  .kinetic-word {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .roll-text__inner,
+  .roll-text__clone {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .roll-text__clone {
+    display: none;
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .kinetic-word {
+    transform: none !important;
+  }
+
+  .kinetic-word-mask {
+    overflow: visible;
+  }
+
+  .roll-text__clone {
+    display: none;
+  }
+
+  [data-scroll-parallax] {
+    translate: none !important;
+  }
+}
