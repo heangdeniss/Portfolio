@@ -1,3 +1,5 @@
+import useVelocityMarquee from '../hooks/useVelocityMarquee';
+
 const SEPARATOR = '\u2726';
 
 function RibbonGroup({ words }) {
@@ -17,20 +19,23 @@ function RibbonGroup({ words }) {
 
 /**
  * Oversized diagonal type band used as an act break between sections.
- * Two counter-scrolling rows, solid gradient over outlined type.
+ * Two counter-scrolling rows driven by scroll velocity.
  */
 export default function TypeRibbon({ top = [], bottom = [] }) {
+  const topTrackRef = useVelocityMarquee({ baseSpeed: 46, factor: 620, direction: -1 });
+  const bottomTrackRef = useVelocityMarquee({ baseSpeed: 38, factor: 540, direction: 1 });
+
   return (
     <div className="ribbon" aria-hidden="true">
       <div className="ribbon__band">
         <div className="ribbon__row ribbon__row--solid">
-          <div className="ribbon__track">
+          <div className="ribbon__track" ref={topTrackRef}>
             <RibbonGroup words={top} />
             <RibbonGroup words={top} />
           </div>
         </div>
         <div className="ribbon__row ribbon__row--outline">
-          <div className="ribbon__track ribbon__track--reverse">
+          <div className="ribbon__track ribbon__track--reverse" ref={bottomTrackRef}>
             <RibbonGroup words={bottom} />
             <RibbonGroup words={bottom} />
           </div>

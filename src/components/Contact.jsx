@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
 import SectionTitle from './SectionTitle';
+import MagneticButton from './MagneticButton';
 
 export default function Contact() {
   const [ref, visible] = useReveal();
@@ -481,11 +482,13 @@ export default function Contact() {
               )}
 
               <div className="contact-form__actions">
-                <button
+                <MagneticButton
+                  as="button"
                   type="submit"
                   disabled={formStatus === 'sending'}
                   className="btn btn-primary contact-form__btn"
-                  data-magnetic
+                  strength={0.2}
+                  data-cursor="Send"
                 >
                   {formStatus === 'sending' ? (
                     <>
@@ -502,13 +505,14 @@ export default function Contact() {
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2.5"
+                        aria-hidden="true"
                       >
                         <line x1="22" y1="2" x2="11" y2="13" />
                         <polygon points="22 2 15 22 11 13 2 9 22 2" />
                       </svg>
                     </>
                   )}
-                </button>
+                </MagneticButton>
 
                 <button
                   type="button"

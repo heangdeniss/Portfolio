@@ -1,69 +1,90 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { gsap, ScrollTrigger } from '../lib/animations';
+import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 
 /**
- * Counts from zero to the target value once the element scrolls into view.
- * Reduced-motion users see the final value immediately.
+ * Counts from zero to the target value when the metric enters the viewport.
+ * The tween is gated by the preloader and uses ScrollTrigger with an
+ * IntersectionObserver safety net, matching the split-line reveals.
  */
 export default function CountUp({
   end,
   decimals = 0,
   prefix = '',
   suffix = '',
-  duration = 1500,
+  duration = 1.6,
 }) {
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const [value, setValue] = useState(prefersReducedMotion ? end : 0);
   const ref = useRef(null);
-  const started = useRef(false);
+  const startedRef = useRef(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const { introComplete } = useExperience();
 
   useEffect(() => {
-    if (prefersReducedMotion) return undefined;
+    const element = ref.current;
+    if (!element) return undefined;
 
-    const el = ref.current;
-    if (!el) return undefined;
+    const format = (value) => `${prefix}${value.toFixed(decimals)}${suffix}`;
 
-    let rafId = 0;
+    if (prefersReducedMotion) {
+      element.textContent = format(end);
+      return undefined;
+    }
 
-    const animate = () => {
-      const startTime = performance.now();
+    if (!introComplete) {
+      startedRef.current = false;
+      element.textContent = format(0);
+      return undefined;
+    }
 
-      const tick = (now) => {
-        const progress = Math.min((now - startTime) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        setValue(end * eased);
+    startedRef.current = false;
+    element.textContent = format(0);
 
-        if (progress < 1) {
-          rafId = requestAnimationFrame(tick);
-        }
-      };
+    const counter = { value: 0 };
+    let tween;
 
-      rafId = requestAnimationFrame(tick);
+    const start = () => {
+      if (startedRef.current) return;
+      startedRef.current = true;
+
+      tween = gsap.to(counter, {
+        value: end,
+        duration,
+        ease: 'power3.out',
+        onUpdate: () => {
+          element.textContent = format(counter.value);
+        },
+      });
     };
+
+    const trigger = ScrollTrigger.create({
+      trigger: element,
+      start: 'top bottom',
+      once: true,
+      onEnter: start,
+    });
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          animate();
-          observer.disconnect();
-        }
+        if (entry.isIntersecting) start();
       },
-      { threshold: 0.35 }
+      { threshold: 0.15 },
     );
-
-    observer.observe(el);
+    observer.observe(element);
 
     return () => {
+      trigger.kill();
       observer.disconnect();
-      cancelAnimationFrame(rafId);
+      tween?.kill();
     };
-  }, [end, duration, prefersReducedMotion]);
+  }, [end, decimals, prefix, suffix, duration, introComplete, prefersReducedMotion]);
+
+  const initialValue = prefersReducedMotion ? end : 0;
 
   return (
-    <span ref={ref}>
+    <span ref={ref} className="countup">
       {prefix}
-      {(prefersReducedMotion ? end : value).toFixed(decimals)}
+      {initialValue.toFixed(decimals)}
       {suffix}
     </span>
   );

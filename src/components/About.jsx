@@ -1,7 +1,15 @@
 import useReveal from '../hooks/useReveal';
+import useSplitReveal from '../hooks/useSplitReveal';
+import MagneticButton from './MagneticButton';
 
 export default function About() {
   const [ref, visible] = useReveal();
+  const headlineRef = useSplitReveal({
+    scroll: true,
+    stagger: 0.08,
+    duration: 1.15,
+    start: 'top 82%',
+  });
 
   return (
     <section id="about" className="section" data-ghost="ABOUT">
@@ -13,9 +21,13 @@ export default function About() {
           <div className="about__intro-card">
             <div>
               <p className="section-label">About Me</p>
-              <h2 className="about__headline">
-                <span className="about__headline-line"><span>Driven by Mathematics,</span></span>
-                <span className="about__headline-line"><span>Crafted in Code.</span></span>
+              <h2 className="about__headline" ref={headlineRef}>
+                <span className="about__headline-line">
+                  <span data-split-line>Driven by Mathematics,</span>
+                </span>
+                <span className="about__headline-line">
+                  <span data-split-line>Crafted in Code.</span>
+                </span>
               </h2>
 
               <p className="about__text">
@@ -50,12 +62,17 @@ export default function About() {
               </div>
 
               <div className="about__cta-row">
-                <a href="mailto:heangdenis011468@gmail.com" className="btn btn-primary" data-magnetic>
+                <MagneticButton
+                  href="mailto:heangdenis011468@gmail.com"
+                  className="btn btn-primary"
+                  strength={0.22}
+                  data-cursor="Email"
+                >
                   <span>Start a Conversation</span>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                     <path d="M7 17L17 7M7 7h10v10" />
                   </svg>
-                </a>
+                </MagneticButton>
               </div>
             </div>
           </div>

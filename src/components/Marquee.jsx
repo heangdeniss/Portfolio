@@ -1,3 +1,5 @@
+import useVelocityMarquee from '../hooks/useVelocityMarquee';
+
 const ITEMS = [
   { label: 'Machine Learning', color: '#8b5cf6' },
   { label: 'RAG Architectures', color: '#06b6d4' },
@@ -25,13 +27,15 @@ function MarqueeGroup() {
 }
 
 export default function Marquee() {
+  const trackRef = useVelocityMarquee({ baseSpeed: 52, factor: 760, direction: -1 });
+
   return (
-    <div className="marquee">
+    <div className="marquee" data-cursor="Drag">
       <p className="sr-only">
         Core focus areas: machine learning, RAG architectures, data engineering, full-stack systems,
         statistical inference, and predictive analytics.
       </p>
-      <div className="marquee__track" aria-hidden="true">
+      <div className="marquee__track" aria-hidden="true" ref={trackRef}>
         <MarqueeGroup />
         <MarqueeGroup />
       </div>

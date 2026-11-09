@@ -1,7 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { gsap } from '../lib/animations';
+import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import usePointerTilt from '../hooks/usePointerTilt';
+import useSplitReveal from '../hooks/useSplitReveal';
 import CountUp from './CountUp';
+import MagneticButton from './MagneticButton';
 import denisPhoto from '../images/HEANG Denis good image.jpg';
 
 const ROLES = [
@@ -18,44 +22,131 @@ export default function Hero() {
   const [displayedText, setDisplayedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { introComplete } = useExperience();
   const sectionRef = useRef(null);
+  const contentRef = useRef(null);
+  const visualRef = useRef(null);
+  const portraitStackRef = useRef(null);
+  const cloneRefs = useRef([]);
+  const glowTopRef = useRef(null);
+  const glowRightRef = useRef(null);
+  const scrollHintRef = useRef(null);
   const tiltRef = usePointerTilt(4.5);
 
-  useEffect(() => {
+  const nameRef = useSplitReveal({
+    play: introComplete,
+    stagger: 0.06,
+    duration: 1.2,
+    delay: 0.4,
+  });
+
+  const taglineRef = useSplitReveal({
+    play: introComplete,
+    stagger: 0.07,
+    duration: 1.15,
+    delay: 0.58,
+  });
+
+  useLayoutEffect(() => {
     if (prefersReducedMotion) return undefined;
 
-    let rafId = 0;
+    const context = gsap.context(() => {
+      const reveals = gsap.utils.toArray('.hero__reveal');
+      const clones = cloneRefs.current.filter(Boolean);
 
-    const update = () => {
-      rafId = 0;
-      if (sectionRef.current) {
-        const scroll = Math.min(window.scrollY, 900);
-        const style = sectionRef.current.style;
-        style.setProperty('--hero-parallax-slow', `${(scroll * 0.05).toFixed(1)}px`);
-        style.setProperty('--hero-parallax-glow-x', `${(scroll * 0.12).toFixed(1)}px`);
-        style.setProperty('--hero-parallax-glow-y', `${(scroll * 0.2).toFixed(1)}px`);
-        style.setProperty('--hero-parallax-glow-x-reverse', `${(scroll * -0.09).toFixed(1)}px`);
-        style.setProperty('--hero-parallax-glow-y-reverse', `${(scroll * 0.1).toFixed(1)}px`);
-        style.setProperty(
-          '--hero-exit',
-          Math.min(scroll / Math.max(window.innerHeight, 1), 1).toFixed(3)
-        );
+      if (!introComplete) {
+        gsap.set(portraitStackRef.current, { scale: 1.25 });
+        gsap.set(clones, {
+          opacity: 0.55,
+          x: (index) => (index === 0 ? -12 : 12),
+        });
+        gsap.set(reveals, { autoAlpha: 0, y: 26 });
+        return;
       }
-    };
 
-    const onScroll = () => {
-      if (!rafId) rafId = requestAnimationFrame(update);
-    };
+      gsap.fromTo(
+        portraitStackRef.current,
+        { scale: 1.25 },
+        { scale: 1, duration: 1.7, ease: 'expo.out', delay: 0.34 },
+      );
 
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
+      gsap.fromTo(
+        clones,
+        {
+          opacity: 0.55,
+          x: (index) => (index === 0 ? -12 : 12),
+        },
+        {
+          opacity: 0,
+          x: 0,
+          duration: 1.5,
+          ease: 'expo.out',
+          delay: 0.34,
+        },
+      );
 
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [prefersReducedMotion]);
+      gsap.fromTo(
+        reveals,
+        { autoAlpha: 0, y: 26 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          stagger: 0.075,
+          delay: 0.52,
+        },
+      );
 
+      gsap.to(contentRef.current, {
+        yPercent: -7,
+        autoAlpha: 0.5,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      gsap.to(visualRef.current, {
+        y: 80,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      gsap.to([glowTopRef.current, glowRightRef.current], {
+        y: 140,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      gsap.to(scrollHintRef.current, {
+        autoAlpha: 0,
+        y: 30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: '30% top',
+          scrub: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => context.revert();
+  }, [introComplete, prefersReducedMotion]);
 
   const currentRole = ROLES[roleIndex];
   const rolePrefix = (prefersReducedMotion ? ROLES[0] : currentRole).startsWith('ML')
@@ -69,22 +160,19 @@ export default function Hero() {
     let timer;
 
     if (!isDeleting && displayedText === currentRole) {
-      // Pause when full role is typed
       timer = setTimeout(() => setIsDeleting(true), 2200);
     } else if (isDeleting && displayedText === '') {
-      // Brief pause, then advance to the next role
       timer = setTimeout(() => {
         setIsDeleting(false);
         setRoleIndex((prev) => (prev + 1) % ROLES.length);
       }, 180);
     } else {
-      // Typing or deleting
       const speed = isDeleting ? 40 : 85;
       timer = setTimeout(() => {
         setDisplayedText((prev) =>
           isDeleting
             ? currentRole.substring(0, prev.length - 1)
-            : currentRole.substring(0, prev.length + 1)
+            : currentRole.substring(0, prev.length + 1),
         );
       }, speed);
     }
@@ -94,24 +182,21 @@ export default function Hero() {
 
   return (
     <section id="hero" className="hero" ref={sectionRef}>
-      <div className="hero__glow-top" />
-      <div className="hero__glow-right" />
+      <div className="hero__glow-top" ref={glowTopRef} />
+      <div className="hero__glow-right" ref={glowRightRef} />
 
       <div className="container">
         <div className="hero__layout">
-          {/* Left Column: Bio & Interactive Controls */}
-          <div className="hero__content">
-            {/* Active Status Badge */}
-            <div className="hero__status-badge">
+          <div className="hero__content" ref={contentRef}>
+            <div className="hero__status-badge hero__reveal">
               <span className="hero__status-indicator">
                 <span className="hero__status-ping" />
                 <span className="hero__status-core" />
               </span>
-              <span className="hero__status-text">Available for Projects & Full-Time Roles</span>
+              <span className="hero__status-text">Available for Projects &amp; Full-Time Roles</span>
             </div>
 
-            {/* Dynamic Role Switcher */}
-            <div className="hero__role-wrapper">
+            <div className="hero__role-wrapper hero__reveal">
               <span className="sr-only">
                 I work as a Data Science Engineer, Data Analyst, ML and RAG Developer, and Full-Stack Developer.
               </span>
@@ -122,50 +207,31 @@ export default function Hero() {
               </span>
             </div>
 
-            {/* Prominent Name */}
-            <h1 className="hero__name" aria-label="Heang Denis">
-              <span className="hero__name-first" aria-hidden="true">
-                {'Heang'.split('').map((letter, index) => (
-                  <span
-                    key={`${letter}-${index}`}
-                    className="hero__name-letter"
-                    style={{ '--letter-index': index }}
-                  >
-                    {letter}
-                  </span>
-                ))}
-              </span>{' '}
-              <span className="hero__name-last" aria-hidden="true">
-                <span className="hero__name-mask">
-                  <span className="hero__name-word">Denis</span>
-                </span>
-                <svg className="hero__name-underline" viewBox="0 0 240 16" fill="none" aria-hidden="true">
-                  <path
-                    d="M4 11.5C58 4.5 164 2.5 236 8.5"
-                    stroke="url(#heroNameUnderline)"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    pathLength="1"
-                  />
-                  <defs>
-                    <linearGradient id="heroNameUnderline" x1="0" y1="0" x2="240" y2="0" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#f59e0b" stopOpacity="0" />
-                      <stop offset="0.2" stopColor="#fbbf24" />
-                      <stop offset="0.8" stopColor="#f59e0b" />
-                      <stop offset="1" stopColor="#f59e0b" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                </svg>
+            <h1 className="hero__name" aria-label="Heang Denis" ref={nameRef}>
+              <span className="hero__name-line" aria-hidden="true">
+                <span className="hero__name-inner" data-split-line>Heang</span>
+              </span>
+              <span className="hero__name-line hero__name-line--accent" aria-hidden="true">
+                <span className="hero__name-inner" data-split-line>Denis</span>
               </span>
             </h1>
 
-            {/* Editorial Lead Tagline */}
-            <p className="hero__tagline">
-              Bridging mathematical rigor with full-stack execution.
+            <p
+              className="hero__tagline"
+              aria-label="Bridging mathematical rigor with full-stack execution."
+              ref={taglineRef}
+            >
+              <span className="hero__tagline-line" aria-hidden="true">
+                <span className="hero__tagline-inner" data-split-line>
+                  Bridging <em>mathematical rigor</em>
+                </span>
+              </span>
+              <span className="hero__tagline-line" aria-hidden="true">
+                <span className="hero__tagline-inner" data-split-line>with full-stack execution.</span>
+              </span>
             </p>
 
-            {/* Specialized Engineering Capabilities */}
-            <div className="hero__specializations">
+            <div className="hero__specializations hero__reveal">
               <span className="hero__spec-badge hero__spec-badge--amber">
                 <span className="hero__spec-dot" />
                 Predictive Modeling
@@ -176,7 +242,7 @@ export default function Hero() {
               </span>
               <span className="hero__spec-badge hero__spec-badge--emerald">
                 <span className="hero__spec-dot" />
-                FastAPI & React
+                FastAPI &amp; React
               </span>
               <span className="hero__spec-badge hero__spec-badge--purple">
                 <span className="hero__spec-dot" />
@@ -192,43 +258,51 @@ export default function Hero() {
               </span>
             </div>
 
-            {/* Bio Description */}
-            <p className="hero__bio">
+            <p className="hero__bio hero__reveal">
               Data Science student at the <strong className="hero__bio-highlight">Institute of Technology of Cambodia</strong> (Expected Graduation: 2027). Focused on engineering end-to-end machine learning pipelines, probabilistic computing, and high-performance web systems.
             </p>
 
-            {/* High-Converting CTA Buttons */}
-            <div className="hero__actions">
-              <a href="#projects" className="btn btn-primary hero__btn-primary" data-magnetic>
+            <div className="hero__actions hero__reveal">
+              <MagneticButton
+                href="#projects"
+                className="btn btn-primary hero__btn-primary"
+                strength={0.24}
+                data-cursor="View"
+              >
                 <span>View Featured Projects</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <path d="M7 17L17 7M7 7h10v10" />
                 </svg>
-              </a>
-              <a href="#contact" className="btn btn-outline hero__btn-outline" data-magnetic>
-                <span>Get In Touch</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-              </a>
-              <a 
-                href="/Heang_Denis_CV.pdf" 
+              </MagneticButton>
+
+              <MagneticButton
+                href="#contact"
+                className="btn btn-outline hero__btn-outline"
+                strength={0.22}
+                data-cursor="Talk"
+              >
+                <span>Let&apos;s Talk</span>
+                <span className="hero__btn-arrow" aria-hidden="true">↗</span>
+              </MagneticButton>
+
+              <MagneticButton
+                href="/Heang_Denis_CV.pdf"
                 download="Heang_Denis_CV.pdf"
                 className="btn btn-secondary hero__btn-cv"
+                strength={0.2}
                 title="Download CV (PDF)"
-                data-magnetic
+                data-cursor="PDF"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                   <polyline points="7 10 12 15 17 10" />
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
                 <span>Download CV (PDF)</span>
-              </a>
+              </MagneticButton>
             </div>
 
-            {/* Animated proof-of-work signals */}
-            <div className="hero__signals" aria-label="Selected results">
+            <div className="hero__signals hero__reveal" aria-label="Selected results">
               <div className="hero__signal">
                 <span className="hero__signal-value">
                   <CountUp end={96.05} decimals={2} suffix="%" />
@@ -252,8 +326,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Column: Clean Glassmorphic Portrait Container with Top-Right Status */}
-          <div className="hero__visual">
+          <div className="hero__visual" ref={visualRef}>
             <div className="hero__orbits" aria-hidden="true">
               <span className="hero__orbit hero__orbit--outer" />
               <span className="hero__orbit hero__orbit--inner" />
@@ -286,8 +359,7 @@ export default function Hero() {
             <div className="hero__card-tilt" ref={tiltRef}>
               <div className="hero__glass-card">
                 <div className="hero__glass-card-glow" />
-                
-                {/* Single Top-Right Live Status Pill */}
+
                 <div className="hero__portrait-status">
                   <span className="hero__status-indicator">
                     <span className="hero__status-ping" />
@@ -297,17 +369,38 @@ export default function Hero() {
                 </div>
 
                 <div className="hero__image-container">
-                  <img
-                    src={denisPhoto}
-                    alt="Portrait of Heang Denis, Data Science and Machine Learning Engineer"
-                    className="hero__portrait-img"
-                    data-scroll-parallax
-                    width="900"
-                    height="1200"
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="async"
-                  />
+                  <div className="hero__portrait-stack" ref={portraitStackRef}>
+                    <img
+                      src={denisPhoto}
+                      alt="Portrait of Heang Denis, Data Science and Machine Learning Engineer"
+                      className="hero__portrait-img"
+                      width="900"
+                      height="1200"
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                    />
+                    <img
+                      src={denisPhoto}
+                      alt=""
+                      aria-hidden="true"
+                      draggable="false"
+                      className="hero__portrait-clone hero__portrait-clone--red"
+                      ref={(node) => {
+                        cloneRefs.current[0] = node;
+                      }}
+                    />
+                    <img
+                      src={denisPhoto}
+                      alt=""
+                      aria-hidden="true"
+                      draggable="false"
+                      className="hero__portrait-clone hero__portrait-clone--cyan"
+                      ref={(node) => {
+                        cloneRefs.current[1] = node;
+                      }}
+                    />
+                  </div>
                   <div className="hero__image-overlay" />
                 </div>
               </div>
@@ -316,8 +409,13 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll-down hint */}
-      <a href="#about" className="hero__scroll-hint" aria-label="Scroll to About section">
+      <a
+        href="#about"
+        className="hero__scroll-hint"
+        aria-label="Scroll to About section"
+        ref={scrollHintRef}
+        data-cursor="Scroll"
+      >
         <span className="hero__scroll-hint-text">Scroll</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M12 5v14M5 12l7 7 7-7" />

@@ -15,36 +15,28 @@ export default function SceneRail({ progress = 0 }) {
   const [active, setActive] = useState('hero');
 
   useEffect(() => {
-    let rafId = 0;
+    const sections = SCENES
+      .map((scene) => document.getElementById(scene.id))
+      .filter(Boolean);
 
-    const update = () => {
-      rafId = 0;
-      const marker = window.innerHeight * 0.42;
-      let current = SCENES[0].id;
+    if (!sections.length) return undefined;
 
-      for (const scene of SCENES) {
-        const section = document.getElementById(scene.id);
-        if (section && section.getBoundingClientRect().top <= marker) {
-          current = scene.id;
-        }
-      }
+    // A narrow band around the reading line replaces per-frame scroll math:
+    // React only updates when a scene crosses that band.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          setActive((previous) => (
+            previous === entry.target.id ? previous : entry.target.id
+          ));
+        });
+      },
+      { rootMargin: '-42% 0px -57% 0px', threshold: 0 },
+    );
 
-      setActive((previous) => (previous === current ? previous : current));
-    };
-
-    const onScroll = () => {
-      if (!rafId) rafId = requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
