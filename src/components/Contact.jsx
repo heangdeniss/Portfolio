@@ -2,6 +2,10 @@ import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
 import SectionTitle from './SectionTitle';
 import MagneticButton from './MagneticButton';
+import { site } from '../data/site';
+
+const displayUrl = (url) =>
+  String(url).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 
 export default function Contact() {
   const [ref, visible] = useReveal();
@@ -86,7 +90,7 @@ export default function Contact() {
       const body = encodeURIComponent(
         `Hello Denis,\n\n${message}\n\nBest regards,\n${name}\nContact: ${senderContact}`,
       );
-      window.location.href = `mailto:heangdenis011468@gmail.com?subject=${subject}&body=${body}`;
+      window.location.href = `${site.mailto}?subject=${subject}&body=${body}`;
       setFormStatus('sent');
       setToast({ message: 'Email app opened — review and send.', type: 'success' });
       setName('');
@@ -112,7 +116,7 @@ export default function Contact() {
       const text = encodeURIComponent(
         `Hi Denis, my name is ${name} (${senderContact}).\n\n${message}`,
       );
-      window.open(`https://t.me/heang_deniss?text=${text}`, '_blank', 'noopener,noreferrer');
+      window.open(`${site.socials.telegram}?text=${text}`, '_blank', 'noopener,noreferrer');
       setFormStatus('sent');
       setToast({ message: 'Telegram opened — review and send.', type: 'success' });
       setName('');
@@ -165,14 +169,14 @@ export default function Contact() {
               <div className="contact-interactive-card__body">
                 <span className="contact-interactive-card__lbl">Email Address</span>
                 <a
-                  href="mailto:heang.denis.eng@gmail.com"
+                  href={site.mailto}
                   className="contact-interactive-card__val"
                 >
-                  heang.denis.eng@gmail.com
+                  {site.email}
                 </a>
               </div>
               <button
-                onClick={() => copyToClipboard('heangdenis011468@gmail.com', 'email')}
+                onClick={() => copyToClipboard(site.email, 'email')}
                 className="contact-copy-btn"
                 title="Copy Email"
                 aria-label="Copy Email"
@@ -205,16 +209,16 @@ export default function Contact() {
               <div className="contact-interactive-card__body">
                 <span className="contact-interactive-card__lbl">Telegram Direct</span>
                 <a
-                  href="https://t.me/heang_deniss"
+                  href={site.socials.telegram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="contact-interactive-card__val"
                 >
-                  @heang_deniss
+                  {site.socials.telegramHandle}
                 </a>
               </div>
               <button
-                onClick={() => copyToClipboard('@heang_deniss', 'telegram')}
+                onClick={() => copyToClipboard(site.socials.telegramHandle, 'telegram')}
                 className="contact-copy-btn"
                 title="Copy Telegram Handle"
                 aria-label="Copy Telegram Handle"
@@ -247,18 +251,16 @@ export default function Contact() {
               <div className="contact-interactive-card__body">
                 <span className="contact-interactive-card__lbl">LinkedIn Profile</span>
                 <a
-                  href="https://www.linkedin.com/in/heang-denis-1a4b23369/"
+                  href={site.socials.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="contact-interactive-card__val"
                 >
-                  linkedin.com/in/heang-denis
+                  {displayUrl(site.socials.linkedin)}
                 </a>
               </div>
               <button
-                onClick={() =>
-                  copyToClipboard('https://www.linkedin.com/in/heang-denis-1a4b23369/', 'linkedin')
-                }
+                onClick={() => copyToClipboard(site.socials.linkedin, 'linkedin')}
                 className="contact-copy-btn"
                 title="Copy LinkedIn URL"
                 aria-label="Copy LinkedIn URL"
@@ -291,16 +293,16 @@ export default function Contact() {
               <div className="contact-interactive-card__body">
                 <span className="contact-interactive-card__lbl">GitHub Portfolio</span>
                 <a
-                  href="https://github.com/heangdeniss"
+                  href={site.socials.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="contact-interactive-card__val"
                 >
-                  github.com/heangdeniss
+                  {displayUrl(site.socials.github)}
                 </a>
               </div>
               <button
-                onClick={() => copyToClipboard('https://github.com/heangdeniss', 'github')}
+                onClick={() => copyToClipboard(site.socials.github, 'github')}
                 className="contact-copy-btn"
                 title="Copy GitHub URL"
                 aria-label="Copy GitHub URL"

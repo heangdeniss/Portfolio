@@ -8,8 +8,12 @@ import mptcCert from '../certificate/2-Mr. Heang Denis.pdf';
 import scientificCert from '../certificate/Heang Denis Scientific day Certificate.pdf';
 import anbCert from '../certificate/Certificate of Completion_Heang DENIS_ANBPTMD12024014.pdf';
 import udemyCert from '../certificate/Udemy Heang Denis Certificate.pdf';
+import { notesIn, plainText, resolveAsset } from '../lib/vault';
 
-export const timelineData = [
+/**
+ * Fallback timeline data. The live source of truth is /denis_portfolio/timeline.
+ */
+const baseTimeline = [
   {
     type: 'Experience',
     title: 'Data Analyst & Web Developer Intern',
@@ -93,3 +97,37 @@ export const timelineData = [
     certLabel: 'View Certificate of Completion',
   },
 ];
+
+const baseByTitle = new Map(baseTimeline.map((item) => [item.title, item]));
+
+function timelineFromNote(note) {
+  const base =
+    baseByTitle.get(note.data.title) ||
+    baseTimeline[Number(note.data.order) - 1] ||
+    {};
+  const cert = resolveAsset(note.data.cert || note.data.certUrl);
+
+  return {
+    ...base,
+    ...note.data,
+    type: note.data.type || base.type || 'Experience',
+    title: note.data.title || base.title || note.title,
+    institution: note.data.institution || base.institution || '',
+    logo: resolveAsset(note.data.logo) || base.logo || null,
+    logoBg: note.data.logoBg || base.logoBg || 'rgba(255, 255, 255, 0.05)',
+    year: note.data.year || base.year || '',
+    metrics: note.data.metrics || base.metrics || '',
+    tech: note.data.tech || base.tech || '',
+    desc: plainText(note.body) || base.desc || '',
+    url: note.data.url || base.url || null,
+    linkText: note.data.linkText || base.linkText || '',
+    certUrl: cert || base.certUrl || null,
+    certLabel: note.data.certLabel || base.certLabel || '',
+  };
+}
+
+const vaultTimeline = notesIn('timeline');
+
+export const timelineData = vaultTimeline.length
+  ? vaultTimeline.map(timelineFromNote)
+  : baseTimeline;

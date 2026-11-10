@@ -71,6 +71,37 @@ export default function useVelocitySurfaces() {
       });
     }
 
+    const progress = document.querySelector('.scroll-progress');
+    if (progress) {
+      groups.push({
+        host: progress,
+        targets: [
+          {
+            el: progress,
+            write: (value) => {
+              progress.style.setProperty('--progress-glow', Math.abs(value).toFixed(3));
+            },
+          },
+        ],
+        visible: true,
+      });
+    }
+
+    document.querySelectorAll('.vault__panel').forEach((panel) => {
+      groups.push({
+        host: panel,
+        targets: [
+          {
+            el: panel,
+            write: (value) => {
+              panel.style.setProperty('--vault-velocity', value.toFixed(3));
+            },
+          },
+        ],
+        visible: true,
+      });
+    });
+
     if (!groups.length) return undefined;
 
     const groupByHost = new Map(groups.map((group) => [group.host, group]));

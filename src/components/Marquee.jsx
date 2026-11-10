@@ -1,4 +1,5 @@
 import useVelocityMarquee from '../hooks/useVelocityMarquee';
+import { motion } from '../data/motion';
 
 const ITEMS = [
   { label: 'Machine Learning', color: '#8b5cf6' },
@@ -27,7 +28,11 @@ function MarqueeGroup() {
 }
 
 export default function Marquee() {
-  const trackRef = useVelocityMarquee({ baseSpeed: 52, factor: 760, direction: -1 });
+  const trackRef = useVelocityMarquee({
+    baseSpeed: motion.marqueeSpeed,
+    factor: 760,
+    direction: -1,
+  });
 
   return (
     <div className="marquee" data-cursor="Drag">

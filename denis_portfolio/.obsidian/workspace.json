@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "fa63c42417e911b2",
+    "type": "split",
+    "children": [
+      {
+        "id": "4f8585177eecb0a6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f63303cbb084a09d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Welcome.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Welcome"
+            }
+          }
+        ]
+      },
+      {
+        "id": "cbcf45ac48f617b8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "55979d456d39374b",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "feb9aafb0fd27144",
+    "type": "split",
+    "children": [
+      {
+        "id": "6e98f620115f4676",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c51b051a6ba865d0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "9a5bde2aef9673f8",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "85a5854fddc15fd3",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f66f0ce22a2d6ed9",
+    "type": "split",
+    "children": [
+      {
+        "id": "8fd31833182eb910",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "601788c815c01d80",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "0e409547dc16c94f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "25f7e5a5d3985550",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7c4cfe74afa8230b",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "a73bf540261a0347",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "55979d456d39374b",
+  "lastOpenFiles": [
+    "profile.md",
+    "Welcome.md",
+    "motion.md",
+    "create a link.md",
+    "timeline/05 - Udemy Bootcamp.md",
+    "timeline/06 - Data Viz Hackathon.md",
+    "timeline/04 - ACE English.md",
+    "timeline/03 - ITC Degree.md",
+    "projects/02 - LendingClub Pipeline.md",
+    "timeline/02 - Scientific Day.md",
+    "timeline/01 - MPTC Internship.md",
+    "timeline",
+    "projects/03 - HMM POS Tagger.md",
+    "projects/01 - Credit Risk RAG.md",
+    "projects",
+    "00 - Start Here.md"
+  ]
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { Fragment, useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from '../lib/animations';
 import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
@@ -6,16 +6,11 @@ import usePointerTilt from '../hooks/usePointerTilt';
 import useSplitReveal from '../hooks/useSplitReveal';
 import CountUp from './CountUp';
 import MagneticButton from './MagneticButton';
+import { site } from '../data/site';
 import denisPhoto from '../images/HEANG Denis good image.jpg';
 
-const ROLES = [
-  'Data Science Engineer',
-  'Data Analyst',
-  'ML & RAG Developer',
-  'Full-Stack Developer',
-];
-
 const ORBIT_TEXT = 'DATA SCIENCE • MACHINE LEARNING • RAG SYSTEMS • ANALYTICS • PROBABILISTIC MODELS • FULL-STACK • ';
+const TAGLINE_PLAIN = site.taglineLines.join(' ').replace(/<[^>]+>/g, '');
 
 export default function Hero() {
   const [roleIndex, setRoleIndex] = useState(0);
@@ -148,11 +143,11 @@ export default function Hero() {
     return () => context.revert();
   }, [introComplete, prefersReducedMotion]);
 
-  const currentRole = ROLES[roleIndex];
-  const rolePrefix = (prefersReducedMotion ? ROLES[0] : currentRole).startsWith('ML')
+  const currentRole = site.roles[roleIndex] ?? site.roles[0] ?? '';
+  const rolePrefix = (prefersReducedMotion ? site.roles[0] : currentRole).startsWith('ML')
     ? 'I build as an'
     : 'I build as a';
-  const visibleRoleText = prefersReducedMotion ? ROLES[0] : displayedText;
+  const visibleRoleText = prefersReducedMotion ? site.roles[0] ?? '' : displayedText;
 
   useEffect(() => {
     if (prefersReducedMotion) return undefined;
@@ -164,7 +159,7 @@ export default function Hero() {
     } else if (isDeleting && displayedText === '') {
       timer = setTimeout(() => {
         setIsDeleting(false);
-        setRoleIndex((prev) => (prev + 1) % ROLES.length);
+        setRoleIndex((prev) => (prev + 1) % site.roles.length);
       }, 180);
     } else {
       const speed = isDeleting ? 40 : 85;
@@ -193,12 +188,12 @@ export default function Hero() {
                 <span className="hero__status-ping" />
                 <span className="hero__status-core" />
               </span>
-              <span className="hero__status-text">Available for Projects &amp; Full-Time Roles</span>
+              <span className="hero__status-text">{site.availability}</span>
             </div>
 
             <div className="hero__role-wrapper hero__reveal">
               <span className="sr-only">
-                I work as a Data Science Engineer, Data Analyst, ML and RAG Developer, and Full-Stack Developer.
+                I work across {site.roles.join(', ')}.
               </span>
               <span className="hero__role-prefix" aria-hidden="true">{rolePrefix}</span>
               <span className="hero__role-text" aria-hidden="true">
@@ -207,60 +202,47 @@ export default function Hero() {
               </span>
             </div>
 
-            <h1 className="hero__name" aria-label="Heang Denis" ref={nameRef}>
+            <h1 className="hero__name" aria-label={site.name} ref={nameRef}>
               <span className="hero__name-line" aria-hidden="true">
-                <span className="hero__name-inner" data-split-line>Heang</span>
+                <span className="hero__name-inner" data-split-line>{site.firstName}</span>
               </span>
               <span className="hero__name-line hero__name-line--accent" aria-hidden="true">
-                <span className="hero__name-inner" data-split-line>Denis</span>
+                <span className="hero__name-inner" data-split-line>{site.lastName}</span>
               </span>
             </h1>
 
             <p
               className="hero__tagline"
-              aria-label="Bridging mathematical rigor with full-stack execution."
+              aria-label={TAGLINE_PLAIN}
               ref={taglineRef}
             >
-              <span className="hero__tagline-line" aria-hidden="true">
-                <span className="hero__tagline-inner" data-split-line>
-                  Bridging <em>mathematical rigor</em>
+              {site.taglineLines.map((line, index) => (
+                <span className="hero__tagline-line" aria-hidden="true" key={index}>
+                  <span
+                    className="hero__tagline-inner"
+                    data-split-line
+                    dangerouslySetInnerHTML={{ __html: line }}
+                  />
                 </span>
-              </span>
-              <span className="hero__tagline-line" aria-hidden="true">
-                <span className="hero__tagline-inner" data-split-line>with full-stack execution.</span>
-              </span>
+              ))}
             </p>
 
             <div className="hero__specializations hero__reveal">
-              <span className="hero__spec-badge hero__spec-badge--amber">
-                <span className="hero__spec-dot" />
-                Predictive Modeling
-              </span>
-              <span className="hero__spec-badge hero__spec-badge--cyan">
-                <span className="hero__spec-dot" />
-                RAG Architectures
-              </span>
-              <span className="hero__spec-badge hero__spec-badge--emerald">
-                <span className="hero__spec-dot" />
-                FastAPI &amp; React
-              </span>
-              <span className="hero__spec-badge hero__spec-badge--purple">
-                <span className="hero__spec-dot" />
-                Probabilistic Models (HMM)
-              </span>
-              <span className="hero__spec-badge hero__spec-badge--blue">
-                <span className="hero__spec-dot" />
-                Data Analyst
-              </span>
-              <span className="hero__spec-badge hero__spec-badge--teal">
-                <span className="hero__spec-dot" />
-                Data Cleaning
-              </span>
+              {site.specializations.map((specialization) => (
+                <span
+                  className={`hero__spec-badge hero__spec-badge--${specialization.tone}`}
+                  key={specialization.label}
+                >
+                  <span className="hero__spec-dot" />
+                  {specialization.label}
+                </span>
+              ))}
             </div>
 
-            <p className="hero__bio hero__reveal">
-              Data Science student at the <strong className="hero__bio-highlight">Institute of Technology of Cambodia</strong> (Expected Graduation: 2027). Focused on engineering end-to-end machine learning pipelines, probabilistic computing, and high-performance web systems.
-            </p>
+            <div
+              className="hero__bio hero__reveal"
+              dangerouslySetInnerHTML={{ __html: site.bio }}
+            />
 
             <div className="hero__actions hero__reveal">
               <MagneticButton
@@ -303,26 +285,21 @@ export default function Hero() {
             </div>
 
             <div className="hero__signals hero__reveal" aria-label="Selected results">
-              <div className="hero__signal">
-                <span className="hero__signal-value">
-                  <CountUp end={96.05} decimals={2} suffix="%" />
-                </span>
-                <span className="hero__signal-label">HMM POS accuracy</span>
-              </div>
-              <span className="hero__signal-divider" aria-hidden="true" />
-              <div className="hero__signal">
-                <span className="hero__signal-value">
-                  <CountUp end={232} suffix="k+" />
-                </span>
-                <span className="hero__signal-label">Tokens processed</span>
-              </div>
-              <span className="hero__signal-divider" aria-hidden="true" />
-              <div className="hero__signal">
-                <span className="hero__signal-value">
-                  <CountUp end={30} suffix="k+" />
-                </span>
-                <span className="hero__signal-label">Records modeled</span>
-              </div>
+              {site.signals.map((signal, index) => (
+                <Fragment key={signal.label}>
+                  {index > 0 && <span className="hero__signal-divider" aria-hidden="true" />}
+                  <div className="hero__signal">
+                    <span className="hero__signal-value">
+                      <CountUp
+                        end={signal.value}
+                        decimals={signal.decimals}
+                        suffix={signal.suffix}
+                      />
+                    </span>
+                    <span className="hero__signal-label">{signal.label}</span>
+                  </div>
+                </Fragment>
+              ))}
             </div>
           </div>
 
@@ -365,14 +342,14 @@ export default function Hero() {
                     <span className="hero__status-ping" />
                     <span className="hero__status-core" />
                   </span>
-                  <span className="hero__portrait-status-text">Phnom Penh, Cambodia</span>
+                  <span className="hero__portrait-status-text">{site.location}</span>
                 </div>
 
                 <div className="hero__image-container">
                   <div className="hero__portrait-stack" ref={portraitStackRef}>
                     <img
                       src={denisPhoto}
-                      alt="Portrait of Heang Denis, Data Science and Machine Learning Engineer"
+                      alt={`Portrait of ${site.name}, Data Science and Machine Learning Engineer`}
                       className="hero__portrait-img"
                       width="900"
                       height="1200"

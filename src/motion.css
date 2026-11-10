@@ -1,0 +1,149 @@
+/* ------------------------------------------------------------------
+   Motion polish — vault-controlled accents layered over the core UI
+   ------------------------------------------------------------------ */
+
+@property --hero-orbit-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* Scroll progress: a comet head that brightens with scroll velocity. */
+.scroll-progress {
+  --progress-glow: 0;
+  overflow: visible;
+}
+
+.scroll-progress::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 74px;
+  height: 8px;
+  transform: translate(50%, -50%) scale(calc(0.9 + var(--progress-glow, 0) * 0.35));
+  transform-origin: center;
+  border-radius: 9999px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 214, 128, 0.95) 0%,
+    rgba(245, 158, 11, 0.55) 38%,
+    transparent 72%
+  );
+  filter: blur(3px);
+  opacity: calc(0.45 + var(--progress-glow, 0) * 0.5);
+  transition: opacity 0.2s linear;
+  pointer-events: none;
+}
+
+/* Hero name: slow light sweep across the existing gradient lettering. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__name-inner {
+    background-size: 220% 100%;
+    animation: heroNameSweep 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .hero__name-line--accent .hero__name-inner {
+    animation-delay: 1.1s;
+  }
+
+  .hero__glass-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: 2;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--hero-orbit-angle),
+      transparent 0deg,
+      transparent 244deg,
+      rgba(245, 158, 11, 0.72) 292deg,
+      rgba(6, 182, 212, 0.38) 324deg,
+      transparent 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    animation: heroCardOrbit 7.5s linear infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes heroNameSweep {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  48% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes heroCardOrbit {
+  to {
+    --hero-orbit-angle: 360deg;
+  }
+}
+
+/* Vault-rendered markdown should keep the hero emphasis used by the design. */
+.hero__bio strong {
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+/* The vault graph responds to the shared Lenis velocity. */
+.vault__panel {
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.vault__panel:hover {
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+/* Vault graph section tint in high-contrast mode. */
+html[data-contrast="high"] .scroll-progress::after {
+  background: radial-gradient(
+    ellipse at center,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.5) 36%,
+    transparent 72%
+  );
+}
+
+/* Motion intensity switches from motion.md. */
+html[data-motion="calm"] .hero__name-inner,
+html[data-motion="calm"] .hero__glass-card::before,
+html[data-motion="calm"] .ambient__grain {
+  animation: none;
+}
+
+html[data-motion="calm"] .scroll-progress::after {
+  opacity: 0.65;
+  transform: translate(50%, -50%);
+}
+
+html[data-motion="off"] .ambient__grain,
+html[data-motion="off"] .ambient__fallback {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__name-inner,
+  .hero__glass-card::before,
+  .scroll-progress::after {
+    animation: none;
+    transition: none;
+  }
+
+  .vault__panel {
+    transition: none;
+  }
+}

@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { ambientVertexShader, ambientFragmentShader } from '../lib/shaders/ambient';
 import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
+import { motion } from '../data/motion';
 
 /**
  * Full-screen ambient shader canvas.
@@ -150,7 +151,7 @@ export default function AmbientBackground() {
       aria-hidden="true"
     >
       <div className="ambient__fallback" />
-      <span className="ambient__grain" />
+      {motion.grain && <span className="ambient__grain" />}
       <span className="ambient__vignette" />
     </div>
   );

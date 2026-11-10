@@ -34,6 +34,7 @@ Welcome to my data analytics portfolio. This repository highlights selected proj
 
 ## Table of Contents
 
+- [Editing Content from Obsidian](#editing-content-from-obsidian)
 - [Projects](#projects)
 - [Project 1: Credit Risk Analysis, Prediction and RAG Assistant](#project-1-credit-risk-analysis-prediction-and-rag-assistant)
 - [Project 2: LendingClub Data Analysis](#project-2-lendingclub-data-analysis)
@@ -41,6 +42,44 @@ Welcome to my data analytics portfolio. This repository highlights selected proj
 - [Project 4: HMM Part-of-Speech Tagger & Text Segmentation (PGM)](#project-4-hmm-part-of-speech-tagger--text-segmentation-pgm)
 - [Contact](#contact)
 - [Author](#author)
+
+## Editing Content from Obsidian
+
+The portfolio reads its content from the vault in `denis_portfolio/` at build time. You do not need to edit React for normal copy, project, timeline or motion changes.
+
+```bash
+npm run dev    # preview while editing notes
+npm run build  # production build with the latest vault content
+```
+
+| Note | Controls |
+| --- | --- |
+| `00 - Start Here.md` | Vault guide and frontmatter reference |
+| `profile.md` | Hero, About, metrics, degree, languages, social links |
+| `projects/*.md` | Project cards, dossiers and galleries |
+| `timeline/*.md` | Experience and education timeline |
+| `motion.md` | Lenis smoothing, marquee speed, cursor, shader, grain and graph intensity |
+
+A note is published only when its frontmatter contains `publish: true`. Use `graph: false` to keep a note out of the animated knowledge graph. Images and PDFs are resolved by filename from `src/images` and `src/certificate`, and only referenced assets are bundled.
+
+```yaml
+---
+publish: true
+title: My Project
+shortTitle: My Project
+graphLabel: My Project
+group: project
+order: 4
+slug: my-project
+metric: 1M Records • 98% Accuracy
+role: Machine Learning • FastAPI
+accent: "#f59e0b"
+tags: [Python, FastAPI, React]
+images: [my-chart.png]
+related:
+  - Profile
+---
+```
 
 ## Projects
 

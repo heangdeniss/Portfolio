@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 import Lenis from 'lenis';
 import { gsap, ScrollTrigger } from '../lib/animations';
 import { useExperience } from '../context/ExperienceContext';
-
-const VELOCITY_NORMALIZER = 80;
+import { motion } from '../data/motion';
 
 /**
  * Lenis + GSAP ticker integration.
  * - One rAF loop (GSAP ticker) drives Lenis, ScrollTrigger and all GSAP tweens.
  * - Lenis velocity is mirrored into a ref so decorative surfaces and WebGL
  *   canvases can read it without re-rendering React or recalculating styles.
+ * - Tuning values come from denis_portfolio/motion.md.
  */
 export default function SmoothScrollProvider({ children }) {
   const { introComplete, lenisRef, velocityRef, progressRef, prefersReducedMotion } =
@@ -19,7 +19,7 @@ export default function SmoothScrollProvider({ children }) {
     if (prefersReducedMotion) return undefined;
 
     const lenis = new Lenis({
-      lerp: 0.085,
+      lerp: motion.scrollLerp,
       smoothWheel: true,
       wheelMultiplier: 1,
       touchMultiplier: 1.5,
@@ -32,7 +32,10 @@ export default function SmoothScrollProvider({ children }) {
     lenisRef.current = lenis;
 
     const onScroll = ({ velocity, progress }) => {
-      const normalized = Math.max(-1, Math.min(1, velocity / VELOCITY_NORMALIZER));
+      const normalized = Math.max(
+        -1,
+        Math.min(1, velocity / motion.velocityNormalizer),
+      );
       velocityRef.current = normalized;
       progressRef.current = progress;
     };

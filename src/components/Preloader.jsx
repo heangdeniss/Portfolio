@@ -3,10 +3,15 @@ import { gsap } from '../lib/animations';
 import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import { projects } from '../data/projects';
+import { site } from '../data/site';
 import denisPhoto from '../images/HEANG Denis good image.jpg';
 
 const PRELOAD_ASSETS = [denisPhoto, ...projects.map((project) => project.images[0])];
 const CURTAIN_COLUMNS = 5;
+const LEAD_SIGNAL = site.signals[0];
+const LEAD_SIGNAL_LABEL = LEAD_SIGNAL
+  ? `${LEAD_SIGNAL.value.toFixed(LEAD_SIGNAL.decimals)}${LEAD_SIGNAL.suffix} ${LEAD_SIGNAL.label}`
+  : '';
 
 const preloadImage = (src) =>
   new Promise((resolve) => {
@@ -174,8 +179,8 @@ export default function Preloader() {
 
       <div ref={contentRef} className="preloader__content">
         <div className="preloader__top">
-          <span className="preloader__meta">Heang Denis — Portfolio</span>
-          <span className="preloader__meta preloader__meta--right">Phnom Penh, KH / 2026</span>
+          <span className="preloader__meta">{site.name} — Portfolio</span>
+          <span className="preloader__meta preloader__meta--right">{site.location.split(',')[0]} / 2026</span>
           <button type="button" className="preloader__skip" onClick={skip}>
             Skip intro
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -190,7 +195,7 @@ export default function Preloader() {
             Experience is Loading
           </p>
           <p className="preloader__wordmark" aria-hidden="true">
-            HEANG<span>DENIS</span>
+            {site.firstName.toUpperCase()}<span>{site.lastName.toUpperCase()}</span>
           </p>
           <div className="preloader__status" role="status" aria-live="polite">
             <span>Preparing WebGL · GSAP · Lenis</span>
@@ -201,8 +206,8 @@ export default function Preloader() {
 
         <div className="preloader__bottom">
           <div className="preloader__footnote">
-            <span>01 — 03 Selected Projects</span>
-            <span>96.05% HMM POS Accuracy</span>
+            <span>01 — {String(projects.length).padStart(2, '0')} Selected Projects</span>
+            <span>{LEAD_SIGNAL_LABEL}</span>
           </div>
 
           <div className="preloader__counter" aria-hidden="true">

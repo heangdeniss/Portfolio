@@ -7,12 +7,20 @@ import llcBi2 from '../images/LLC_bi_1_(2).png';
 import llcBi3 from '../images/LLC_bi_1_(3).png';
 import hmmMethodology from '../images/hmm_methodology.jpg';
 import hmmResults from '../images/hmm_results.jpg';
+import {
+  extractListItems,
+  getSections,
+  notesIn,
+  plainText,
+  resolveAsset,
+} from '../lib/vault';
 
 /**
- * Single source of truth for the three featured projects.
- * Shared by the WebGL showcase, the dossier overlay and the preloader.
+ * Fallback project data. The live source of truth is the Obsidian vault
+ * (/denis_portfolio/projects). These objects keep the site working if a note
+ * is unpublished or the vault is moved.
  */
-export const projects = [
+const baseProjects = [
   {
     id: 1,
     slug: 'credit-risk-rag',
@@ -101,6 +109,57 @@ export const projects = [
     },
   },
 ];
+
+const baseBySlug = new Map(baseProjects.map((project) => [project.slug, project]));
+
+function projectFromNote(note) {
+  const base = baseBySlug.get(note.data.slug || note.id) ?? {};
+  const sections = getSections(note.body);
+  const architecture = sections.architecture || '';
+  const formulaSection = sections.formula || '';
+  const detailSection = sections.details || '';
+  const codeMatch = formulaSection.match(/```[^\n]*\n([\s\S]*?)```/);
+  const flow = extractListItems(architecture);
+  const images = (Array.isArray(note.data.images) ? note.data.images : [])
+    .map(resolveAsset)
+    .filter(Boolean);
+
+  return {
+    ...base,
+    ...note.data,
+    id: Number(note.data.order) || base.id || 0,
+    slug: note.data.slug || note.id,
+    title: note.data.title || base.title || note.title,
+    shortTitle: note.data.shortTitle || base.shortTitle || note.graphLabel,
+    metric: note.data.metric || base.metric || '',
+    role: note.data.role || base.role || '',
+    accent: note.data.accent || base.accent || '#f59e0b',
+    desc: plainText(sections.summary || note.body) || base.desc || '',
+    tags: Array.isArray(note.data.tags) ? note.data.tags.map(String) : base.tags || [],
+    githubUrl: note.data.githubUrl || base.githubUrl || '',
+    demoUrl: note.data.demoUrl || base.demoUrl || '',
+    images: images.length ? images : base.images || [],
+    architecture: {
+      flow: flow.length ? flow : base.architecture?.flow || [],
+      formulaLabel:
+        plainText(formulaSection.replace(/```[\s\S]*?```/, '')) ||
+        base.architecture?.formulaLabel ||
+        '',
+      formula: codeMatch ? codeMatch[1].trim() : base.architecture?.formula || '',
+      details: plainText(detailSection) || base.architecture?.details || '',
+    },
+  };
+}
+
+const vaultProjects = notesIn('projects')
+  .map(projectFromNote)
+  .filter((project) => project.images.length);
+
+/**
+ * Single source of truth for the featured projects.
+ * Shared by the WebGL showcase, the dossier overlay and the preloader.
+ */
+export const projects = vaultProjects.length ? vaultProjects : baseProjects;
 
 export const projectPreloadAssets = [
   ...projects.flatMap((project) => project.images),

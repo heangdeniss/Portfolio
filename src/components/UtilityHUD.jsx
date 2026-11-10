@@ -9,7 +9,8 @@ const ROUTES = [
   { id: 'skills', index: '03', label: 'Stack' },
   { id: 'background', index: '04', label: 'Trajectory' },
   { id: 'projects', index: '05', label: 'Work' },
-  { id: 'contact', index: '06', label: 'Contact' },
+  { id: 'notes', index: '06', label: 'Notes' },
+  { id: 'contact', index: '07', label: 'Contact' },
 ];
 
 /**
@@ -90,7 +91,7 @@ export default function UtilityHUD() {
           <span />
         </span>
         <span className="utility__trigger-label">Index</span>
-        <span className="utility__trigger-count">06</span>
+        <span className="utility__trigger-count">{String(ROUTES.length).padStart(2, '0')}</span>
       </MagneticButton>
 
       <div

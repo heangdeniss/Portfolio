@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import RollText from './RollText';
 import MagneticButton from './MagneticButton';
+import { site } from '../data/site';
 
 const navLinks = [
   { index: '01', label: 'Home', href: '#hero' },
@@ -8,7 +9,8 @@ const navLinks = [
   { index: '03', label: 'Stack', href: '#skills' },
   { index: '04', label: 'Trajectory', href: '#background' },
   { index: '05', label: 'Work', href: '#projects' },
-  { index: '06', label: 'Contact', href: '#contact' },
+  { index: '06', label: 'Notes', href: '#notes' },
+  { index: '07', label: 'Contact', href: '#contact' },
 ];
 
 export default function Header() {
@@ -91,8 +93,8 @@ export default function Header() {
       className={`header${scrolled ? ' header--scrolled' : ''}${mobileOpen ? ' header--menu-open' : ''}`}
     >
       <div className="header__inner">
-        <a href="#hero" className="header__logo" aria-label="Denis — back to top" data-cursor="Top">
-          <span className="header__logo-text">Denis</span>
+        <a href="#hero" className="header__logo" aria-label={`${site.name} — back to top`} data-cursor="Top">
+          <span className="header__logo-text">{site.lastName}</span>
           <span className="header__logo-dot">.</span>
         </a>
 

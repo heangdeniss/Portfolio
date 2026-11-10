@@ -7,6 +7,7 @@ import About from './components/About';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
+import VaultGraph from './components/VaultGraph';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import AmbientBackground from './components/AmbientBackground';
@@ -17,6 +18,7 @@ import SmoothScrollProvider from './components/SmoothScrollProvider';
 import { ExperienceProvider, useExperience } from './context/ExperienceContext';
 import useSpotlight from './hooks/useSpotlight';
 import useVelocitySurfaces from './hooks/useVelocitySurfaces';
+import { motion } from './data/motion';
 import { gsap } from './lib/animations';
 import './App.css';
 import './animations.css';
@@ -24,6 +26,8 @@ import './act-two.css';
 import './act-three.css';
 import './act-four.css';
 import './experience.css';
+import './vault.css';
+import './motion.css';
 
 const RING_RADIUS = 21;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
@@ -125,6 +129,10 @@ function Portfolio() {
   useVelocitySurfaces();
 
   useEffect(() => {
+    document.documentElement.dataset.motion = motion.intensity;
+  }, []);
+
+  useEffect(() => {
     const context = gsap.context(() => {
       gsap.fromTo(
         progressRef.current,
@@ -144,8 +152,8 @@ function Portfolio() {
     <>
       <a href="#main-content" className="skip-link">Skip to main content</a>
       <Preloader />
-      <AmbientBackground />
-      <CustomCursor />
+      {motion.ambient && <AmbientBackground />}
+      {motion.cursor && <CustomCursor />}
       <span ref={progressRef} className="scroll-progress" aria-hidden="true" />
       <Header />
       <UtilityHUD />
@@ -168,6 +176,7 @@ function Portfolio() {
         <Experience />
         <TypeRibbon top={RIBBON_TWO.top} bottom={RIBBON_TWO.bottom} />
         <Projects />
+        <VaultGraph />
         <Contact />
       </main>
       <Footer />

@@ -1,6 +1,7 @@
 import useReveal from '../hooks/useReveal';
 import useSplitReveal from '../hooks/useSplitReveal';
 import MagneticButton from './MagneticButton';
+import { site } from '../data/site';
 
 export default function About() {
   const [ref, visible] = useReveal();
@@ -22,25 +23,20 @@ export default function About() {
             <div>
               <p className="section-label">About Me</p>
               <h2 className="about__headline" ref={headlineRef}>
-                <span className="about__headline-line">
-                  <span data-split-line>Driven by Mathematics,</span>
-                </span>
-                <span className="about__headline-line">
-                  <span data-split-line>Crafted in Code.</span>
-                </span>
+                {site.aboutHeadline.map((line, index) => (
+                  <span className="about__headline-line" key={index}>
+                    <span data-split-line>{line}</span>
+                  </span>
+                ))}
               </h2>
 
-              <p className="about__text">
-                I&apos;m a Data Science student at the <strong>Institute of Technology of Cambodia</strong>,
-                pursuing my Engineering Degree (Expected Graduation: 2027). I focus on bridging statistical
-                rigor with high-performance software engineering to solve real-world problems.
-              </p>
-
-              <p className="about__text">
-                Whether formulating probabilistic graphical models, training machine learning
-                pipelines on complex datasets, or architecting full-stack web platforms, I value
-                clean structure, mathematical grounding, and practical impact.
-              </p>
+              {site.aboutParagraphs.map((paragraph, index) => (
+                <div
+                  className="about__text"
+                  key={index}
+                  dangerouslySetInnerHTML={{ __html: paragraph }}
+                />
+              ))}
             </div>
 
             <div>
@@ -50,20 +46,20 @@ export default function About() {
                     <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  Phnom Penh, Cambodia
+                  {site.location}
                 </span>
                 <span className="about__meta-chip">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
                     <path d="M6 12v5c3 3 9 3 12 0v-5" />
                   </svg>
-                  ITC • Expected Graduation: 2027
+                  {site.educationChip}
                 </span>
               </div>
 
               <div className="about__cta-row">
                 <MagneticButton
-                  href="mailto:heangdenis011468@gmail.com"
+                  href={site.mailto}
                   className="btn btn-primary"
                   strength={0.22}
                   data-cursor="Email"
@@ -91,14 +87,12 @@ export default function About() {
                 </div>
                 <span className="about__card-tag">Academic Foundation</span>
               </div>
-              <h3 className="about__card-title">Engineering Degree in Data Science</h3>
+              <h3 className="about__card-title">{site.degree.title}</h3>
               <p className="about__card-institution">
-                Institute of Technology of Cambodia (ITC)
-                <span className="about__card-year"> • Expected Graduation: 2027</span>
+                {site.degree.institution}
+                <span className="about__card-year"> • {site.degree.year}</span>
               </p>
-              <p className="about__card-text">
-                Rigorous curriculum covering Data Structures &amp; Algorithms, Machine Learning, Database Systems, Linear Algebra, and Probability &amp; Statistics.
-              </p>
+              <p className="about__card-text">{site.degree.description}</p>
             </div>
 
             {/* Card 2: Technical Focus */}
@@ -115,18 +109,12 @@ export default function About() {
               </div>
               <h3 className="about__card-title">What I Specialize In</h3>
               <div className="about__interests-list">
-                <div className="about__interest-item">
-                  <span className="about__interest-dot" />
-                  <span><strong>Predictive Modeling:</strong> Credit default risk prediction, Basel-aligned ratings, and gradient-boosted ensembles</span>
-                </div>
-                <div className="about__interest-item">
-                  <span className="about__interest-dot" />
-                  <span><strong>Statistical Computing:</strong> Hidden Markov Models (HMM) and log-space Viterbi algorithm from mathematical first principles</span>
-                </div>
-                <div className="about__interest-item">
-                  <span className="about__interest-dot" />
-                  <span><strong>Modern Full-Stack:</strong> Python FastAPI backends paired with clean React interfaces for data applications</span>
-                </div>
+                {site.focus.map((item, index) => (
+                  <div className="about__interest-item" key={index}>
+                    <span className="about__interest-dot" />
+                    <span dangerouslySetInnerHTML={{ __html: item }} />
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -143,18 +131,12 @@ export default function About() {
                 <span className="about__card-tag">Languages &amp; Communication</span>
               </div>
               <div className="about__lang-pills">
-                <div className="about__lang-pill">
-                  <span className="about__lang-pill-name">Khmer</span>
-                  <span className="about__lang-pill-level">Native</span>
-                </div>
-                <div className="about__lang-pill">
-                  <span className="about__lang-pill-name">English</span>
-                  <span className="about__lang-pill-level">Professional (B2) • ACE</span>
-                </div>
-                <div className="about__lang-pill">
-                  <span className="about__lang-pill-name">French</span>
-                  <span className="about__lang-pill-level">Elementary (A2)</span>
-                </div>
+                {site.languages.map((language) => (
+                  <div className="about__lang-pill" key={language.name}>
+                    <span className="about__lang-pill-name">{language.name}</span>
+                    <span className="about__lang-pill-level">{language.level}</span>
+                  </div>
+                ))}
               </div>
             </div>
 

@@ -298,8 +298,8 @@ export default function Projects() {
         </p>
 
         <div className="showcase__header-meta" aria-hidden="true">
-          <span>03 Projects</span>
-          <span>09 Visuals</span>
+          <span>{String(projects.length).padStart(2, '0')} Projects</span>
+          <span>{String(projects.reduce((total, project) => total + project.images.length, 0)).padStart(2, '0')} Visuals</span>
           <span>02 Domains</span>
         </div>
       </div>
