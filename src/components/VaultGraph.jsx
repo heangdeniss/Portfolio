@@ -206,10 +206,15 @@ function labelForNode(node, center, isWide) {
 export default function VaultGraph() {
   const [revealRef, visible] = useReveal({ threshold: 0.08 });
   const panelRef = useRef(null);
+  const sceneRef = useRef(null);
+  const sceneQuickRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const { quality } = useExperience();
   const isWide = useMediaQuery('(min-width: 760px)');
-  const [activeId, setActiveId] = useState(null);
+  const [hoveredId, setHoveredId] = useState(null);
+  const [pinnedId, setPinnedId] = useState(null);
+
+  const activeId = hoveredId ?? pinnedId;
 
   const showMotion = motion.vaultGraph && !prefersReducedMotion;
   const nodes = vaultGraph.nodes;
@@ -227,6 +232,11 @@ export default function VaultGraph() {
 
     return connected;
   }, [activeId, edges]);
+
+  const activeNode = useMemo(
+    () => (activeId ? layout.nodeById.get(activeId) ?? null : null),
+    [activeId, layout],
+  );
 
   useEffect(() => {
     if (prefersReducedMotion || !panelRef.current) return undefined;
@@ -247,28 +257,50 @@ export default function VaultGraph() {
     return () => context.revert();
   }, [prefersReducedMotion]);
 
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene || prefersReducedMotion) {
+      sceneQuickRef.current = null;
+      return undefined;
+    }
+
+    sceneQuickRef.current = {
+      x: gsap.quickTo(scene, 'x', { duration: 0.55, ease: 'power3.out' }),
+      y: gsap.quickTo(scene, 'y', { duration: 0.55, ease: 'power3.out' }),
+    };
+
+    return () => {
+      sceneQuickRef.current = null;
+      gsap.set(scene, { clearProps: 'transform' });
+    };
+  }, [prefersReducedMotion, isWide]);
+
   const onPointerMove = (event) => {
     if (prefersReducedMotion || !panelRef.current) return;
 
     const rect = panelRef.current.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
 
-    panelRef.current.style.setProperty(
-      '--vault-px',
-      (((event.clientX - rect.left) / rect.width - 0.5) * 2).toFixed(3),
-    );
-    panelRef.current.style.setProperty(
-      '--vault-py',
-      (((event.clientY - rect.top) / rect.height - 0.5) * 2).toFixed(3),
-    );
+    const px = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    const py = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+
+    panelRef.current.style.setProperty('--vault-px', px.toFixed(3));
+    panelRef.current.style.setProperty('--vault-py', py.toFixed(3));
+
+    sceneQuickRef.current?.x(px * 16);
+    sceneQuickRef.current?.y(py * 11);
   };
 
   const resetPointer = () => {
     panelRef.current?.style.setProperty('--vault-px', '0');
     panelRef.current?.style.setProperty('--vault-py', '0');
+    sceneQuickRef.current?.x(0);
+    sceneQuickRef.current?.y(0);
   };
 
-  const resetActive = () => setActiveId(null);
+  const togglePinned = (id) => {
+    setPinnedId((prev) => (prev === id ? null : id));
+  };
 
   return (
     <section id="notes" className="section vault-section" data-ghost="VAULT" ref={revealRef}>
@@ -295,23 +327,33 @@ export default function VaultGraph() {
                 <span className="vault__badge-dot" aria-hidden="true" />
                 Obsidian · Build-time sync
               </span>
-              <span className="vault__meta">
-                {String(vaultStats.notes).padStart(2, '0')} notes
-                <i aria-hidden="true">/</i>
-                {String(vaultStats.links).padStart(2, '0')} links
+              <span className="vault__meta" aria-live="polite">
+                {activeNode ? (
+                  <>
+                    <strong className="vault__meta-active">{activeNode.label}</strong>
+                    <i aria-hidden="true">·</i>
+                    {String(Math.max(0, (activeConnections?.size ?? 1) - 1)).padStart(2, '0')} links
+                  </>
+                ) : (
+                  <>
+                    {String(vaultStats.notes).padStart(2, '0')} notes
+                    <i aria-hidden="true">/</i>
+                    {String(vaultStats.links).padStart(2, '0')} links
+                  </>
+                )}
               </span>
             </div>
 
-            <div className="vault__stage">
+            <div className="vault__stage" onClick={() => setPinnedId(null)}>
               <div className="vault__radial" aria-hidden="true" />
 
               <svg
-                className={`vault__graph${visible ? ' is-visible' : ''}`}
+                className={`vault__graph${visible ? ' is-visible' : ''}${activeId ? ' has-active' : ''}`}
                 viewBox={`0 0 ${layout.width} ${layout.height}`}
                 role="img"
                 aria-label={`Knowledge graph of ${vaultStats.notes} published notes and ${vaultStats.links} links`}
               >
-                <g className="vault__scene">
+                <g ref={sceneRef} className="vault__scene">
                   <g className="vault__edges" aria-hidden="true">
                     {edges.map((edge) => {
                       const isActive =
@@ -335,21 +377,30 @@ export default function VaultGraph() {
 
                   {showMotion && quality !== 'low' && (
                     <g className="vault__packets" aria-hidden="true">
-                      {edges.map((edge) => (
-                        <circle
-                          key={`packet-${edge.id}`}
-                          r="1.6"
-                          className="vault__packet"
-                          style={{ fill: edge.color }}
-                        >
-                          <animateMotion
-                            dur={`${4.6 + (edge.index % 5) * 0.85}s`}
-                            begin={`${(edge.index * 0.37).toFixed(2)}s`}
-                            repeatCount="indefinite"
-                            path={edge.path}
-                          />
-                        </circle>
-                      ))}
+                      {edges.map((edge) => {
+                        const isActive =
+                          activeId && (edge.source === activeId || edge.target === activeId);
+                        const isDimmed = activeId && !isActive;
+
+                        return (
+                          <circle
+                            key={`packet-${edge.id}`}
+                            r={isActive ? '2.2' : '1.6'}
+                            className={`vault__packet${isActive ? ' is-active' : ''}${isDimmed ? ' is-dimmed' : ''}`}
+                            style={{ fill: edge.color }}
+                          >
+                            <animateMotion
+                              dur={`${4.4 + (edge.index % 5) * 0.78}s`}
+                              begin={`${(edge.index * 0.34).toFixed(2)}s`}
+                              repeatCount="indefinite"
+                              keyPoints="0;1"
+                              keyTimes="0;1"
+                              calcMode="linear"
+                              path={edge.path}
+                            />
+                          </circle>
+                        );
+                      })}
                     </g>
                   )}
 
@@ -359,20 +410,40 @@ export default function VaultGraph() {
                       const label = labelForNode(node, layout.center, isWide);
                       const isActive = activeId === node.id;
                       const isConnected = activeConnections?.has(node.id);
-                      const isDimmed =
-                        activeConnections && !isConnected;
+                      const isNeighbor = Boolean(activeId && isConnected && !isActive);
+                      const isDimmed = activeConnections && !isConnected;
 
                       return (
                         <g
                           key={node.id}
                           transform={`translate(${node.x} ${node.y})`}
-                          className={`vault__node-anchor${isActive ? ' is-active' : ''}${isDimmed ? ' is-dimmed' : ''}`}
+                          className={`vault__node-anchor${isActive ? ' is-active' : ''}${isNeighbor ? ' is-connected' : ''}${isDimmed ? ' is-dimmed' : ''}`}
                           style={{
                             '--node-color': group.color,
                             '--node-index': index,
                           }}
-                          onPointerEnter={() => setActiveId(node.id)}
-                          onPointerLeave={resetActive}
+                          tabIndex={0}
+                          role="button"
+                          aria-label={`${node.title} (${node.group} note)`}
+                          aria-pressed={pinnedId === node.id}
+                          onPointerEnter={() => setHoveredId(node.id)}
+                          onPointerLeave={() => setHoveredId(null)}
+                          onFocus={() => setHoveredId(node.id)}
+                          onBlur={() => setHoveredId(null)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            togglePinned(node.id);
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              togglePinned(node.id);
+                            } else if (event.key === 'Escape') {
+                              setPinnedId(null);
+                              setHoveredId(null);
+                            }
+                          }}
                         >
                           <title>{node.title}</title>
                           <g className="vault__node">
@@ -445,12 +516,26 @@ export default function VaultGraph() {
 
         {motion.vaultGraph && (
           <div className="vault__note-strip" aria-label="Content notes powering this page">
-            {nodes.map((node) => (
-              <span key={node.id} className="vault__note-chip">
-                {node.label}
-                <i>{node.group}</i>
-              </span>
-            ))}
+            {nodes.map((node) => {
+              const isActive = activeId === node.id;
+              const isConnected = activeConnections?.has(node.id);
+              return (
+                <button
+                  key={node.id}
+                  type="button"
+                  className={`vault__note-chip${isActive ? ' is-active' : ''}${isConnected && !isActive ? ' is-connected' : ''}`}
+                  onPointerEnter={() => setHoveredId(node.id)}
+                  onPointerLeave={() => setHoveredId(null)}
+                  onFocus={() => setHoveredId(node.id)}
+                  onBlur={() => setHoveredId(null)}
+                  onClick={() => togglePinned(node.id)}
+                  aria-pressed={pinnedId === node.id}
+                >
+                  {node.label}
+                  <i>{node.group}</i>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>

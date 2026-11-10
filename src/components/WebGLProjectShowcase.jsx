@@ -1,5 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
+import {
+  CanvasTexture,
+  DoubleSide,
+  Group,
+  LinearFilter,
+  LinearMipmapLinearFilter,
+  MathUtils,
+  Mesh,
+  NoColorSpace,
+  PerspectiveCamera,
+  PlaneGeometry,
+  SRGBColorSpace,
+  Scene,
+  ShaderMaterial,
+  Vector2,
+  WebGLRenderer,
+} from 'three';
 import { gsap, ScrollTrigger } from '../lib/animations';
 import { useExperience } from '../context/ExperienceContext';
 import useMediaQuery from '../hooks/useMediaQuery';
@@ -53,8 +69,9 @@ export default function WebGLProjectShowcase({
   const showcaseProgressRef = useRef(0);
   const activeIndexRef = useRef(0);
   const planeApiRef = useRef(null);
-  const mouseRef = useRef(new THREE.Vector2(0.5, 0.5));
+  const mouseRef = useRef(new Vector2(0.5, 0.5));
   const hoverRef = useRef(0);
+  const mediaQuickRef = useRef(null);
   const dragRef = useRef({ down: false, startX: 0, startY: 0, moved: false });
   const thumbDragRef = useRef({ down: false, startX: 0, scrollLeft: 0 });
 
@@ -79,7 +96,7 @@ export default function WebGLProjectShowcase({
 
     let renderer;
     try {
-      renderer = new THREE.WebGLRenderer({
+      renderer = new WebGLRenderer({
         antialias: quality === 'high',
         alpha: true,
         powerPreference: 'high-performance',
@@ -96,22 +113,22 @@ export default function WebGLProjectShowcase({
     host.appendChild(canvas);
 
     renderer.setClearColor(0x000000, 0);
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.outputColorSpace = SRGBColorSpace;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.set(0, 0, 6);
 
-    const group = new THREE.Group();
+    const group = new Group();
     scene.add(group);
 
-    const geometry = new THREE.PlaneGeometry(PLANE_WIDTH, PLANE_HEIGHT, 32, 32);
+    const geometry = new PlaneGeometry(PLANE_WIDTH, PLANE_HEIGHT, 32, 32);
     const textureCache = new Map();
     const pendingTextures = new Map();
     let disposed = false;
 
     const planes = projects.map((project, index) => {
-      const material = new THREE.ShaderMaterial({
+      const material = new ShaderMaterial({
         vertexShader: projectVertexShader,
         fragmentShader: projectFragmentShader,
         uniforms: {
@@ -123,15 +140,15 @@ export default function WebGLProjectShowcase({
           uTextureAspect: { value: 1.6 },
           uPlaneAspect: { value: PLANE_WIDTH / PLANE_HEIGHT },
           uScrollVelocity: { value: 0 },
-          uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+          uMouse: { value: new Vector2(0.5, 0.5) },
         },
         transparent: true,
         depthWrite: false,
         depthTest: false,
-        side: THREE.DoubleSide,
+        side: DoubleSide,
       });
 
-      const mesh = new THREE.Mesh(geometry, material);
+      const mesh = new Mesh(geometry, material);
       mesh.position.x = index * PLANE_SPACING;
       mesh.renderOrder = index;
       mesh.visible = false;
@@ -166,10 +183,10 @@ export default function WebGLProjectShowcase({
           const context = bitmap.getContext('2d');
           context.drawImage(image, 0, 0, bitmap.width, bitmap.height);
 
-          const texture = new THREE.CanvasTexture(bitmap);
-          texture.colorSpace = THREE.NoColorSpace;
-          texture.minFilter = THREE.LinearMipmapLinearFilter;
-          texture.magFilter = THREE.LinearFilter;
+          const texture = new CanvasTexture(bitmap);
+          texture.colorSpace = NoColorSpace;
+          texture.minFilter = LinearMipmapLinearFilter;
+          texture.magFilter = LinearFilter;
           texture.generateMipmaps = true;
           texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
           texture.userData.aspect =
@@ -227,8 +244,8 @@ export default function WebGLProjectShowcase({
       renderer.setSize(width, height, false);
 
       camera.aspect = width / height;
-      const fov = THREE.MathUtils.degToRad(camera.fov);
-      camera.position.z = THREE.MathUtils.clamp(
+      const fov = MathUtils.degToRad(camera.fov);
+      camera.position.z = MathUtils.clamp(
         6.0 / (2 * Math.tan(fov / 2) * camera.aspect),
         4.8,
         9,
@@ -407,6 +424,28 @@ export default function WebGLProjectShowcase({
     return () => context.revert();
   }, [activeIndex, prefersReducedMotion]);
 
+  /* Media frame 3D depth quickTo */
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!media || prefersReducedMotion || !hasFinePointer) {
+      mediaQuickRef.current = null;
+      return undefined;
+    }
+
+    gsap.set(media, { transformPerspective: 1100, transformStyle: 'preserve-3d' });
+    mediaQuickRef.current = {
+      rotateX: gsap.quickTo(media, 'rotateX', { duration: 0.45, ease: 'power3.out' }),
+      rotateY: gsap.quickTo(media, 'rotateY', { duration: 0.45, ease: 'power3.out' }),
+      x: gsap.quickTo(media, 'x', { duration: 0.45, ease: 'power3.out' }),
+      y: gsap.quickTo(media, 'y', { duration: 0.45, ease: 'power3.out' }),
+    };
+
+    return () => {
+      mediaQuickRef.current = null;
+      gsap.set(media, { clearProps: 'transform' });
+    };
+  }, [prefersReducedMotion, hasFinePointer]);
+
   /* ---------------------------------------------------------------- *
    * Navigation
    * ---------------------------------------------------------------- */
@@ -438,10 +477,21 @@ export default function WebGLProjectShowcase({
   const onMediaPointerMove = (event) => {
     const rect = mediaRef.current?.getBoundingClientRect();
     if (rect) {
-      mouseRef.current.set(
-        (event.clientX - rect.left) / rect.width,
-        (event.clientY - rect.top) / rect.height,
-      );
+      const nx = (event.clientX - rect.left) / Math.max(rect.width, 1);
+      const ny = (event.clientY - rect.top) / Math.max(rect.height, 1);
+      mouseRef.current.set(nx, ny);
+      mediaRef.current?.style.setProperty('--media-spot-x', `${(nx * 100).toFixed(1)}%`);
+      mediaRef.current?.style.setProperty('--media-spot-y', `${(ny * 100).toFixed(1)}%`);
+
+      const quick = mediaQuickRef.current;
+      if (quick) {
+        const dx = nx - 0.5;
+        const dy = ny - 0.5;
+        quick.rotateY(dx * 5.2);
+        quick.rotateX(-dy * 4.2);
+        quick.x(dx * 6);
+        quick.y(dy * 5);
+      }
     }
     hoverRef.current = 1;
 
@@ -472,6 +522,18 @@ export default function WebGLProjectShowcase({
 
   const onMediaPointerUp = () => {
     dragRef.current.down = false;
+  };
+
+  const onMediaPointerLeave = () => {
+    hoverRef.current = 0;
+    dragRef.current.down = false;
+    const quick = mediaQuickRef.current;
+    if (quick) {
+      quick.rotateX(0);
+      quick.rotateY(0);
+      quick.x(0);
+      quick.y(0);
+    }
   };
 
   const onMediaClick = () => {
@@ -519,10 +581,7 @@ export default function WebGLProjectShowcase({
               onPointerDown={onMediaPointerDown}
               onPointerUp={onMediaPointerUp}
               onPointerCancel={onMediaPointerUp}
-              onPointerLeave={() => {
-                hoverRef.current = 0;
-                dragRef.current.down = false;
-              }}
+              onPointerLeave={onMediaPointerLeave}
               onClick={onMediaClick}
               role="button"
               tabIndex={0}

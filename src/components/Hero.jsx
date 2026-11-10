@@ -21,8 +21,10 @@ export default function Hero() {
   const sectionRef = useRef(null);
   const contentRef = useRef(null);
   const visualRef = useRef(null);
+  const orbitsRef = useRef(null);
   const portraitStackRef = useRef(null);
   const cloneRefs = useRef([]);
+  const chipRefs = useRef([]);
   const glowTopRef = useRef(null);
   const glowRightRef = useRef(null);
   const scrollHintRef = useRef(null);
@@ -141,6 +143,109 @@ export default function Hero() {
     }, sectionRef);
 
     return () => context.revert();
+  }, [introComplete, prefersReducedMotion]);
+
+  /* Pointer depth parallax for orbits, portrait stack, chips & chromatic split */
+  useEffect(() => {
+    if (prefersReducedMotion || !introComplete) return undefined;
+    if (window.matchMedia('(pointer: coarse)').matches) return undefined;
+
+    const section = sectionRef.current;
+    const orbits = orbitsRef.current;
+    const portraitStack = portraitStackRef.current;
+    const visual = visualRef.current;
+    const chips = chipRefs.current.filter(Boolean);
+    const [redClone, cyanClone] = cloneRefs.current;
+    if (!section || !visual) return undefined;
+
+    let inView = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+      },
+      { threshold: 0.05 },
+    );
+    observer.observe(section);
+
+    const orbitX = orbits
+      ? gsap.quickTo(orbits, 'x', { duration: 0.65, ease: 'power3.out' })
+      : null;
+    const orbitY = orbits
+      ? gsap.quickTo(orbits, 'y', { duration: 0.65, ease: 'power3.out' })
+      : null;
+    const portraitX = portraitStack
+      ? gsap.quickTo(portraitStack, 'x', { duration: 0.55, ease: 'power3.out' })
+      : null;
+    const portraitY = portraitStack
+      ? gsap.quickTo(portraitStack, 'y', { duration: 0.55, ease: 'power3.out' })
+      : null;
+    const chipQuicks = chips.map((chip, idx) => {
+      const factor = idx === 0 ? 14 : idx === 1 ? -12 : 16;
+      return {
+        factor,
+        x: gsap.quickTo(chip, 'x', { duration: 0.5 + idx * 0.08, ease: 'power3.out' }),
+        y: gsap.quickTo(chip, 'y', { duration: 0.5 + idx * 0.08, ease: 'power3.out' }),
+      };
+    });
+
+    const redX = redClone
+      ? gsap.quickTo(redClone, 'x', { duration: 0.38, ease: 'power3.out' })
+      : null;
+    const redOpacity = redClone
+      ? gsap.quickTo(redClone, 'opacity', { duration: 0.38, ease: 'power3.out' })
+      : null;
+    const cyanX = cyanClone
+      ? gsap.quickTo(cyanClone, 'x', { duration: 0.38, ease: 'power3.out' })
+      : null;
+    const cyanOpacity = cyanClone
+      ? gsap.quickTo(cyanClone, 'opacity', { duration: 0.38, ease: 'power3.out' })
+      : null;
+
+    const onPointerMove = (event) => {
+      if (!inView || document.hidden) return;
+      const nx = event.clientX / Math.max(window.innerWidth, 1) - 0.5;
+      const ny = event.clientY / Math.max(window.innerHeight, 1) - 0.5;
+
+      orbitX?.(-nx * 22);
+      orbitY?.(-ny * 18);
+      portraitX?.(-nx * 9);
+      portraitY?.(-ny * 7);
+
+      chipQuicks.forEach(({ factor, x, y }) => {
+        x(nx * factor);
+        y(ny * factor * 0.85);
+      });
+    };
+
+    const onVisualMove = (event) => {
+      if (!inView) return;
+      const rect = visual.getBoundingClientRect();
+      if (!rect.width) return;
+      const dx = (event.clientX - rect.left) / rect.width - 0.5;
+      const intensity = Math.min(1, Math.hypot(dx, (event.clientY - rect.top) / rect.height - 0.5) * 1.6);
+      redX?.(dx * -9);
+      cyanX?.(dx * 9);
+      redOpacity?.(0.12 + intensity * 0.16);
+      cyanOpacity?.(0.12 + intensity * 0.16);
+    };
+
+    const onVisualLeave = () => {
+      redX?.(0);
+      cyanX?.(0);
+      redOpacity?.(0);
+      cyanOpacity?.(0);
+    };
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    visual.addEventListener('pointermove', onVisualMove, { passive: true });
+    visual.addEventListener('pointerleave', onVisualLeave);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('pointermove', onPointerMove);
+      visual.removeEventListener('pointermove', onVisualMove);
+      visual.removeEventListener('pointerleave', onVisualLeave);
+    };
   }, [introComplete, prefersReducedMotion]);
 
   const currentRole = site.roles[roleIndex] ?? site.roles[0] ?? '';
@@ -304,7 +409,7 @@ export default function Hero() {
           </div>
 
           <div className="hero__visual" ref={visualRef}>
-            <div className="hero__orbits" aria-hidden="true">
+            <div className="hero__orbits" ref={orbitsRef} aria-hidden="true">
               <span className="hero__orbit hero__orbit--outer" />
               <span className="hero__orbit hero__orbit--inner" />
               <svg className="hero__orbit-text" viewBox="0 0 520 520" focusable="false">
@@ -323,13 +428,34 @@ export default function Hero() {
               </svg>
             </div>
 
-            <span className="hero__float-chip hero__float-chip--one" style={{ '--chip-color': '#3776AB' }} aria-hidden="true">
+            <span
+              ref={(node) => {
+                chipRefs.current[0] = node;
+              }}
+              className="hero__float-chip hero__float-chip--one"
+              style={{ '--chip-color': '#3776AB' }}
+              aria-hidden="true"
+            >
               Python
             </span>
-            <span className="hero__float-chip hero__float-chip--two" style={{ '--chip-color': '#8b5cf6' }} aria-hidden="true">
+            <span
+              ref={(node) => {
+                chipRefs.current[1] = node;
+              }}
+              className="hero__float-chip hero__float-chip--two"
+              style={{ '--chip-color': '#8b5cf6' }}
+              aria-hidden="true"
+            >
               RAG
             </span>
-            <span className="hero__float-chip hero__float-chip--three" style={{ '--chip-color': '#10b981' }} aria-hidden="true">
+            <span
+              ref={(node) => {
+                chipRefs.current[2] = node;
+              }}
+              className="hero__float-chip hero__float-chip--three"
+              style={{ '--chip-color': '#10b981' }}
+              aria-hidden="true"
+            >
               FastAPI
             </span>
 

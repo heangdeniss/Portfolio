@@ -97,6 +97,73 @@
   font-weight: 600;
 }
 
+/* Accessible anchor focus & measured header scroll-margin fallback. */
+html:not(.lenis) .section[id] {
+  scroll-margin-top: var(--header-offset, 92px);
+}
+
+.section[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Reserve pinned scroll height while WebGLProjectShowcase lazy-loads. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .showcase__pin--fallback {
+    min-height: calc(max(100svh, 680px) + (var(--showcase-count, 3) - 1) * 110vh);
+  }
+
+  .showcase__pin--fallback .showcase__stage {
+    position: sticky;
+    top: 0;
+  }
+}
+
+/* Interactive specular sheen on the project showcase media frame. */
+.showcase__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--media-spot-x, 50%) var(--media-spot-y, 50%),
+    rgba(245, 158, 11, 0.13),
+    rgba(34, 211, 238, 0.05) 38%,
+    transparent 70%
+  );
+  transition: opacity 0.35s ease;
+}
+
+.showcase__media:hover::after {
+  opacity: 1;
+}
+
+/* Editorial edge fades on marquee and diagonal type ribbons. */
+.marquee,
+.ribbon__row {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 7%,
+    #000 93%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 7%,
+    #000 93%,
+    transparent 100%
+  );
+}
+
+/* Velocity-reactive horizontal drift on oversized ghost section headings. */
+.section[data-ghost]::after {
+  translate: var(--ghost-shift, 0px) 0;
+  transition: translate 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* The vault graph responds to the shared Lenis velocity. */
 .vault__panel {
   transition:

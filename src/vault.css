@@ -119,6 +119,11 @@
   font-style: normal;
 }
 
+.vault__meta-active {
+  color: var(--gold-light);
+  font-weight: 700;
+}
+
 .vault__stage {
   position: relative;
 }
@@ -144,13 +149,8 @@
 }
 
 .vault__scene {
-  transform: translate3d(
-    calc(var(--vault-px, 0) * 16px + var(--vault-velocity, 0) * 9px),
-    calc(var(--vault-py, 0) * 11px),
-    0
-  );
-  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
-  will-change: transform;
+  translate: calc(var(--vault-velocity, 0) * 9px) 0;
+  will-change: transform, translate;
 }
 
 /* Edges ------------------------------------------------------------- */
@@ -159,15 +159,15 @@
   fill: none;
   stroke: var(--edge-color);
   stroke-width: 1.1;
-  stroke-opacity: 0.2;
+  stroke-opacity: 0.22;
   stroke-linecap: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   transition:
-    stroke-dashoffset 1.5s cubic-bezier(0.2, 0.7, 0.2, 1),
-    stroke-opacity 0.35s ease,
-    stroke-width 0.35s ease;
-  transition-delay: calc(var(--edge-index, 0) * 55ms + 150ms);
+    stroke-dashoffset 1.45s cubic-bezier(0.22, 1, 0.36, 1),
+    stroke-opacity 0.32s ease,
+    stroke-width 0.32s ease;
+  transition-delay: calc(var(--edge-index, 0) * 52ms + 120ms);
 }
 
 .vault__graph.is-visible .vault__edge {
@@ -175,30 +175,45 @@
 }
 
 .vault__edge.is-active {
-  stroke-width: 1.9;
-  stroke-opacity: 0.72;
+  stroke-width: 2.1;
+  stroke-opacity: 0.86;
   transition-delay: 0s;
 }
 
 .vault__edge.is-dimmed {
-  stroke-opacity: 0.05;
+  stroke-opacity: 0.045;
   transition-delay: 0s;
 }
 
 .vault__packet {
   opacity: 0.85;
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.45));
+  transition: opacity 0.3s ease;
+}
+
+.vault__packet.is-active {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.85));
+}
+
+.vault__packet.is-dimmed {
+  opacity: 0.08;
 }
 
 /* Nodes ------------------------------------------------------------- */
 
 .vault__node-anchor {
-  cursor: crosshair;
-  transition: opacity 0.35s ease;
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.32s ease;
 }
 
 .vault__node-anchor.is-dimmed {
-  opacity: 0.2;
+  opacity: 0.16;
+}
+
+.vault__node-anchor.is-connected {
+  opacity: 0.96;
 }
 
 .vault__node-anchor.is-active {
@@ -221,10 +236,20 @@
   transform: scale(1);
 }
 
+.vault__node-anchor.is-connected .vault__node {
+  transform: scale(1.07);
+  transition-delay: 0s;
+}
+
 .vault__node-anchor:hover .vault__node,
 .vault__node-anchor.is-active .vault__node {
-  transform: scale(1.16);
+  transform: scale(1.18);
   transition-delay: 0s;
+}
+
+.vault__node-anchor:focus-visible .vault__node-ring {
+  stroke-opacity: 0.95;
+  stroke-width: 1.8;
 }
 
 .vault__node-halo {
@@ -390,6 +415,7 @@
   color: var(--text-secondary);
   font-size: 0.61rem;
   letter-spacing: 0.03em;
+  cursor: pointer;
   transition:
     transform 0.25s ease,
     border-color 0.25s ease,
@@ -397,11 +423,23 @@
     background-color 0.25s ease;
 }
 
-.vault__note-chip:hover {
+.vault__note-chip:hover,
+.vault__note-chip.is-active {
   transform: translateY(-2px);
-  border-color: rgba(245, 158, 11, 0.32);
-  background: rgba(245, 158, 11, 0.055);
+  border-color: rgba(245, 158, 11, 0.44);
+  background: rgba(245, 158, 11, 0.09);
   color: #ffffff;
+}
+
+.vault__note-chip.is-connected {
+  border-color: rgba(34, 211, 238, 0.28);
+  background: rgba(34, 211, 238, 0.05);
+  color: #f1f5f9;
+}
+
+.vault__note-chip:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
 }
 
 .vault__note-chip i {

@@ -102,6 +102,42 @@ export default function useVelocitySurfaces() {
       });
     });
 
+    const heroOrbits = document.querySelector('.hero__orbits');
+    if (heroOrbits) {
+      groups.push({
+        host: heroOrbits.closest('#hero') ?? heroOrbits,
+        targets: [
+          {
+            el: heroOrbits,
+            write: (value) => {
+              const abs = Math.abs(value);
+              heroOrbits.style.rotate = value ? `${(value * 8.5).toFixed(2)}deg` : '';
+              heroOrbits.style.scale = abs > 0.002 ? `${(1 + abs * 0.045).toFixed(4)}` : '';
+            },
+          },
+        ],
+        visible: true,
+      });
+    }
+
+    document.querySelectorAll('.section[data-ghost]').forEach((section) => {
+      groups.push({
+        host: section,
+        targets: [
+          {
+            el: section,
+            write: (value) => {
+              section.style.setProperty(
+                '--ghost-shift',
+                value ? `${(value * -18).toFixed(2)}px` : '0px',
+              );
+            },
+          },
+        ],
+        visible: false,
+      });
+    });
+
     if (!groups.length) return undefined;
 
     const groupByHost = new Map(groups.map((group) => [group.host, group]));

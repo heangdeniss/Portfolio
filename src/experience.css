@@ -608,17 +608,19 @@ body.cursor-custom textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 12%;
+  object-position: center 14%;
 }
 
 .hero__portrait-img {
   z-index: 1;
-  scale: 1;
+  scale: 1.15;
   transform: none;
+  transition: scale 0.6s var(--experience-ease);
 }
 
 .hero__portrait-clone {
   z-index: 2;
+  scale: 1.15;
   opacity: 0;
   pointer-events: none;
   user-select: none;
@@ -635,6 +637,7 @@ body.cursor-custom textarea {
 }
 
 .hero__glass-card:hover .hero__portrait-img {
+  scale: 1.19;
   transform: none;
 }
 
@@ -656,11 +659,30 @@ body.cursor-custom textarea {
 }
 
 .hero__glass-card {
-  width: 400px;
+  width: 392px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  padding: 12px;
+}
+
+.hero__glass-card-glow {
+  border-radius: 50%;
 }
 
 .hero__image-container {
-  height: 458px;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+}
+
+.hero__portrait-status {
+  top: auto;
+  right: auto;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 .hero__signals {
@@ -2244,11 +2266,13 @@ html[data-quality="low"] .ambient__fallback {
   }
 
   .hero__image-container {
-    height: 360px;
+    height: 100%;
+    aspect-ratio: 1 / 1;
   }
 
   .hero__glass-card {
-    width: min(340px, 92vw);
+    width: min(330px, 86vw);
+    aspect-ratio: 1 / 1;
   }
 
   .hero__signals {
@@ -2370,8 +2394,14 @@ html[data-quality="low"] .ambient__fallback {
     font-size: 0.86rem;
   }
 
+  .hero__glass-card {
+    width: min(286px, 84vw);
+    aspect-ratio: 1 / 1;
+  }
+
   .hero__image-container {
-    height: 300px;
+    height: 100%;
+    aspect-ratio: 1 / 1;
   }
 
   .hero__signal-label {

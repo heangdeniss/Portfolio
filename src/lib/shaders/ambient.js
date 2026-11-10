@@ -2,15 +2,16 @@
  * Ambient WebGL background shader.
  * Dark obsidian / deep slate gradients, slow fbm flow fields, warm amber and
  * emerald light bleeds, pointer attraction and scroll-velocity energy.
- * Written for a full-screen 2x2 PlaneGeometry + OrthographicCamera.
+ * Written for a dependency-free raw WebGL clip-space fullscreen quad.
  */
 
 export const ambientVertexShader = /* glsl */ `
+  attribute vec2 aPosition;
   varying vec2 vUv;
 
   void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vUv = aPosition * 0.5 + 0.5;
+    gl_Position = vec4(aPosition, 0.0, 1.0);
   }
 `;
 
