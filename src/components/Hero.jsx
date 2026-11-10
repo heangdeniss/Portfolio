@@ -1,11 +1,13 @@
-import { Fragment, useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from '../lib/animations';
 import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import usePointerTilt from '../hooks/usePointerTilt';
 import useSplitReveal from '../hooks/useSplitReveal';
 import CountUp from './CountUp';
+import HeroHud from './HeroHud';
 import HeroLatentManifold from './HeroLatentManifold';
+import HeroVortex from './HeroVortex';
 import MagneticButton from './MagneticButton';
 import { site } from '../data/site';
 import denisPhoto from '../images/HEANG Denis good image.jpg';
@@ -300,6 +302,7 @@ export default function Hero() {
   return (
     <section id="hero" className="hero" ref={sectionRef}>
       <HeroLatentManifold />
+      <HeroHud />
       <div className="hero__glow-top" ref={glowTopRef} />
       <div className="hero__glow-right" ref={glowRightRef} />
 
@@ -350,21 +353,21 @@ export default function Hero() {
               ))}
             </p>
 
-            <div
-              className="hero__spec-bar hero__reveal"
+            <ul
+              className="hero__spec-pills hero__reveal"
               aria-label="Core engineering specializations"
             >
               {site.specializations.map((specialization, index) => (
-                <Fragment key={specialization.label}>
-                  {index > 0 && (
-                    <span className="hero__spec-sep" aria-hidden="true">
-                      //
-                    </span>
-                  )}
-                  <span className="hero__spec-item">{specialization.label}</span>
-                </Fragment>
+                <li
+                  className="hero__spec-pill"
+                  key={specialization.label}
+                  style={{ '--pill-index': index }}
+                >
+                  <span className="hero__spec-pill-dot" aria-hidden="true" />
+                  <span className="hero__spec-pill-label">{specialization.label}</span>
+                </li>
               ))}
-            </div>
+            </ul>
 
             <div
               className="hero__bio hero__reveal"
@@ -415,28 +418,31 @@ export default function Hero() {
               {site.signals.map((signal, index) => {
                 const barTarget = index === 0 ? '0.96' : index === 1 ? '0.88' : '0.82';
                 return (
-                  <Fragment key={signal.label}>
-                    {index > 0 && <span className="hero__signal-divider" aria-hidden="true" />}
-                    <div className="hero__signal">
-                      <span className="hero__signal-value">
-                        <CountUp
-                          end={signal.value}
-                          decimals={signal.decimals}
-                          suffix={signal.suffix}
-                        />
-                      </span>
-                      <span className="hero__signal-label">{signal.label}</span>
-                      <span className="metric-glow-bar" aria-hidden="true">
-                        <span
-                          className="metric-glow-bar__fill"
-                          style={{
-                            '--bar-target': barTarget,
-                            '--bar-delay': `${0.12 + index * 0.14}s`,
-                          }}
-                        />
-                      </span>
-                    </div>
-                  </Fragment>
+                  <div
+                    className="hero__signal hero__signal-card"
+                    key={signal.label}
+                    style={{ '--signal-index': index }}
+                  >
+                    <span className="hero__signal-node" aria-hidden="true" />
+                    <span className="hero__signal-scan" aria-hidden="true" />
+                    <span className="hero__signal-value">
+                      <CountUp
+                        end={signal.value}
+                        decimals={signal.decimals}
+                        suffix={signal.suffix}
+                      />
+                    </span>
+                    <span className="hero__signal-label">{signal.label}</span>
+                    <span className="metric-glow-bar" aria-hidden="true">
+                      <span
+                        className="metric-glow-bar__fill"
+                        style={{
+                          '--bar-target': barTarget,
+                          '--bar-delay': `${0.12 + index * 0.14}s`,
+                        }}
+                      />
+                    </span>
+                  </div>
                 );
               })}
             </div>
@@ -462,36 +468,7 @@ export default function Hero() {
               </svg>
             </div>
 
-            <span
-              ref={(node) => {
-                chipRefs.current[0] = node;
-              }}
-              className="hero__float-chip hero__float-chip--one"
-              style={{ '--chip-color': '#3776AB' }}
-              aria-hidden="true"
-            >
-              Python
-            </span>
-            <span
-              ref={(node) => {
-                chipRefs.current[1] = node;
-              }}
-              className="hero__float-chip hero__float-chip--two"
-              style={{ '--chip-color': '#8b5cf6' }}
-              aria-hidden="true"
-            >
-              RAG
-            </span>
-            <span
-              ref={(node) => {
-                chipRefs.current[2] = node;
-              }}
-              className="hero__float-chip hero__float-chip--three"
-              style={{ '--chip-color': '#10b981' }}
-              aria-hidden="true"
-            >
-              FastAPI
-            </span>
+            <HeroVortex />
 
             <div className="hero__card-tilt" ref={tiltRef}>
               <div className="hero__glass-card">
@@ -502,7 +479,7 @@ export default function Hero() {
                     <span className="hero__status-ping" />
                     <span className="hero__status-core" />
                   </span>
-                  <span className="hero__portrait-status-text">{site.location}</span>
+                  <span className="hero__portrait-status-text">PORTRAIT_FEED // LIVE</span>
                 </div>
 
                 <div className="hero__image-container">
@@ -553,9 +530,12 @@ export default function Hero() {
         ref={scrollHintRef}
         data-cursor="Scroll"
       >
+        <span className="hero__scroll-mouse" aria-hidden="true">
+          <span className="hero__scroll-wheel" />
+        </span>
         <span className="hero__scroll-hint-text">Scroll</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-          <path d="M12 5v14M5 12l7 7 7-7" />
+        <svg className="hero__scroll-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" />
         </svg>
       </a>
     </section>

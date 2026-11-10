@@ -41,6 +41,10 @@ export default function Header() {
         return;
       }
 
+      const currentX = Number(gsap.getProperty(pill, 'x')) || 0;
+      pill.dataset.dir = x >= currentX ? 'right' : 'left';
+      pill.classList.add('is-moving');
+
       gsap.to(pill, {
         x,
         width,
@@ -48,6 +52,8 @@ export default function Header() {
         duration: 0.62,
         ease: 'elastic.out(1, 0.74)',
         overwrite: 'auto',
+        onComplete: () => pill.classList.remove('is-moving'),
+        onInterrupt: () => pill.classList.remove('is-moving'),
       });
     },
     [activeSection, prefersReducedMotion],

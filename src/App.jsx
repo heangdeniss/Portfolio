@@ -28,6 +28,7 @@ import './act-four.css';
 import './experience.css';
 import './vault.css';
 import './motion.css';
+import './hero-cinematic.css';
 
 const RING_RADIUS = 21;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;

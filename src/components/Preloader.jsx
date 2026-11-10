@@ -44,12 +44,18 @@ export default function Preloader() {
   const exitTweenRef = useRef(null);
   const exitingRef = useRef(false);
   const finishedRef = useRef(false);
+  const introCompleteRef = useRef(introComplete);
 
   useEffect(() => {
-    if (prefersReducedMotion || introComplete) {
+    introCompleteRef.current = introComplete;
+  }, [introComplete]);
+
+  useEffect(() => {
+    if (prefersReducedMotion || introCompleteRef.current) {
       return undefined;
     }
 
+    let cancelled = false;
     const root = document.documentElement;
     root.classList.add('intro-active');
 
@@ -66,7 +72,7 @@ export default function Preloader() {
     };
 
     const beginExit = () => {
-      if (exitingRef.current) return;
+      if (cancelled || exitingRef.current) return;
       exitingRef.current = true;
 
       root.classList.remove('intro-active');
@@ -96,7 +102,7 @@ export default function Preloader() {
     };
 
     const finish = () => {
-      if (finishedRef.current) return;
+      if (cancelled || finishedRef.current) return;
       finishedRef.current = true;
 
       introTweenRef.current?.kill();
@@ -126,12 +132,13 @@ export default function Preloader() {
     ]).then(finish);
 
     return () => {
+      cancelled = true;
       root.classList.remove('intro-active');
       introTweenRef.current?.kill();
       finishTweenRef.current?.kill();
       exitTweenRef.current?.kill();
     };
-  }, [introComplete, prefersReducedMotion, setIntroComplete]);
+  }, [prefersReducedMotion, setIntroComplete]);
 
   const skip = () => {
     if (exitingRef.current) return;

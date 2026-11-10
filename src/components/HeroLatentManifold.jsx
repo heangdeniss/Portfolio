@@ -98,6 +98,19 @@ export default function HeroLatentManifold() {
     let rotZ = -0.06;
     let smoothScrollY = scrollYRef?.current || 0;
     let smoothVel = 0;
+    let lastFrameTime = 0;
+
+    // Cascading digital particles (data rain) — reacts to scroll velocity
+    const dropRand = createRng(99173);
+    const dropCount = isMobile || quality === 'low' ? 34 : 72;
+    const drops = Array.from({ length: dropCount }, () => ({
+      x: dropRand(),
+      y: dropRand(),
+      speed: 0.035 + dropRand() * 0.1,
+      len: 10 + dropRand() * 36,
+      alpha: 0.14 + dropRand() * 0.34,
+      cyan: dropRand() > 0.32,
+    }));
 
     const pointer = {
       active: false,
@@ -151,6 +164,67 @@ export default function HeroLatentManifold() {
       const cursorWorldX = pointer.sx * width * 0.52;
       const cursorWorldY = pointer.sy * height * 0.52;
       const cursorRadius = isMobile ? 130 : 190;
+
+      // 0a. Cascading digital particles
+      const dt = time > lastFrameTime && lastFrameTime ? Math.min(0.05, time - lastFrameTime) : 0.016;
+      lastFrameTime = time;
+      const rainBoost = 1 + Math.min(4, Math.abs(smoothVel) * 3);
+      const rainDir = smoothVel < -0.08 ? -0.55 : 1;
+
+      for (let i = 0; i < dropCount; i += 1) {
+        const drop = drops[i];
+        if (!prefersReducedMotion) {
+          drop.y += drop.speed * dt * rainBoost * rainDir;
+          if (drop.y > 1.08) {
+            drop.y = -0.06;
+            drop.x = Math.random();
+          } else if (drop.y < -0.1) {
+            drop.y = 1.05;
+            drop.x = Math.random();
+          }
+        }
+
+        const px = Math.round(drop.x * width);
+        const py = drop.y * height;
+        const seg = drop.len / 3;
+        const rgb = drop.cyan ? '56, 189, 248' : '245, 158, 11';
+
+        context.fillStyle = `rgba(${rgb}, ${(drop.alpha * 0.12).toFixed(3)})`;
+        context.fillRect(px, py - seg * 3, 1, seg);
+        context.fillStyle = `rgba(${rgb}, ${(drop.alpha * 0.28).toFixed(3)})`;
+        context.fillRect(px, py - seg * 2, 1, seg);
+        context.fillStyle = `rgba(${rgb}, ${(drop.alpha * 0.55).toFixed(3)})`;
+        context.fillRect(px, py - seg, 1, seg);
+        context.fillStyle = `rgba(${rgb}, ${Math.min(0.9, drop.alpha * 1.6).toFixed(3)})`;
+        context.fillRect(px - 0.75, py - 1.5, 2.5, 2.5);
+      }
+
+      // 0b. Shifting mathematical orbits that react to scroll
+      context.lineWidth = 1;
+      for (let k = 0; k < 3; k += 1) {
+        const sign = k % 2 ? -1 : 1;
+        const rx = width * (0.34 + k * 0.13);
+        const ry = rx * (0.28 + k * 0.04);
+        const rot = -0.24 + sign * (scrollRatio * 0.45 * (k + 1) + time * 0.012 * (k + 1));
+        context.setLineDash(k === 1 ? [] : [2, 9]);
+        context.strokeStyle =
+          k === 1 ? 'rgba(56, 189, 248, 0.05)' : 'rgba(167, 139, 250, 0.055)';
+        context.beginPath();
+        context.ellipse(centerX, centerY, rx, ry, rot, 0, Math.PI * 2);
+        context.stroke();
+
+        // Orbiting marker
+        const t = time * (0.07 + k * 0.025) * sign + k * 1.7;
+        const ex = rx * Math.cos(t);
+        const ey = ry * Math.sin(t);
+        const mx = centerX + ex * Math.cos(rot) - ey * Math.sin(rot);
+        const my = centerY + ex * Math.sin(rot) + ey * Math.cos(rot);
+        context.fillStyle = k === 1 ? 'rgba(56, 189, 248, 0.55)' : 'rgba(251, 191, 36, 0.5)';
+        context.beginPath();
+        context.arc(mx, my, 1.8, 0, Math.PI * 2);
+        context.fill();
+      }
+      context.setLineDash([]);
 
       // 1. Update 3D spring physics & perspective projection
       for (let i = 0; i < nodeCount; i += 1) {
@@ -294,7 +368,7 @@ export default function HeroLatentManifold() {
     };
 
     resize();
-    drawFrame(performance.now() * 0.001);
+    drawFrame(gsap.ticker.time);
 
     if (!prefersReducedMotion) {
       gsap.ticker.add(tick);
@@ -310,7 +384,7 @@ export default function HeroLatentManifold() {
 
     const resizeObserver = new ResizeObserver(() => {
       resize();
-      drawFrame(performance.now() * 0.001);
+      drawFrame(gsap.ticker.time);
     });
     resizeObserver.observe(canvas);
 
