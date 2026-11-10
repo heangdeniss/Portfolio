@@ -47,7 +47,7 @@ export default function UtilityHUD() {
 
     const tween = gsap.to(panel, {
       autoAlpha: open ? 1 : 0,
-      y: open ? 0 : -10,
+      y: open ? 0 : 10,
       duration: open ? 0.42 : 0.24,
       ease: open ? 'power3.out' : 'power2.in',
       overwrite: true,

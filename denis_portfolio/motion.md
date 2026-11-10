@@ -4,7 +4,7 @@ title: Motion System
 group: system
 graphLabel: Motion System
 intensity: cinematic
-scrollLerp: 0.085
+scrollLerp: 0.135
 velocityNormalizer: 80
 marqueeSpeed: 52
 cursor: true

@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/generate-seo.js",
     "build": "vite build",
+    "generate:seo": "node scripts/generate-seo.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

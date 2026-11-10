@@ -124,8 +124,81 @@
   font-weight: 700;
 }
 
+.vault__head-left,
+.vault__head-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.vault__orbit-hint {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.72);
+  padding: 5px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.vault__meta-coords {
+  color: rgba(56, 189, 248, 0.85);
+  font-variant-numeric: tabular-nums;
+}
+
+.vault__reset-btn {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 9999px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.1);
+  color: #fde68a;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.vault__reset-btn:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.55);
+  transform: translateY(-1px);
+}
+
 .vault__stage {
   position: relative;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.vault__stage.is-dragging {
+  cursor: grabbing;
+}
+
+.vault__orbit-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.075);
+  stroke-width: 1;
+  stroke-dasharray: 4 8;
+  pointer-events: none;
+}
+
+.vault__orbit-ring--inner {
+  stroke: rgba(34, 211, 238, 0.14);
+  stroke-dasharray: 3 7;
+}
+
+.vault__orbit-ring--outer {
+  stroke: rgba(167, 139, 250, 0.11);
+  stroke-dasharray: 5 10;
 }
 
 .vault__radial {
@@ -158,8 +231,8 @@
 .vault__edge {
   fill: none;
   stroke: var(--edge-color);
-  stroke-width: 1.1;
-  stroke-opacity: 0.22;
+  stroke-width: 1.15;
+  stroke-opacity: calc(0.28 * var(--edge-depth-alpha, 1));
   stroke-linecap: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
@@ -175,8 +248,8 @@
 }
 
 .vault__edge.is-active {
-  stroke-width: 2.1;
-  stroke-opacity: 0.86;
+  stroke-width: 2.15;
+  stroke-opacity: 0.9;
   transition-delay: 0s;
 }
 
@@ -186,14 +259,18 @@
 }
 
 .vault__packet {
-  opacity: 0.85;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.45));
+  opacity: 0.88;
+  filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.75));
   transition: opacity 0.3s ease;
+}
+
+.vault__packet--secondary {
+  filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.75));
 }
 
 .vault__packet.is-active {
   opacity: 1;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.85));
+  filter: drop-shadow(0 0 9px rgba(255, 255, 255, 0.9));
 }
 
 .vault__packet.is-dimmed {
@@ -205,11 +282,12 @@
 .vault__node-anchor {
   cursor: pointer;
   outline: none;
-  transition: opacity 0.32s ease;
+  opacity: var(--depth-alpha, 1);
+  transition: opacity 0.25s ease;
 }
 
 .vault__node-anchor.is-dimmed {
-  opacity: 0.16;
+  opacity: 0.15;
 }
 
 .vault__node-anchor.is-connected {

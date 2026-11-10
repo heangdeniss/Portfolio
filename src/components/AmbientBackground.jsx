@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { gsap } from '../lib/animations';
 import { ambientVertexShader, ambientFragmentShader } from '../lib/shaders/ambient';
 import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
@@ -135,6 +136,7 @@ export default function AmbientBackground() {
       gl.disable(gl.CULL_FACE);
 
       host.appendChild(canvas);
+      host.classList.add('has-webgl');
 
       let uTime = 0;
       let targetMouseX = 0.5;
@@ -148,8 +150,8 @@ export default function AmbientBackground() {
       const resize = () => {
         const width = host.clientWidth || window.innerWidth || 1;
         const height = host.clientHeight || window.innerHeight || 1;
-        const dprCap = quality === 'high' ? 1.35 : 0.9;
-        const renderScale = quality === 'high' ? 0.9 : 0.55;
+        const dprCap = 1.0;
+        const renderScale = quality === 'high' ? 0.52 : 0.36;
         const dpr = Math.min(window.devicePixelRatio || 1, dprCap) * renderScale;
 
         pixelWidth = Math.max(1, Math.round(width * dpr));
@@ -175,23 +177,16 @@ export default function AmbientBackground() {
       );
       observer.observe(host);
 
-      let rafId = 0;
       let lastFrame = 0;
-      let lastTime = performance.now();
 
-      const render = (now) => {
-        rafId = requestAnimationFrame(render);
+      const render = (time, deltaTime) => {
+        if (!visible || document.hidden) return;
 
-        if (!visible || document.hidden) {
-          lastTime = now;
-          return;
-        }
-
+        const now = time * 1000;
         if (quality === 'low' && now - lastFrame < 32) return;
         lastFrame = now;
 
-        const delta = Math.min((now - lastTime) / 1000, 0.05);
-        lastTime = now;
+        const delta = Math.min(Math.max(deltaTime, 0) / 1000, 0.05);
 
         uTime += delta;
         smoothMouseX += (targetMouseX - smoothMouseX) * 0.055;
@@ -206,13 +201,13 @@ export default function AmbientBackground() {
       };
 
       resize();
-      rafId = requestAnimationFrame(render);
+      gsap.ticker.add(render);
 
       window.addEventListener('pointermove', onPointerMove, { passive: true });
       window.addEventListener('resize', resize);
 
       teardown = () => {
-        cancelAnimationFrame(rafId);
+        gsap.ticker.remove(render);
         observer.disconnect();
         window.removeEventListener('pointermove', onPointerMove);
         window.removeEventListener('resize', resize);
@@ -220,6 +215,7 @@ export default function AmbientBackground() {
         gl.deleteProgram(program);
         gl.getExtension('WEBGL_lose_context')?.loseContext();
         canvas.remove();
+        host.classList.remove('has-webgl');
       };
     };
 

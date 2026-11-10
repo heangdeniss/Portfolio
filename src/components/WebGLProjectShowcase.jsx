@@ -21,6 +21,7 @@ import { useExperience } from '../context/ExperienceContext';
 import useMediaQuery from '../hooks/useMediaQuery';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import MagneticButton from './MagneticButton';
+import IsometricPipeline3D from './IsometricPipeline3D';
 import { projectVertexShader, projectFragmentShader } from '../lib/shaders/project';
 
 const PLANE_WIDTH = 4.2;
@@ -687,15 +688,23 @@ export default function WebGLProjectShowcase({
                 ))}
               </div>
 
+              <div className="showcase__pipeline-wrap" data-meta>
+                <IsometricPipeline3D
+                  project={activeProject}
+                  variant="showcase"
+                  onInspectDossier={onOpenDossier}
+                />
+              </div>
+
               <div className="showcase__actions" data-meta>
                 <MagneticButton
                   as="button"
-                  className="showcase__link"
+                  className="showcase__link showcase__link--primary"
                   strength={0.2}
                   onClick={() => onOpenDossier?.(activeProject)}
                   data-cursor="Open"
                 >
-                  <span>[ System Architecture ]</span>
+                  <span>System Architecture</span>
                   <span className="showcase__link-arrow" aria-hidden="true">↗</span>
                 </MagneticButton>
 
@@ -708,7 +717,7 @@ export default function WebGLProjectShowcase({
                   rel="noopener noreferrer"
                   data-cursor="GitHub"
                 >
-                  <span>[ GitHub Repo ]</span>
+                  <span>GitHub Repo</span>
                   <span className="showcase__link-arrow" aria-hidden="true">↗</span>
                 </MagneticButton>
               </div>

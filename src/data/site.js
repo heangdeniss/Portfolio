@@ -25,10 +25,8 @@ const DEFAULT_PROFILE = {
   specializations: [
     'Predictive Modeling',
     'RAG Architectures',
-    'FastAPI & React',
     'Probabilistic Models (HMM)',
-    'Data Analyst',
-    'Data Cleaning',
+    'FastAPI & React',
   ],
   taglineLines: ['Bridging *mathematical rigor*', 'with full-stack execution.'],
   aboutHeadline: ['Driven by Mathematics,', 'Crafted in Code.'],
@@ -57,7 +55,7 @@ const DEFAULT_PROFILE = {
   },
   languages: [
     { name: 'Khmer', level: 'Native' },
-    { name: 'English', level: 'Professional (B2) • ACE' },
+    { name: 'English', level: 'Professional (B2+) • ACE' },
     { name: 'French', level: 'Elementary (A2)' },
   ],
   socials: {

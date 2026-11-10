@@ -33,15 +33,29 @@ const getDefaultContrast = () => {
   return readStorage('hd-contrast', 'dark') === 'contrast';
 };
 
+const isSearchCrawler = () => {
+  if (typeof navigator === 'undefined') return true;
+  const ua = navigator.userAgent || '';
+  return (
+    /bot|googlebot|crawler|spider|robot|crawling|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebot|ia_archiver|twitterbot|linkedinbot|applebot|lighthouse|chrome-lighthouse|headlesschrome|prerender/i.test(
+      ua,
+    ) || Boolean(navigator.webdriver)
+  );
+};
+
 export function ExperienceProvider({ children }) {
   const prefersReducedMotion = usePrefersReducedMotion();
+  const skipIntroForBot = useMemo(() => isSearchCrawler(), []);
   const [quality, setQuality] = useState(getDefaultQuality);
   const [contrast, setContrast] = useState(getDefaultContrast);
-  const [introComplete, setIntroComplete] = useState(prefersReducedMotion);
+  const [introComplete, setIntroComplete] = useState(
+    () => prefersReducedMotion || isSearchCrawler(),
+  );
 
   const lenisRef = useRef(null);
   const velocityRef = useRef(0);
   const progressRef = useRef(0);
+  const scrollYRef = useRef(0);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -61,14 +75,15 @@ export function ExperienceProvider({ children }) {
       setQuality,
       contrast,
       setContrast,
-      introComplete: introComplete || prefersReducedMotion,
+      introComplete: introComplete || prefersReducedMotion || skipIntroForBot,
       setIntroComplete,
       lenisRef,
       velocityRef,
       progressRef,
+      scrollYRef,
       prefersReducedMotion,
     }),
-    [quality, contrast, introComplete, prefersReducedMotion],
+    [quality, contrast, introComplete, prefersReducedMotion, skipIntroForBot],
   );
 
   return <ExperienceContext.Provider value={value}>{children}</ExperienceContext.Provider>;

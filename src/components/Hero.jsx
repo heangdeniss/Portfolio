@@ -5,6 +5,7 @@ import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import usePointerTilt from '../hooks/usePointerTilt';
 import useSplitReveal from '../hooks/useSplitReveal';
 import CountUp from './CountUp';
+import HeroLatentManifold from './HeroLatentManifold';
 import MagneticButton from './MagneticButton';
 import { site } from '../data/site';
 import denisPhoto from '../images/HEANG Denis good image.jpg';
@@ -167,11 +168,24 @@ export default function Hero() {
     );
     observer.observe(section);
 
+    if (orbits) {
+      gsap.set(orbits, { transformPerspective: 1100, transformStyle: 'preserve-3d' });
+    }
+
     const orbitX = orbits
       ? gsap.quickTo(orbits, 'x', { duration: 0.65, ease: 'power3.out' })
       : null;
     const orbitY = orbits
       ? gsap.quickTo(orbits, 'y', { duration: 0.65, ease: 'power3.out' })
+      : null;
+    const orbitRotX = orbits
+      ? gsap.quickTo(orbits, 'rotateX', { duration: 0.72, ease: 'power3.out' })
+      : null;
+    const orbitRotY = orbits
+      ? gsap.quickTo(orbits, 'rotateY', { duration: 0.72, ease: 'power3.out' })
+      : null;
+    const orbitRotZ = orbits
+      ? gsap.quickTo(orbits, 'rotateZ', { duration: 0.85, ease: 'power3.out' })
       : null;
     const portraitX = portraitStack
       ? gsap.quickTo(portraitStack, 'x', { duration: 0.55, ease: 'power3.out' })
@@ -208,6 +222,9 @@ export default function Hero() {
 
       orbitX?.(-nx * 22);
       orbitY?.(-ny * 18);
+      orbitRotX?.(-ny * 24);
+      orbitRotY?.(nx * 26);
+      orbitRotZ?.(nx * -8 + ny * 5);
       portraitX?.(-nx * 9);
       portraitY?.(-ny * 7);
 
@@ -282,6 +299,7 @@ export default function Hero() {
 
   return (
     <section id="hero" className="hero" ref={sectionRef}>
+      <HeroLatentManifold />
       <div className="hero__glow-top" ref={glowTopRef} />
       <div className="hero__glow-right" ref={glowRightRef} />
 
@@ -332,15 +350,19 @@ export default function Hero() {
               ))}
             </p>
 
-            <div className="hero__specializations hero__reveal">
-              {site.specializations.map((specialization) => (
-                <span
-                  className={`hero__spec-badge hero__spec-badge--${specialization.tone}`}
-                  key={specialization.label}
-                >
-                  <span className="hero__spec-dot" />
-                  {specialization.label}
-                </span>
+            <div
+              className="hero__spec-bar hero__reveal"
+              aria-label="Core engineering specializations"
+            >
+              {site.specializations.map((specialization, index) => (
+                <Fragment key={specialization.label}>
+                  {index > 0 && (
+                    <span className="hero__spec-sep" aria-hidden="true">
+                      //
+                    </span>
+                  )}
+                  <span className="hero__spec-item">{specialization.label}</span>
+                </Fragment>
               ))}
             </div>
 
@@ -390,21 +412,33 @@ export default function Hero() {
             </div>
 
             <div className="hero__signals hero__reveal" aria-label="Selected results">
-              {site.signals.map((signal, index) => (
-                <Fragment key={signal.label}>
-                  {index > 0 && <span className="hero__signal-divider" aria-hidden="true" />}
-                  <div className="hero__signal">
-                    <span className="hero__signal-value">
-                      <CountUp
-                        end={signal.value}
-                        decimals={signal.decimals}
-                        suffix={signal.suffix}
-                      />
-                    </span>
-                    <span className="hero__signal-label">{signal.label}</span>
-                  </div>
-                </Fragment>
-              ))}
+              {site.signals.map((signal, index) => {
+                const barTarget = index === 0 ? '0.96' : index === 1 ? '0.88' : '0.82';
+                return (
+                  <Fragment key={signal.label}>
+                    {index > 0 && <span className="hero__signal-divider" aria-hidden="true" />}
+                    <div className="hero__signal">
+                      <span className="hero__signal-value">
+                        <CountUp
+                          end={signal.value}
+                          decimals={signal.decimals}
+                          suffix={signal.suffix}
+                        />
+                      </span>
+                      <span className="hero__signal-label">{signal.label}</span>
+                      <span className="metric-glow-bar" aria-hidden="true">
+                        <span
+                          className="metric-glow-bar__fill"
+                          style={{
+                            '--bar-target': barTarget,
+                            '--bar-delay': `${0.12 + index * 0.14}s`,
+                          }}
+                        />
+                      </span>
+                    </div>
+                  </Fragment>
+                );
+              })}
             </div>
           </div>
 

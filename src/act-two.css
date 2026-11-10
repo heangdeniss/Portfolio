@@ -485,50 +485,71 @@ body.cursor-enhanced [data-cursor] * {
   to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* ---------- Ghost section typography ---------- */
+/* ---------- Ghost section typography (kinetic horizontal parallax + sheen) ---------- */
 .section[data-ghost]::after {
   content: attr(data-ghost);
   position: absolute;
   z-index: 0;
-  top: -0.12em;
-  left: 0;
-  right: 0;
-  overflow: hidden;
+  top: clamp(34px, 4.5vw, 66px);
+  right: clamp(20px, 4.2vw, 72px);
+  left: auto;
+  padding: 0.08em 0.06em;
+  overflow: visible;
   font-family: var(--font-heading);
-  font-size: clamp(5rem, 15vw, 13rem);
+  font-size: clamp(4.6rem, 13.5vw, 12.2rem);
   font-weight: 800;
-  line-height: 0.8;
-  letter-spacing: -0.06em;
+  line-height: 0.88;
+  letter-spacing: -0.055em;
   text-align: right;
   white-space: nowrap;
   color: transparent;
-  background: linear-gradient(
-    180deg,
-    rgba(245, 158, 11, 0.075),
-    rgba(99, 102, 241, 0.025) 56%,
-    transparent 88%
+  background-image: linear-gradient(
+    112deg,
+    rgba(245, 158, 11, 0.04) 0%,
+    rgba(245, 158, 11, 0.14) 36%,
+    rgba(253, 230, 138, 0.24) 48%,
+    rgba(56, 189, 248, 0.12) 60%,
+    rgba(99, 102, 241, 0.03) 82%,
+    transparent 100%
   );
+  background-size: 240% 100%;
+  background-position: var(--ghost-sheen, 18%) 50%;
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-stroke: 1px rgba(245, 158, 11, 0.16);
-  opacity: 0.9;
+  -webkit-text-stroke: 1px rgba(245, 158, 11, 0.12);
+  opacity: 0;
   pointer-events: none;
   user-select: none;
-  transform: translate3d(0, 0, 0);
+  transform: translate3d(var(--ghost-x, 36px), var(--ghost-y, 14px), 0);
+  will-change: transform, opacity;
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-text-stroke-color 0.9s ease,
+    filter 0.9s ease;
 }
 
-@supports (animation-timeline: view()) {
-  .section[data-ghost]::after {
-    animation: ghostDrift linear both;
-    animation-timeline: view();
-    animation-range: entry 0% exit 100%;
+.section[data-ghost].is-ghost-visible::after {
+  opacity: 0.92;
+  -webkit-text-stroke: 1px rgba(245, 158, 11, 0.22);
+  filter: drop-shadow(0 0 28px rgba(245, 158, 11, 0.08));
+  animation: ghostStrokeSheen 1.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ghostStrokeSheen {
+  0% {
+    opacity: 0;
+    -webkit-text-stroke-color: rgba(245, 158, 11, 0.45);
+    filter: drop-shadow(0 0 34px rgba(245, 158, 11, 0.22));
   }
-}
-
-@keyframes ghostDrift {
-  from { transform: translate3d(0, 70px, 0); opacity: 0.55; }
-  45% { opacity: 0.9; }
-  to { transform: translate3d(0, -90px, 0); opacity: 0.38; }
+  55% {
+    opacity: 1;
+    -webkit-text-stroke-color: rgba(251, 191, 36, 0.32);
+  }
+  100% {
+    opacity: 0.92;
+    -webkit-text-stroke-color: rgba(245, 158, 11, 0.22);
+    filter: drop-shadow(0 0 24px rgba(245, 158, 11, 0.07));
+  }
 }
 
 /* ---------- Sticky work deck ---------- */

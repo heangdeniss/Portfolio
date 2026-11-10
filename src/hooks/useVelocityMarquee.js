@@ -5,9 +5,10 @@ import usePrefersReducedMotion from './usePrefersReducedMotion';
 
 /**
  * Scroll-velocity-reactive marquee.
- * Rest speed is constant; Lenis velocity accelerates it and flips direction
- * when the user scrolls upward. Uses GSAP's ticker so it shares one rAF loop
- * with Lenis and ScrollTrigger.
+ * Rest speed is constant; Lenis velocity smoothly accelerates it, flips direction
+ * when scrolling upward, and applies a subtle velocity-linked skewX that settles
+ * back to 0deg when scrolling stops. Uses GSAP's ticker so it shares one unified
+ * rAF loop with Lenis and ScrollTrigger.
  *
  * direction: -1 for leftward, 1 for rightward.
  */
@@ -26,6 +27,7 @@ export default function useVelocityMarquee({
 
     let halfWidth = track.scrollWidth / 2 || 1;
     let x = direction === -1 ? 0 : -halfWidth;
+    let smoothVel = 0;
     let onScreen = true;
 
     const measure = () => {
@@ -38,17 +40,26 @@ export default function useVelocityMarquee({
     };
 
     const tick = (time, deltaTime) => {
-      // Offscreen marquees are fully parked: no transform writes, no layout
-      // reads. The same flag pauses any legacy CSS fallback animation.
+      // Offscreen marquees are fully parked: no transform writes, no layout reads.
       if (!onScreen || document.hidden) return;
 
       const delta = Math.min(Math.max(deltaTime, 0), 50) / 1000;
+      const targetVel = velocityRef.current || 0;
+      smoothVel += (targetVel - smoothVel) * (1 - Math.exp(-delta * 10));
+      if (Math.abs(smoothVel) < 0.0005 && targetVel === 0) {
+        smoothVel = 0;
+      }
 
-      const velocity = velocityRef.current || 0;
-      const speed = baseSpeed + velocity * factor;
+      const speed = baseSpeed + smoothVel * factor;
       x += direction * speed * delta;
       wrap();
-      track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
+
+      const skew = Math.max(-7, Math.min(7, smoothVel * direction * -5.2));
+      if (Math.abs(skew) > 0.04) {
+        track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0) skewX(${skew.toFixed(2)}deg)`;
+      } else {
+        track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
+      }
     };
 
     const viewport = track.closest('.marquee, .ribbon') ?? track;

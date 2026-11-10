@@ -17,10 +17,8 @@ roles:
 specializations:
   - Predictive Modeling
   - RAG Architectures
-  - FastAPI & React
   - Probabilistic Models (HMM)
-  - Data Analyst
-  - Data Cleaning
+  - FastAPI & React
 taglineLines:
   - Bridging *mathematical rigor*
   - with full-stack execution.
@@ -38,7 +36,7 @@ degree:
   description: Rigorous curriculum covering Data Structures & Algorithms, Machine Learning, Database Systems, Linear Algebra, and Probability & Statistics.
 languages:
   - Khmer | Native
-  - English | Professional (B2) • ACE
+  - English | Professional (B2+) • ACE
   - French | Elementary (A2)
 socials:
   github: https://github.com/heangdeniss

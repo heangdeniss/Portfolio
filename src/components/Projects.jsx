@@ -5,8 +5,10 @@ import { projects } from '../data/projects';
 import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import useScrollLock from '../hooks/useScrollLock';
+import CountUp from './CountUp';
 import SectionTitle from './SectionTitle';
 import MagneticButton from './MagneticButton';
+import IsometricPipeline3D from './IsometricPipeline3D';
 
 const WebGLProjectShowcase = lazy(() => import('./WebGLProjectShowcase'));
 
@@ -148,15 +150,23 @@ function ProjectShowcaseFallback({
                 ))}
               </div>
 
+              <div className="showcase__pipeline-wrap" data-meta>
+                <IsometricPipeline3D
+                  project={activeProject}
+                  variant="showcase"
+                  onInspectDossier={onOpenDossier}
+                />
+              </div>
+
               <div className="showcase__actions" data-meta>
                 <MagneticButton
                   as="button"
-                  className="showcase__link"
+                  className="showcase__link showcase__link--primary"
                   strength={0.2}
                   onClick={() => onOpenDossier?.(activeProject)}
                   data-cursor="Open"
                 >
-                  <span>[ System Architecture ]</span>
+                  <span>System Architecture</span>
                   <span className="showcase__link-arrow" aria-hidden="true">↗</span>
                 </MagneticButton>
 
@@ -169,7 +179,7 @@ function ProjectShowcaseFallback({
                   rel="noopener noreferrer"
                   data-cursor="GitHub"
                 >
-                  <span>[ GitHub Repo ]</span>
+                  <span>GitHub Repo</span>
                   <span className="showcase__link-arrow" aria-hidden="true">↗</span>
                 </MagneticButton>
               </div>
@@ -367,6 +377,8 @@ function ProjectDossier({ project, onClose, onOpenImage }) {
               <span className="project-dossier__section-index">01</span>
               <h3 id="dossier-architecture">System Architecture &amp; Formulation</h3>
             </div>
+
+            <IsometricPipeline3D project={project} variant="dossier" />
 
             <div className="project-dossier__flow">
               {project.architecture.flow.map((step, index) => (
@@ -585,10 +597,55 @@ export default function Projects() {
           to inspect its architecture, mathematics and visual evidence.
         </p>
 
-        <div className="showcase__header-meta" aria-hidden="true">
-          <span>{String(projects.length).padStart(2, '0')} Projects</span>
-          <span>{String(projects.reduce((total, project) => total + project.images.length, 0)).padStart(2, '0')} Visuals</span>
-          <span>02 Domains</span>
+        <div className="showcase__header-meta" aria-label="Archive telemetry">
+          <div className="showcase__meta-stat">
+            <span className="showcase__meta-stat-top">
+              <strong className="showcase__meta-stat-num">
+                <CountUp end={projects.length} padStart={2} duration={1.45} />
+              </strong>
+              <span className="showcase__meta-stat-label">Projects</span>
+            </span>
+            <span className="metric-glow-bar" aria-hidden="true">
+              <span
+                className="metric-glow-bar__fill"
+                style={{ '--bar-target': '0.86', '--bar-delay': '0.06s' }}
+              />
+            </span>
+          </div>
+
+          <div className="showcase__meta-stat">
+            <span className="showcase__meta-stat-top">
+              <strong className="showcase__meta-stat-num">
+                <CountUp
+                  end={projects.reduce((total, project) => total + project.images.length, 0)}
+                  padStart={2}
+                  duration={1.65}
+                />
+              </strong>
+              <span className="showcase__meta-stat-label">Visuals</span>
+            </span>
+            <span className="metric-glow-bar" aria-hidden="true">
+              <span
+                className="metric-glow-bar__fill"
+                style={{ '--bar-target': '0.94', '--bar-delay': '0.18s' }}
+              />
+            </span>
+          </div>
+
+          <div className="showcase__meta-stat">
+            <span className="showcase__meta-stat-top">
+              <strong className="showcase__meta-stat-num">
+                <CountUp end={2} padStart={2} duration={1.35} />
+              </strong>
+              <span className="showcase__meta-stat-label">Domains</span>
+            </span>
+            <span className="metric-glow-bar" aria-hidden="true">
+              <span
+                className="metric-glow-bar__fill"
+                style={{ '--bar-target': '0.78', '--bar-delay': '0.3s' }}
+              />
+            </span>
+          </div>
         </div>
       </div>
 

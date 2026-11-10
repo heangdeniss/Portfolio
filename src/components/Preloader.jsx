@@ -28,9 +28,11 @@ const wait = (duration) => new Promise((resolve) => window.setTimeout(resolve, d
  * a hairline progress bar and a staggered five-column curtain lift.
  */
 export default function Preloader() {
-  const { setIntroComplete } = useExperience();
+  const { introComplete, setIntroComplete } = useExperience();
   const prefersReducedMotion = usePrefersReducedMotion();
-  const [phase, setPhase] = useState(() => (prefersReducedMotion ? 'done' : 'loading'));
+  const [phase, setPhase] = useState(() =>
+    prefersReducedMotion || introComplete ? 'done' : 'loading',
+  );
 
   const rootRef = useRef(null);
   const contentRef = useRef(null);
@@ -44,7 +46,7 @@ export default function Preloader() {
   const finishedRef = useRef(false);
 
   useEffect(() => {
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || introComplete) {
       return undefined;
     }
 
@@ -129,7 +131,7 @@ export default function Preloader() {
       finishTweenRef.current?.kill();
       exitTweenRef.current?.kill();
     };
-  }, [prefersReducedMotion, setIntroComplete]);
+  }, [introComplete, prefersReducedMotion, setIntroComplete]);
 
   const skip = () => {
     if (exitingRef.current) return;

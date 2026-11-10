@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import vaultAssets from './scripts/vault-assets.js'
+import seoPlugin from './scripts/generate-seo.js'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), vaultAssets()],
+  plugins: [react(), vaultAssets(), seoPlugin()],
   build: {
     rolldownOptions: {
       output: {

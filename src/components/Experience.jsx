@@ -145,7 +145,7 @@ export default function Experience() {
         <div className={`timeline-track-wrap${visible ? ' visible' : ''}`} ref={trackRef}>
           <div className="timeline-spine" ref={spineRef} />
           <div aria-live="polite" aria-atomic="true" className="sr-only">
-            Showing {filteredItems.length} {filter === 'All' ? 'total' : filter.toLowerCase()} milestone{filteredItems.length !== 1 ? 's' : ''}
+            {`Showing ${filteredItems.length} ${filter === 'All' ? 'total' : filter.toLowerCase()} ${filteredItems.length === 1 ? 'milestone' : 'milestones'}`}
           </div>
 
           <div className="timeline-items" key={filter}>

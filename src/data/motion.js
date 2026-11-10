@@ -2,7 +2,7 @@ import { noteByPath } from '../lib/vault';
 
 const DEFAULTS = {
   intensity: 'cinematic',
-  scrollLerp: 0.085,
+  scrollLerp: 0.135,
   velocityNormalizer: 80,
   marqueeSpeed: 52,
   cursor: true,

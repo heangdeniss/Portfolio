@@ -5,17 +5,19 @@ import { useExperience } from '../context/ExperienceContext';
 import { isScrollLocked } from '../hooks/useScrollLock';
 import { motion } from '../data/motion';
 
+const EXPO_EASE = (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
+
 function measureHeaderOffset() {
   const headerEl =
     document.querySelector('.header__inner') || document.querySelector('.header');
-  if (!headerEl) return 92;
+  if (!headerEl) return 80;
   const rect = headerEl.getBoundingClientRect();
-  const offset = Math.max(64, Math.round(rect.bottom + 20));
+  const offset = Math.max(72, Math.min(92, Math.round(rect.bottom + 14)));
   document.documentElement.style.setProperty('--header-offset', `${offset}px`);
-  return offset;
+  return 80;
 }
 
-function getTargetOffset(target, headerOffset) {
+function getTargetOffset(target, headerOffset = 80) {
   if (!target || target.id === 'hero' || target.id === 'main-content') {
     return 0;
   }
@@ -40,18 +42,22 @@ function focusTargetSection(target) {
 }
 
 /**
- * Lenis + GSAP ticker integration.
+ * Lenis + GSAP unified ticker integration.
  * - One rAF loop (GSAP ticker) drives Lenis, ScrollTrigger and all GSAP tweens.
- * - Lenis velocity is mirrored into a ref and decays cleanly to 0 when stopped
- *   so decorative surfaces and WebGL canvases always settle.
- * - Anchor offset is measured dynamically from the fixed header height.
- * - Keyboard focus moves to the target section after anchor navigation.
- * - Initial deep links (e.g. /#notes) resolve after intro + lazy layout settle.
+ * - Zero document.documentElement style mutations during scroll (all telemetry
+ *   lives in refs so Chromium never recalculates document styles on scroll ticks).
+ * - Fast, responsive inertial physics: lerp 0.135, wheelMultiplier 1.12, touchMultiplier 1.5.
  */
 export default function SmoothScrollProvider({ children }) {
-  const { introComplete, lenisRef, velocityRef, progressRef, prefersReducedMotion } =
-    useExperience();
-  const headerOffsetRef = useRef(92);
+  const {
+    introComplete,
+    lenisRef,
+    velocityRef,
+    progressRef,
+    scrollYRef,
+    prefersReducedMotion,
+  } = useExperience();
+  const headerOffsetRef = useRef(80);
   const initialHashHandledRef = useRef(false);
 
   /* Measure header height & keep --header-offset in sync across all modes */
@@ -83,6 +89,7 @@ export default function SmoothScrollProvider({ children }) {
 
     lenisRef.current = null;
     velocityRef.current = 0;
+    scrollYRef.current = window.scrollY || 0;
 
     const scrollToHashTarget = (hash, pushHistory = false) => {
       const target = resolveHashTarget(hash);
@@ -143,20 +150,21 @@ export default function SmoothScrollProvider({ children }) {
       document.removeEventListener('click', onClick);
       window.removeEventListener('hashchange', onHashChange);
     };
-  }, [prefersReducedMotion, lenisRef, velocityRef]);
+  }, [prefersReducedMotion, lenisRef, velocityRef, scrollYRef]);
 
-  /* Smooth scroll (Lenis + single GSAP ticker) */
+  /* Smooth scroll (Lenis + single unified GSAP ticker) */
   useEffect(() => {
     if (prefersReducedMotion) return undefined;
 
     const lenis = new Lenis({
-      lerp: motion.scrollLerp,
+      lerp: motion.scrollLerp || 0.135,
       smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.15,
+      wheelMultiplier: 1.12,
+      touchMultiplier: 1.5,
       syncTouch: false,
       stopInertiaOnNavigate: true,
       allowNestedScroll: true,
+      prevent: (node) => Boolean(node?.hasAttribute?.('data-lenis-prevent')),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       infinite: false,
@@ -165,11 +173,12 @@ export default function SmoothScrollProvider({ children }) {
 
     lenisRef.current = lenis;
 
-    const onScroll = ({ velocity, progress }) => {
+    const onScroll = ({ scroll, velocity, progress }) => {
       const normalized = Math.max(
         -1,
         Math.min(1, velocity / motion.velocityNormalizer),
       );
+      scrollYRef.current = scroll;
       velocityRef.current = normalized;
       progressRef.current = progress;
     };
@@ -180,9 +189,11 @@ export default function SmoothScrollProvider({ children }) {
       // Smoothly decay velocity to 0 when scrolling stops or is paused so
       // velocity-driven marquees, ribbons and shaders always settle cleanly.
       if (!lenis.isScrolling || lenis.isStopped || document.hidden) {
-        velocityRef.current *= 0.82;
-        if (Math.abs(velocityRef.current) < 0.001) {
-          velocityRef.current = 0;
+        if (velocityRef.current !== 0) {
+          velocityRef.current *= 0.82;
+          if (Math.abs(velocityRef.current) < 0.001) {
+            velocityRef.current = 0;
+          }
         }
       }
     };
@@ -206,7 +217,10 @@ export default function SmoothScrollProvider({ children }) {
       const target = resolveHashTarget(hash);
       if (!target) return false;
 
+      // Temporarily ungate content-visibility so target measurements are exact
+      document.documentElement.classList.add('is-anchor-scrolling');
       headerOffsetRef.current = measureHeaderOffset();
+      lenis.resize();
       const offset = getTargetOffset(target, headerOffsetRef.current);
 
       if (pushHistory && window.location.hash !== hash) {
@@ -216,15 +230,17 @@ export default function SmoothScrollProvider({ children }) {
 
       lenis.scrollTo(target, {
         offset,
-        duration: immediate ? 0 : 1.25,
+        duration: immediate ? 0 : 1.0,
         immediate,
-        easing: (t) => 1 - Math.pow(1 - t, 4),
+        easing: EXPO_EASE,
         onComplete: () => {
+          document.documentElement.classList.remove('is-anchor-scrolling');
           focusTargetSection(target);
         },
       });
 
       if (immediate) {
+        document.documentElement.classList.remove('is-anchor-scrolling');
         focusTargetSection(target);
       }
 
@@ -305,6 +321,7 @@ export default function SmoothScrollProvider({ children }) {
     return () => {
       window.clearTimeout(refreshTimer);
       mainResizeObserver?.disconnect();
+      document.documentElement.classList.remove('is-anchor-scrolling');
       document.removeEventListener('click', onClick);
       window.removeEventListener('hashchange', onHashChange);
       document.removeEventListener('visibilitychange', onVisibilityChange);
@@ -318,7 +335,7 @@ export default function SmoothScrollProvider({ children }) {
       velocityRef.current = 0;
       progressRef.current = 0;
     };
-  }, [prefersReducedMotion, lenisRef, velocityRef, progressRef]);
+  }, [prefersReducedMotion, lenisRef, velocityRef, progressRef, scrollYRef]);
 
   /* Start Lenis & resolve initial deep link once intro completes */
   useEffect(() => {
@@ -351,8 +368,8 @@ export default function SmoothScrollProvider({ children }) {
             if (lenis) {
               lenis.scrollTo(target, {
                 offset,
-                duration: 1.15,
-                easing: (t) => 1 - Math.pow(1 - t, 4),
+                duration: 1.0,
+                easing: EXPO_EASE,
                 onComplete: () => focusTargetSection(target),
               });
             } else {
@@ -363,32 +380,6 @@ export default function SmoothScrollProvider({ children }) {
               window.scrollTo({ top, behavior: 'auto' });
               focusTargetSection(target);
             }
-
-            // Re-verify target alignment once lazy chunks / pinned triggers settle.
-            timers.push(
-              window.setTimeout(() => {
-                headerOffsetRef.current = measureHeaderOffset();
-                lenis?.resize();
-                ScrollTrigger.refresh();
-                const settleOffset = getTargetOffset(target, headerOffsetRef.current);
-                const delta = target.getBoundingClientRect().top + settleOffset;
-                if (Math.abs(delta) > 8) {
-                  if (lenis) {
-                    lenis.scrollTo(target, {
-                      offset: settleOffset,
-                      duration: 0.55,
-                      easing: (t) => 1 - Math.pow(1 - t, 4),
-                      onComplete: () => focusTargetSection(target),
-                    });
-                  } else {
-                    window.scrollTo({
-                      top: Math.max(0, window.scrollY + delta),
-                      behavior: 'auto',
-                    });
-                  }
-                }
-              }, 520),
-            );
           }
         }
       }, 120),
