@@ -134,10 +134,6 @@ export default function Contact() {
         <div className="section-header">
           <p className="section-label">Get in Touch</p>
           <SectionTitle>Let's Connect & Collaborate</SectionTitle>
-          <p className="section-subtitle">
-            Whether you have an inquiry, open role, machine learning project, or just want to
-            discuss AI systems, my inbox is always open.
-          </p>
         </div>
 
         <div className={`contact-layout stagger${visible ? ' visible' : ''}`}>

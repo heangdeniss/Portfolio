@@ -1,116 +1,9 @@
 /* ============================================================
    ACT IV — GRAPHIC MOTION
-   Act-break type ribbons, a fixed scene HUD with a scroll-speed
-   meter, and animated section-label arrows. Bold graphic motion
-   layered over the inertia system.
+   A fixed scene HUD with a scroll-speed meter, and animated
+   section-label arrows. Bold graphic motion layered over the
+   inertia system.
    ============================================================ */
-
-/* ---------- Oversized diagonal type ribbons ---------- */
-.ribbon {
-  position: relative;
-  z-index: 1;
-  padding: clamp(22px, 3.4vw, 46px) 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.ribbon__band {
-  width: 106vw;
-  margin-left: -3vw;
-  padding: 28px 0 32px;
-  rotate: -2.2deg;
-  transform: skewY(calc(var(--scroll-velocity, 0) * -0.7deg));
-  background:
-    radial-gradient(ellipse at 18% 0%, rgba(99, 102, 241, 0.16), transparent 55%),
-    linear-gradient(180deg, rgba(13, 17, 36, 0.94), rgba(7, 9, 19, 0.62));
-  border-top: 1px solid rgba(245, 158, 11, 0.22);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow:
-    0 34px 90px -34px rgba(0, 0, 0, 0.85),
-    inset 0 0 70px rgba(245, 158, 11, 0.035);
-  will-change: transform;
-}
-
-.ribbon__row {
-  overflow: hidden;
-}
-
-.ribbon__row + .ribbon__row {
-  margin-top: 4px;
-}
-
-.ribbon__track {
-  display: flex;
-  width: max-content;
-  animation: marqueeScroll 58s linear infinite;
-  will-change: transform;
-}
-
-.ribbon__track--reverse {
-  animation-duration: 72s;
-  animation-direction: reverse;
-}
-
-.ribbon__group {
-  display: flex;
-  align-items: center;
-}
-
-.ribbon__word {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.26em;
-  padding-right: 0.34em;
-  font-family: var(--font-heading);
-  font-size: clamp(3rem, 7vw, 6.6rem);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.05em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.ribbon__row--solid .ribbon__word {
-  background-image: linear-gradient(
-    110deg,
-    #ffffff 8%,
-    #fde68a 38%,
-    var(--gold) 58%,
-    var(--accent-violet) 96%
-  );
-  background-size: 220% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-.ribbon__spark {
-  font-size: 0.26em;
-  line-height: 1;
-  color: var(--gold-light);
-  background: none;
-  -webkit-background-clip: border-box;
-  background-clip: border-box;
-  -webkit-text-fill-color: var(--gold-light);
-  -webkit-text-stroke: 0;
-  text-shadow: 0 0 20px rgba(245, 158, 11, 0.55);
-  animation: sparkPulse 3.4s ease-in-out infinite;
-}
-
-.ribbon__row--outline .ribbon__word {
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 1px rgba(245, 158, 11, 0.34);
-  opacity: 0.9;
-}
-
-.ribbon__row--outline .ribbon__spark {
-  color: rgba(99, 102, 241, 0.85);
-  -webkit-text-fill-color: rgba(99, 102, 241, 0.85);
-  -webkit-text-stroke: 0;
-  text-shadow: 0 0 18px rgba(99, 102, 241, 0.5);
-}
 
 /* ---------- Fixed scene HUD ---------- */
 .scene-hud {
@@ -255,19 +148,6 @@
 
 /* ---------- Responsive tuning ---------- */
 @media (max-width: 760px) {
-  .ribbon {
-    padding: 20px 0;
-  }
-
-  .ribbon__band {
-    padding: 18px 0 22px;
-    rotate: -1.2deg;
-  }
-
-  .ribbon__word {
-    font-size: clamp(2rem, 10vw, 3.2rem);
-  }
-
   .section-label::after {
     font-size: 0.85em;
   }
@@ -275,13 +155,6 @@
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .ribbon__band {
-    rotate: none !important;
-    transform: none !important;
-  }
-
-  .ribbon__track,
-  .ribbon__spark,
   .section-label::after {
     animation: none !important;
   }
@@ -298,7 +171,6 @@
 
 /* ---------- Print ---------- */
 @media print {
-  .ribbon,
   .scene-hud {
     display: none !important;
   }

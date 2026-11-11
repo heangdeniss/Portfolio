@@ -30,14 +30,6 @@
 }
 
 /* ---------- Velocity-reactive surfaces ---------- */
-.marquee {
-  rotate: calc(var(--scroll-velocity, 0) * -1.1deg);
-}
-
-.marquee__track {
-  translate: 0 calc(var(--scroll-velocity, 0) * -6px);
-}
-
 .footer__watermark {
   transform: skewX(calc(var(--scroll-velocity, 0) * -1.6deg));
 }
@@ -157,11 +149,6 @@ a:focus-visible .roll-text__clone {
     scale: none !important;
   }
 
-  .marquee {
-    rotate: none !important;
-  }
-
-  .marquee__track,
   .footer__watermark {
     translate: none !important;
     transform: none !important;

@@ -33,13 +33,12 @@ const DEFAULT_PROFILE = {
   bio:
     'Data Science student at the **Institute of Technology of Cambodia** (Expected Graduation: 2027). Focused on engineering end-to-end machine learning pipelines, probabilistic computing, and high-performance web systems.',
   about: [
-    "I'm a Data Science student at the **Institute of Technology of Cambodia**, pursuing my Engineering Degree (Expected Graduation: 2027). I focus on bridging statistical rigor with high-performance software engineering to solve real-world problems.",
-    'Whether formulating probabilistic graphical models, training machine learning pipelines on complex datasets, or architecting full-stack web platforms, I value clean structure, mathematical grounding, and practical impact.',
+    "Data Science Engineering student at ITC ('27) combining statistical rigor with scalable software engineering to solve complex real-world problems. Focused on ML pipelines, probabilistic modeling, and full-stack architectures grounded in mathematical precision.",
   ],
   focus: [
-    '**Predictive Modeling:** Credit default risk prediction, Basel-aligned ratings, and gradient-boosted ensembles',
-    '**Statistical Computing:** Hidden Markov Models (HMM) and log-space Viterbi algorithm from mathematical first principles',
-    '**Modern Full-Stack:** Python FastAPI backends paired with clean React interfaces for data applications',
+    '**Predictive Modeling:** Credit risk scoring, Basel-aligned models, and gradient-boosted ensembles.',
+    '**Statistical Computing:** Custom Hidden Markov Models (HMM) & log-space Viterbi algorithms built from first principles.',
+    '**Modern Full-Stack:** FastAPI backends integrated with modern React interfaces.',
   ],
   signals: [
     { value: 96.05, suffix: '%', decimals: 2, label: 'HMM POS accuracy' },
@@ -51,7 +50,7 @@ const DEFAULT_PROFILE = {
     institution: 'Institute of Technology of Cambodia (ITC)',
     year: 'Expected Graduation: 2027',
     description:
-      'Rigorous curriculum covering Data Structures & Algorithms, Machine Learning, Database Systems, Linear Algebra, and Probability & Statistics.',
+      'Core coursework: DSA, Machine Learning, Database Systems, Linear Algebra, & Applied Statistics.',
   },
   languages: [
     { name: 'Khmer', level: 'Native' },

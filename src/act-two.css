@@ -636,16 +636,6 @@ body.cursor-enhanced [data-cursor] * {
     box-shadow 0.35s ease;
 }
 
-/* ---------- Marquee: scroll-velocity skew ---------- */
-.marquee {
-  rotate: calc(var(--scroll-velocity, 0) * -0.65deg);
-  will-change: rotate;
-}
-
-.marquee__track {
-  translate: 0 calc(var(--scroll-velocity, 0) * -4px);
-}
-
 /* ---------- Ambient: pointer parallax, scene hue, vignette, grain ---------- */
 .ambient__orb {
   translate: calc(var(--pointer-x, 0) * 24px) calc(var(--pointer-y, 0) * 22px);
@@ -790,8 +780,6 @@ body::after {
   .hero__name-word,
   .hero__orbit-text,
   .ambient__orb,
-  .marquee,
-  .marquee__track,
   body::after {
     animation: none !important;
     rotate: none !important;

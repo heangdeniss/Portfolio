@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import Marquee from './components/Marquee';
-import TypeRibbon from './components/TypeRibbon';
 import About from './components/About';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
@@ -32,16 +30,6 @@ import './hero-cinematic.css';
 
 const RING_RADIUS = 21;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
-
-const RIBBON_ONE = {
-  top: ['ANALYZE', 'MODEL', 'BUILD', 'SHIP'],
-  bottom: ['DATA SCIENCE', 'MACHINE LEARNING', 'RAG SYSTEMS', 'FULL-STACK'],
-};
-
-const RIBBON_TWO = {
-  top: ['RESEARCH', 'ENGINEER', 'DEPLOY', 'ITERATE'],
-  bottom: ['PIPELINES', 'DASHBOARDS', 'EXPERIMENTS', 'IMPACT'],
-};
 
 function BackToTop() {
   const { lenisRef, prefersReducedMotion } = useExperience();
@@ -174,12 +162,9 @@ function Portfolio() {
           aria-hidden="true"
         />
         <Hero />
-        <Marquee />
         <About />
-        <TypeRibbon top={RIBBON_ONE.top} bottom={RIBBON_ONE.bottom} />
         <Skills />
         <Experience />
-        <TypeRibbon top={RIBBON_TWO.top} bottom={RIBBON_TWO.bottom} />
         <Projects />
         <VaultGraph />
         <Contact />

@@ -82,7 +82,6 @@ Open [[Motion System]] to adjust:
 
 - `intensity` — `cinematic`, `balanced`, `calm` or `off`
 - `scrollLerp` — Lenis smoothing (lower = floatier)
-- `marqueeSpeed` — base speed of the ticker ribbons
 - `cursor`, `ambient`, `vaultGraph`, `grain` — decorative toggles
 
 ## Linking notes

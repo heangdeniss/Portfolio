@@ -10,7 +10,6 @@ const SPOTLIGHT_SELECTOR = [
   '.showcase__detail',
   '.contact-interactive-card',
   '.contact-form',
-  '.skills-methods-panel',
 ].join(', ');
 
 const TILT_3D_SELECTOR = [
@@ -19,7 +18,6 @@ const TILT_3D_SELECTOR = [
   '.skill-bento-card',
   '.project-card',
   '.showcase__detail',
-  '.skills-methods-panel',
 ].join(', ');
 
 /**
@@ -46,7 +44,6 @@ export default function useSpotlight(enabled = true) {
       if (!state) {
         const isLarge =
           card.classList.contains('about__intro-card') ||
-          card.classList.contains('skills-methods-panel') ||
           card.classList.contains('showcase__detail');
         state = {
           rx: 0,

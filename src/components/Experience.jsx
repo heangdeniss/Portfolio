@@ -101,9 +101,6 @@ export default function Experience() {
         <div className="section-header">
           <p className="section-label">Trajectory</p>
           <SectionTitle>Experience &amp; Education</SectionTitle>
-          <p className="section-subtitle">
-            A chronological timeline of hands-on industry roles, leadership projects, and academic achievements.
-          </p>
         </div>
 
         <div className="timeline-filter-row">

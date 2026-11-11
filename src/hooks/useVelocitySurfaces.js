@@ -9,7 +9,7 @@ import usePrefersReducedMotion from './usePrefersReducedMotion';
  * The old implementation rewrote --scroll-velocity / --scroll-energy on <html>
  * every Lenis tick. Because custom properties inherit, that forced Chromium to
  * recalculate style for the whole document on every frame. Here the velocity is
- * written straight to the four decorative surfaces as transform/rotate/translate
+ * written straight to the decorative surfaces as transform/rotate/translate
  * values, and only while they are near the viewport.
  */
 export default function useVelocitySurfaces() {
@@ -20,40 +20,6 @@ export default function useVelocitySurfaces() {
     if (prefersReducedMotion) return undefined;
 
     const groups = [];
-
-    document.querySelectorAll('.marquee').forEach((marquee) => {
-      const track = marquee.querySelector('.marquee__track');
-      const targets = [
-        {
-          el: marquee,
-          write: (value) => {
-            marquee.style.rotate = value ? `${(value * -1.1).toFixed(3)}deg` : '';
-          },
-        },
-      ];
-
-      if (track) {
-        targets.push({
-          el: track,
-          write: (value) => {
-            track.style.translate = value ? `0 ${(value * -6).toFixed(2)}px` : '';
-          },
-        });
-      }
-
-      groups.push({ host: marquee, targets, visible: true });
-    });
-
-    document.querySelectorAll('.ribbon').forEach((ribbon) => {
-      const targets = [...ribbon.querySelectorAll('.ribbon__band')].map((band) => ({
-        el: band,
-        write: (value) => {
-          band.style.transform = value ? `skewY(${(value * -0.7).toFixed(3)}deg)` : '';
-        },
-      }));
-
-      if (targets.length) groups.push({ host: ribbon, targets, visible: true });
-    });
 
     const watermark = document.querySelector('.footer__watermark');
     if (watermark) {

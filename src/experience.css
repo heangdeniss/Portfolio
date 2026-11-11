@@ -898,62 +898,7 @@ body.cursor-custom textarea {
 }
 
 /* ------------------------------------------------------------
-   06 — Velocity marquees and type ribbons
-   ------------------------------------------------------------ */
-
-.marquee {
-  padding: 14px 0;
-  opacity: 0.68;
-  background:
-    linear-gradient(90deg, rgba(7, 9, 14, 0.4), rgba(15, 20, 32, 0.72), rgba(7, 9, 14, 0.4));
-  border-top-color: rgba(255, 255, 255, 0.06);
-  border-bottom-color: rgba(255, 255, 255, 0.06);
-}
-
-.marquee__track,
-.ribbon__track {
-  animation: none !important;
-  translate: none !important;
-  will-change: transform;
-}
-
-.marquee:hover .marquee__track {
-  animation-play-state: running;
-}
-
-.marquee__group {
-  gap: 36px;
-  padding-right: 36px;
-}
-
-.marquee__item {
-  font-size: 0.92rem;
-}
-
-.ribbon {
-  opacity: 0.35;
-  padding: clamp(10px, 1.8vw, 22px) 0;
-  transition: opacity 0.35s ease;
-}
-
-.ribbon__band {
-  padding: 14px 0 16px;
-  rotate: -1.2deg;
-  transform: skewY(calc(var(--scroll-velocity, 0) * -0.5deg));
-  will-change: transform;
-}
-
-.ribbon__track {
-  transform: translate3d(0, 0, 0);
-}
-
-.ribbon__word {
-  font-size: clamp(1.75rem, 3.6vw, 3rem);
-  letter-spacing: -0.055em;
-}
-
-/* ------------------------------------------------------------
-   07 — Split text, section titles and about headline
+   06 — Split text, section titles and about headline
    ------------------------------------------------------------ */
 
 [data-split-line] {
@@ -3157,13 +3102,6 @@ html[data-quality="low"] .ambient__fallback {
     visibility: visible !important;
   }
 
-  .marquee__track,
-  .ribbon__track,
-  .ribbon__band {
-    transform: none !important;
-    animation: none !important;
-  }
-
   .ambient__fallback,
   .ambient__grain,
   .preloader__grain,
@@ -3297,24 +3235,6 @@ html[data-contrast="high"] {
   will-change: transform;
 }
 
-/* Full-width marquee: no live page blur behind the moving band. */
-.marquee {
-  background: linear-gradient(
-    90deg,
-    rgba(7, 9, 14, 0.92),
-    rgba(15, 20, 32, 0.96),
-    rgba(7, 9, 14, 0.92)
-  );
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* Pause decorative sparkle loops while their ribbon/marquee is offscreen. */
-.is-motion-paused .marquee__spark,
-.is-motion-paused .ribbon__spark {
-  animation-play-state: paused !important;
-}
-
 #skills {
   content-visibility: auto;
   contain-intrinsic-size: auto 1149px;
@@ -3370,7 +3290,6 @@ html.is-anchor-scrolling .footer {
   transform: translate3d(0, 0, 0);
 }
 
-.skills-methods-panel,
 .vault__panel {
   opacity: 0;
   transform: translate3d(0, 26px, 0);
@@ -3379,7 +3298,6 @@ html.is-anchor-scrolling .footer {
     transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
 }
 
-.is-visible .skills-methods-panel,
 .is-visible .vault__panel {
   opacity: 1;
   transform: translate3d(0, 0, 0);
@@ -3408,7 +3326,6 @@ html.is-anchor-scrolling .footer {
 @media (prefers-reduced-motion: reduce) {
   .section-header > *,
   .stagger > *,
-  .skills-methods-panel,
   .vault__panel {
     opacity: 1 !important;
     transform: none !important;
@@ -3446,8 +3363,7 @@ html.is-anchor-scrolling .footer {
 .about__card,
 .skill-bento-card,
 .work-card,
-.showcase__detail,
-.skills-methods-panel {
+.showcase__detail {
   --mouse-x: 50%;
   --mouse-y: 50%;
   --card-rx: 0deg;
@@ -3461,8 +3377,7 @@ html.is-anchor-scrolling .footer {
 .about__card.is-3d-tilting,
 .skill-bento-card.is-3d-tilting,
 .work-card.is-3d-tilting,
-.showcase__detail.is-3d-tilting,
-.skills-methods-panel.is-3d-tilting {
+.showcase__detail.is-3d-tilting {
   contain: layout style;
   transform-style: preserve-3d;
   transform: perspective(1000px) rotateX(var(--card-rx, 0deg)) rotateY(var(--card-ry, 0deg))
@@ -3478,8 +3393,7 @@ html.is-anchor-scrolling .footer {
 .about__intro-card::after,
 .about__card::after,
 .skill-bento-card::after,
-.work-card::after,
-.skills-methods-panel::after {
+.work-card::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -3912,8 +3826,7 @@ html.is-anchor-scrolling .footer {
   .about__card.is-3d-tilting,
   .skill-bento-card.is-3d-tilting,
   .work-card.is-3d-tilting,
-  .showcase__detail.is-3d-tilting,
-  .skills-methods-panel.is-3d-tilting {
+  .showcase__detail.is-3d-tilting {
     transform: none !important;
   }
 }

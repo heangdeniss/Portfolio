@@ -210,13 +210,6 @@ img {
   -webkit-text-fill-color: transparent;
 }
 
-.section-subtitle {
-  color: var(--text-secondary);
-  font-size: 1.05rem;
-  max-width: 620px;
-  line-height: 1.7;
-}
-
 /* Modern Glass Button System */
 .btn {
   display: inline-flex;
@@ -317,7 +310,6 @@ img {
   text-wrap: balance;
 }
 
-.section-subtitle,
 .hero__bio,
 .about__text,
 .project-card__desc {

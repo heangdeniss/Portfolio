@@ -547,11 +547,6 @@ export default function VaultGraph() {
         <div className="section-header vault__header">
           <p className="section-label">Living Knowledge Base</p>
           <SectionTitle>Built from Notes, Wired to Code.</SectionTitle>
-          <p className="section-subtitle">
-            This portfolio is generated from an Obsidian vault. Drag to orbit the 3D knowledge
-            constellation below or select any node to inspect the notes that supply its copy,
-            projects, timeline and motion settings — no runtime fetch, no CMS, no token cost.
-          </p>
         </div>
 
         {motion.vaultGraph ? (

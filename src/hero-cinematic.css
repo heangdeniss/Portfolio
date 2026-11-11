@@ -939,10 +939,10 @@
   border-radius: 50%;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 48%, rgba(56, 189, 248, 0.13) 0%, transparent 56%),
-    radial-gradient(circle at 70% 30%, rgba(167, 139, 250, 0.08), transparent 58%),
-    radial-gradient(circle at 25% 76%, rgba(245, 158, 11, 0.07), transparent 58%);
-  filter: blur(26px);
+    radial-gradient(circle at 50% 48%, rgba(56, 189, 248, 0.06) 0%, transparent 56%),
+    radial-gradient(circle at 70% 30%, rgba(167, 139, 250, 0.035), transparent 58%),
+    radial-gradient(circle at 25% 76%, rgba(245, 158, 11, 0.03), transparent 58%);
+  filter: blur(30px);
 }
 
 #hero .hero__visual::after {
@@ -953,8 +953,8 @@
   border-radius: 50%;
   pointer-events: none;
   background:
-    radial-gradient(circle, transparent 54%, rgba(7, 19, 33, 0.18) 68%, rgba(4, 9, 16, 0.52) 100%);
-  box-shadow: 0 0 90px rgba(4, 9, 16, 0.8);
+    radial-gradient(circle, transparent 54%, rgba(7, 19, 33, 0.08) 68%, rgba(4, 9, 16, 0.24) 100%);
+  box-shadow: 0 0 60px rgba(4, 9, 16, 0.45);
 }
 
 #hero .hero__orbits {
@@ -965,13 +965,13 @@
 }
 
 #hero .hero__orbit {
-  width: 92%;
-  height: 92%;
-  border-color: rgba(56, 189, 248, 0.14);
+  width: 88%;
+  height: 88%;
+  border-color: rgba(56, 189, 248, 0.08);
   border-style: solid;
   border-width: 1px;
-  background: radial-gradient(circle, transparent 68%, rgba(56, 189, 248, 0.025) 78%, transparent 82%);
-  box-shadow: 0 0 40px rgba(56, 189, 248, 0.025);
+  background: none;
+  box-shadow: none;
 }
 
 #hero .hero__orbit::before {
@@ -979,18 +979,16 @@
   position: absolute;
   inset: 6%;
   border-radius: 50%;
-  border: 1px dashed rgba(167, 139, 250, 0.11);
+  border: 1px dashed rgba(167, 139, 250, 0.05);
 }
 
 #hero .hero__orbit::after {
-  width: 5px;
-  height: 5px;
-  top: -3px;
-  left: calc(50% - 3px);
-  background: var(--cine-cyan);
-  box-shadow:
-    0 0 14px rgba(56, 189, 248, 0.95),
-    0 0 30px rgba(56, 189, 248, 0.3);
+  width: 3px;
+  height: 3px;
+  top: -2px;
+  left: calc(50% - 2px);
+  background: rgba(56, 189, 248, 0.55);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
 }
 
 #hero .hero__orbit--inner {
@@ -1353,17 +1351,17 @@
   background: conic-gradient(
     from 20deg,
     transparent 0deg,
-    rgba(56, 189, 248, 0.2) 56deg,
+    rgba(56, 189, 248, 0.09) 56deg,
     transparent 112deg,
     transparent 210deg,
-    rgba(245, 158, 11, 0.22) 262deg,
+    rgba(245, 158, 11, 0.1) 262deg,
     transparent 318deg,
     transparent 360deg
   );
-  filter: blur(1px);
+  filter: blur(3px);
   -webkit-mask: radial-gradient(circle, transparent 61%, #000 63%, #000 66%, transparent 68%);
   mask: radial-gradient(circle, transparent 61%, #000 63%, #000 66%, transparent 68%);
-  animation: cinePortraitHalo 18s linear infinite;
+  animation: cinePortraitHalo 26s linear infinite;
 }
 
 #hero .hero__card-tilt::after {
@@ -1374,9 +1372,9 @@
   border-radius: 50%;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 50%, transparent 47%, rgba(56, 189, 248, 0.08) 52%, transparent 64%),
-    radial-gradient(circle at 50% 50%, transparent 62%, rgba(167, 139, 250, 0.06) 66%, transparent 72%);
-  filter: blur(10px);
+    radial-gradient(circle at 50% 50%, transparent 47%, rgba(56, 189, 248, 0.035) 52%, transparent 64%),
+    radial-gradient(circle at 50% 50%, transparent 62%, rgba(167, 139, 250, 0.025) 66%, transparent 72%);
+  filter: blur(14px);
 }
 
 #hero .hero__glass-card {
@@ -1389,11 +1387,11 @@
     radial-gradient(circle at 34% 20%, rgba(56, 189, 248, 0.1), transparent 44%),
     linear-gradient(150deg, rgba(15, 30, 49, 0.9), rgba(4, 10, 18, 0.94));
   box-shadow:
-    0 0 0 1px rgba(56, 189, 248, 0.035),
+    0 0 0 1px rgba(56, 189, 248, 0.025),
     0 36px 90px -24px rgba(0, 0, 0, 0.9),
-    0 0 70px rgba(56, 189, 248, 0.09),
-    inset 0 0 32px rgba(56, 189, 248, 0.045),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 0 46px rgba(56, 189, 248, 0.045),
+    inset 0 0 24px rgba(56, 189, 248, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   transition:
@@ -1409,33 +1407,33 @@
     from var(--hero-orbit-angle),
     transparent 0deg,
     transparent 228deg,
-    rgba(56, 189, 248, 0.7) 272deg,
-    rgba(167, 139, 250, 0.55) 314deg,
-    rgba(245, 158, 11, 0.55) 344deg,
+    rgba(56, 189, 248, 0.38) 272deg,
+    rgba(167, 139, 250, 0.3) 314deg,
+    rgba(245, 158, 11, 0.3) 344deg,
     transparent 360deg
   );
-  opacity: 0.9;
+  opacity: 0.62;
 }
 
 #hero .hero__glass-card:hover {
-  border-color: rgba(125, 211, 252, 0.36);
+  border-color: rgba(125, 211, 252, 0.28);
   box-shadow:
-    0 0 0 1px rgba(56, 189, 248, 0.06),
+    0 0 0 1px rgba(56, 189, 248, 0.04),
     0 38px 100px -24px rgba(0, 0, 0, 0.95),
-    0 0 95px rgba(56, 189, 248, 0.16),
-    inset 0 0 36px rgba(56, 189, 248, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 0 64px rgba(56, 189, 248, 0.08),
+    inset 0 0 28px rgba(56, 189, 248, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 #hero .hero__glass-card-glow {
   inset: -24%;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 38% 32%, rgba(56, 189, 248, 0.24), transparent 48%),
-    radial-gradient(circle at 72% 70%, rgba(167, 139, 250, 0.15), transparent 55%),
-    radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.09), transparent 55%);
-  filter: blur(38px);
-  opacity: 0.9;
+    radial-gradient(circle at 38% 32%, rgba(56, 189, 248, 0.12), transparent 48%),
+    radial-gradient(circle at 72% 70%, rgba(167, 139, 250, 0.07), transparent 55%),
+    radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.04), transparent 55%);
+  filter: blur(46px);
+  opacity: 0.55;
 }
 
 #hero .hero__image-container {

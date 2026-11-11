@@ -187,7 +187,7 @@ export default function SmoothScrollProvider({ children }) {
       lenis.raf(time * 1000);
 
       // Smoothly decay velocity to 0 when scrolling stops or is paused so
-      // velocity-driven marquees, ribbons and shaders always settle cleanly.
+      // velocity-driven shaders and surfaces always settle cleanly.
       if (!lenis.isScrolling || lenis.isStopped || document.hidden) {
         if (velocityRef.current !== 0) {
           velocityRef.current *= 0.82;

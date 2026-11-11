@@ -525,11 +525,6 @@ export default function Projects() {
       <div className="container showcase__header">
         <p className="section-label">Featured Projects</p>
         <SectionTitle>Engineering &amp; Research Highlights</SectionTitle>
-        <p className="section-subtitle">
-          Selected machine learning architectures, statistical computing pipelines, and data
-          systems engineered for real-world impact. Open a case study to inspect its
-          architecture, mathematics and visual evidence.
-        </p>
 
         <div className="showcase__header-meta" aria-label="Archive telemetry">
           <div className="showcase__meta-stat">

@@ -5,15 +5,12 @@ import usePointerTilt from '../hooks/usePointerTilt';
 import usePortraitTether from '../hooks/usePortraitTether';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import useSplitReveal from '../hooks/useSplitReveal';
-import CountUp from './CountUp';
 import HeroHud from './HeroHud';
 import HeroLatentManifold from './HeroLatentManifold';
-import HeroVortex from './HeroVortex';
 import MagneticButton from './MagneticButton';
 import { site } from '../data/site';
 import denisPhoto from '../images/HEANG Denis good image.jpg';
 
-const ORBIT_TEXT = 'DATA SCIENCE • MACHINE LEARNING • RAG SYSTEMS • ANALYTICS • PROBABILISTIC MODELS • FULL-STACK • ';
 const TAGLINE_PLAIN = site.taglineLines.join(' ').replace(/<[^>]+>/g, '');
 
 export default function Hero() {
@@ -30,7 +27,6 @@ export default function Hero() {
   const portraitDropRef = useRef(null);
   const portraitWireRef = useRef(null);
   const cloneRefs = useRef([]);
-  const chipRefs = useRef([]);
   const glowTopRef = useRef(null);
   const glowRightRef = useRef(null);
   const scrollHintRef = useRef(null);
@@ -158,7 +154,7 @@ export default function Hero() {
     return () => context.revert();
   }, [introComplete, prefersReducedMotion]);
 
-  /* Pointer depth parallax for orbits, portrait stack, chips & chromatic split */
+  /* Pointer depth parallax for orbits, portrait stack & chromatic split */
   useEffect(() => {
     if (prefersReducedMotion || !introComplete) return undefined;
     if (window.matchMedia('(pointer: coarse)').matches) return undefined;
@@ -167,7 +163,6 @@ export default function Hero() {
     const orbits = orbitsRef.current;
     const portraitStack = portraitStackRef.current;
     const visual = visualRef.current;
-    const chips = chipRefs.current.filter(Boolean);
     const [redClone, cyanClone] = cloneRefs.current;
     if (!section || !visual) return undefined;
 
@@ -205,14 +200,6 @@ export default function Hero() {
     const portraitY = portraitStack
       ? gsap.quickTo(portraitStack, 'y', { duration: 0.55, ease: 'power3.out' })
       : null;
-    const chipQuicks = chips.map((chip, idx) => {
-      const factor = idx === 0 ? 14 : idx === 1 ? -12 : 16;
-      return {
-        factor,
-        x: gsap.quickTo(chip, 'x', { duration: 0.5 + idx * 0.08, ease: 'power3.out' }),
-        y: gsap.quickTo(chip, 'y', { duration: 0.5 + idx * 0.08, ease: 'power3.out' }),
-      };
-    });
 
     const redX = redClone
       ? gsap.quickTo(redClone, 'x', { duration: 0.38, ease: 'power3.out' })
@@ -232,18 +219,13 @@ export default function Hero() {
       const nx = event.clientX / Math.max(window.innerWidth, 1) - 0.5;
       const ny = event.clientY / Math.max(window.innerHeight, 1) - 0.5;
 
-      orbitX?.(-nx * 22);
-      orbitY?.(-ny * 18);
-      orbitRotX?.(-ny * 24);
-      orbitRotY?.(nx * 26);
-      orbitRotZ?.(nx * -8 + ny * 5);
+      orbitX?.(-nx * 10);
+      orbitY?.(-ny * 8);
+      orbitRotX?.(-ny * 10);
+      orbitRotY?.(nx * 12);
+      orbitRotZ?.(nx * -3 + ny * 2);
       portraitX?.(-nx * 9);
       portraitY?.(-ny * 7);
-
-      chipQuicks.forEach(({ factor, x, y }) => {
-        x(nx * factor);
-        y(ny * factor * 0.85);
-      });
     };
 
     const onVisualMove = (event) => {
@@ -254,8 +236,8 @@ export default function Hero() {
       const intensity = Math.min(1, Math.hypot(dx, (event.clientY - rect.top) / rect.height - 0.5) * 1.6);
       redX?.(dx * -9);
       cyanX?.(dx * 9);
-      redOpacity?.(0.12 + intensity * 0.16);
-      cyanOpacity?.(0.12 + intensity * 0.16);
+      redOpacity?.(0.06 + intensity * 0.09);
+      cyanOpacity?.(0.06 + intensity * 0.09);
     };
 
     const onVisualLeave = () => {
@@ -423,62 +405,12 @@ export default function Hero() {
                 <span>Download CV (PDF)</span>
               </MagneticButton>
             </div>
-
-            <div className="hero__signals hero__reveal" aria-label="Selected results">
-              {site.signals.map((signal, index) => {
-                const barTarget = index === 0 ? '0.96' : index === 1 ? '0.88' : '0.82';
-                return (
-                  <div
-                    className="hero__signal hero__signal-card"
-                    key={signal.label}
-                    style={{ '--signal-index': index }}
-                  >
-                    <span className="hero__signal-node" aria-hidden="true" />
-                    <span className="hero__signal-scan" aria-hidden="true" />
-                    <span className="hero__signal-value">
-                      <CountUp
-                        end={signal.value}
-                        decimals={signal.decimals}
-                        suffix={signal.suffix}
-                      />
-                    </span>
-                    <span className="hero__signal-label">{signal.label}</span>
-                    <span className="metric-glow-bar" aria-hidden="true">
-                      <span
-                        className="metric-glow-bar__fill"
-                        style={{
-                          '--bar-target': barTarget,
-                          '--bar-delay': `${0.12 + index * 0.14}s`,
-                        }}
-                      />
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
           </div>
 
           <div className="hero__visual" ref={visualRef}>
             <div className="hero__orbits" ref={orbitsRef} aria-hidden="true">
               <span className="hero__orbit hero__orbit--outer" />
-              <span className="hero__orbit hero__orbit--inner" />
-              <svg className="hero__orbit-text" viewBox="0 0 520 520" focusable="false">
-                <defs>
-                  <path
-                    id="heroOrbitTextPath"
-                    d="M260,260 m-236,0 a236,236 0 1,1 472,0 a236,236 0 1,1 -472,0"
-                    fill="none"
-                  />
-                </defs>
-                <text>
-                  <textPath href="#heroOrbitTextPath" startOffset="0">
-                    {`${ORBIT_TEXT}${ORBIT_TEXT}`}
-                  </textPath>
-                </text>
-              </svg>
             </div>
-
-            <HeroVortex />
 
             <div className="hero__card-tilt" ref={tiltRef}>
               <svg

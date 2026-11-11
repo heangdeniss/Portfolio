@@ -1186,7 +1186,6 @@
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 20px;
-  margin-bottom: 40px;
 }
 
 .skill-bento-card--ml-ai {
@@ -1276,9 +1275,9 @@
 
 .skill-bento-card__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .skill-bento-card__icon-box {
@@ -1304,13 +1303,6 @@
   font-weight: 700;
   color: #ffffff;
   letter-spacing: -0.01em;
-}
-
-.skill-bento-card__subtitle {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-  margin-top: 3px;
 }
 
 .skill-bento-card__count {
@@ -1484,87 +1476,6 @@
 .skill-card__category {
   font-size: 0.7rem;
   color: var(--text-muted);
-}
-
-/* Methods Panel in Skills */
-.skills-methods-panel {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  padding: 30px;
-  position: relative;
-  overflow: hidden;
-}
-
-.skills-methods-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent-cyan) 0%, var(--accent-indigo) 50%, var(--accent-violet) 100%);
-  opacity: 0.7;
-}
-
-.skills-methods-panel__header {
-  margin-bottom: 20px;
-}
-
-.skills-methods-panel__tag {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--accent-cyan);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
-
-.skills-methods-panel__title {
-  font-family: var(--font-heading);
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin-top: 4px;
-}
-
-.skills-methods-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.method-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--glass-border);
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
-}
-
-.method-pill__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--method-color, var(--gold));
-  box-shadow: 0 0 6px var(--method-color, var(--gold));
-  flex-shrink: 0;
-}
-
-.method-pill:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: var(--method-color, rgba(245, 158, 11, 0.35));
-  color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
 /* ==============================

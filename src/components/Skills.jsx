@@ -14,7 +14,6 @@ const SKILL_GROUPS = [
   {
     id: 'ml-ai',
     title: 'ML & AI',
-    subtitle: 'Deep learning, neural architectures, vector retrieval & LLM agent pipelines',
     accent: '#8b5cf6',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -34,7 +33,6 @@ const SKILL_GROUPS = [
   {
     id: 'data-analytics',
     title: 'Data & Analytics',
-    subtitle: 'High-throughput data transformations, statistical modeling & analytics dashboards',
     accent: '#06b6d4',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -56,7 +54,6 @@ const SKILL_GROUPS = [
   {
     id: 'web-backend',
     title: 'Web & Backend',
-    subtitle: 'High-performance REST APIs, full-stack microservices & reactive user interfaces',
     accent: '#10b981',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -78,7 +75,6 @@ const SKILL_GROUPS = [
   {
     id: 'programming-languages',
     title: 'Programming Languages',
-    subtitle: 'Core programming languages for statistical computing, data analysis & systems',
     accent: '#f59e0b',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -96,7 +92,6 @@ const SKILL_GROUPS = [
   {
     id: 'tools-environment',
     title: 'Tools & Environment',
-    subtitle: 'Developer environments, version control, cloud computing & reproducible research',
     accent: '#6366f1',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -110,21 +105,6 @@ const SKILL_GROUPS = [
       { name: 'Google Cloud', icon: devicon('googlecloud'), color: '#4285F4' },
     ],
   },
-];
-
-const methodsList = [
-  { text: 'Exploratory Data Analysis (EDA)', color: '#06b6d4' },
-  { text: 'Feature Engineering & Selection', color: '#06b6d4' },
-  { text: 'Supervised Classification', color: '#f59e0b' },
-  { text: 'Supervised Regression', color: '#f59e0b' },
-  { text: 'Basel Probability of Default (PD)', color: '#f59e0b' },
-  { text: 'Retrieval-Augmented Generation (RAG)', color: '#8b5cf6' },
-  { text: 'Natural Language Processing (NLP)', color: '#8b5cf6' },
-  { text: 'Hidden Markov Models (HMM)', color: '#10b981' },
-  { text: 'Log-Space Viterbi Algorithm', color: '#10b981' },
-  { text: 'Deep Neural Networks', color: '#6366f1' },
-  { text: 'Unsupervised Clustering', color: '#6366f1' },
-  { text: 'Time Series Forecasting', color: '#ec4899' },
 ];
 
 const getInitials = (name) =>
@@ -141,14 +121,11 @@ export default function Skills() {
   const [ref, visible] = useReveal();
 
   return (
-    <section id="skills" className="section" data-ghost="STACK">
+    <section id="skills" className="section">
       <div className={`container${visible ? ' is-visible' : ''}`} ref={ref}>
         <div className="section-header">
           <p className="section-label">Skills & Tech Stack</p>
           <SectionTitle>Technical Expertise</SectionTitle>
-          <p className="section-subtitle">
-            Curated toolkit organized across machine learning engineering, statistical computing, web architecture, and cloud tooling.
-          </p>
         </div>
 
         {/* 5 Distinct Bento Cards */}
@@ -167,7 +144,6 @@ export default function Skills() {
                 </div>
                 <div className="skill-bento-card__titles">
                   <h3 className="skill-bento-card__title">{group.title}</h3>
-                  <p className="skill-bento-card__subtitle">{group.subtitle}</p>
                 </div>
                 <span className="skill-bento-card__count">{group.skills.length} Tech</span>
               </div>
@@ -201,22 +177,6 @@ export default function Skills() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Methods & Techniques Section */}
-        <div className="skills-methods-panel">
-          <div className="skills-methods-panel__header">
-            <span className="skills-methods-panel__tag">Analytical Rigor</span>
-            <h3 className="skills-methods-panel__title">Methods, Algorithms & Modeling</h3>
-          </div>
-          <div className="skills-methods-grid">
-            {methodsList.map((m) => (
-              <div key={m.text} className="method-pill" style={{ '--method-color': m.color }}>
-                <span className="method-pill__dot" />
-                <span className="method-pill__text">{m.text}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
       </div>
