@@ -5,6 +5,7 @@ import llcFeature from '../images/LLC_importance_feature.png';
 import llcBi1 from '../images/LLC_bi_1_(1).png';
 import llcBi2 from '../images/LLC_bi_1_(2).png';
 import llcBi3 from '../images/LLC_bi_1_(3).png';
+import hmmLiveDemo from '../images/hmm_live_demo.jpg';
 import hmmMethodology from '../images/hmm_methodology.jpg';
 import hmmResults from '../images/hmm_results.jpg';
 import {
@@ -89,8 +90,8 @@ const baseProjects = [
     desc: 'Formulated a first-principles Hidden Markov Model (HMM) with log-space Viterbi dynamic programming to overcome numerical underflow on sequence labeling across 232,000+ Brown Corpus tokens. Engineered Laplace smoothing with grid-search cross-validation (α = 10⁻⁹), achieving 96.05% test accuracy across 12 Universal POS categories.',
     tags: ['Python', 'Probabilistic Graphical Models', 'HMM', 'Viterbi Algorithm', 'NLP', 'NLTK'],
     githubUrl: 'https://github.com/heangdeniss/HMM-Text_Segmentation',
-    demoUrl: 'https://github.com/heangdeniss/HMM-Text_Segmentation',
-    images: [hmmMethodology, hmmResults],
+    demoUrl: 'https://heangdeniss.github.io/HMM-Text_Segmentation/',
+    images: [hmmLiveDemo, hmmMethodology, hmmResults],
     architecture: {
       flow: [
         'Brown Corpus (232k Tokens)',

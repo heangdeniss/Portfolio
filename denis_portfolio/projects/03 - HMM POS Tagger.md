@@ -11,8 +11,8 @@ role: Probabilistic Models • NLP • HMM
 accent: "#8b5cf6"
 tags: [Python, Probabilistic Graphical Models, HMM, Viterbi Algorithm, NLP, NLTK]
 githubUrl: https://github.com/heangdeniss/HMM-Text_Segmentation
-demoUrl: https://github.com/heangdeniss/HMM-Text_Segmentation
-images: [hmm_methodology.jpg, hmm_results.jpg]
+demoUrl: https://heangdeniss.github.io/HMM-Text_Segmentation/
+images: [hmm_live_demo.jpg, hmm_methodology.jpg, hmm_results.jpg]
 related:
   - Profile
 ---

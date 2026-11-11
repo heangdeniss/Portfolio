@@ -1,231 +1,179 @@
-import { Fragment, Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { gsap } from '../lib/animations';
+import { gsap, ScrollTrigger } from '../lib/animations';
 import { projects } from '../data/projects';
 import { useExperience } from '../context/ExperienceContext';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
+import useReveal from '../hooks/useReveal';
 import useScrollLock from '../hooks/useScrollLock';
 import CountUp from './CountUp';
 import SectionTitle from './SectionTitle';
 import MagneticButton from './MagneticButton';
 import IsometricPipeline3D from './IsometricPipeline3D';
 
-const WebGLProjectShowcase = lazy(() => import('./WebGLProjectShowcase'));
-
 const pad = (value) => String(value).padStart(2, '0');
 
-function ProjectShowcaseFallback({
-  items,
-  onOpenDossier,
-  onOpenImage,
-}) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [imageIndex, setImageIndex] = useState(0);
+const ExternalIcon = (props) => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.4"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...props}
+  >
+    <path d="M7 17 17 7M9 7h8v8" />
+  </svg>
+);
 
-  const total = items.length;
-  const activeProject = items[activeIndex] ?? items[0];
-  const activeImage = activeProject.images[imageIndex] ?? activeProject.images[0];
-  const progress = total > 1 ? activeIndex / (total - 1) : 0;
+const ArrowIcon = (props) => (
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.4"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...props}
+  >
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
 
-  const goTo = (nextIndex) => {
-    const clamped = Math.max(0, Math.min(total - 1, nextIndex));
-    setActiveIndex(clamped);
-    setImageIndex(0);
-  };
+const GitHubIcon = (props) => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+  </svg>
+);
+
+function ProjectCard({ project, index, total, onOpenDossier, onOpenImage }) {
+  const cover = project.images[0];
+  const imageCount = project.images.length;
+  const hasLiveDemo = Boolean(project.demoUrl) && project.demoUrl !== project.githubUrl;
 
   return (
-    <div
-      className="showcase__pin showcase__pin--fallback"
-      style={{ '--showcase-count': total }}
+    <article
+      className="work-card"
+      style={{ '--project-accent': project.accent || '#f59e0b' }}
+      data-work-card
     >
-      <div className="showcase__stage">
-        <div className="showcase__stage-grid">
-          <div className="showcase__media-col">
-            <div
-              className="showcase__media"
-              data-cursor="View"
-              onClick={() =>
-                onOpenImage?.({ src: activeImage, alt: activeProject.title })
-              }
-              role="button"
-              tabIndex={0}
-              aria-label={`Open ${activeProject.title} visual in full screen`}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  onOpenImage?.({ src: activeImage, alt: activeProject.title });
-                }
-              }}
-            >
-              <img
-                key={`${activeProject.id}-${imageIndex}`}
-                src={activeImage}
-                alt={`${activeProject.title} — visual ${imageIndex + 1}`}
-                className="showcase__fallback-img"
-                loading="eager"
-                decoding="async"
-              />
+      <div className="work-card__media-wrap">
+        <button
+          type="button"
+          className="work-card__media"
+          onClick={() =>
+            onOpenImage?.({ src: cover, alt: `${project.title} — visual evidence` })
+          }
+          aria-label={`Open ${project.title} visual in full screen`}
+          data-cursor="View"
+        >
+          <img
+            src={cover}
+            alt={`${project.title} — project preview`}
+            className="work-card__img"
+            loading="lazy"
+            decoding="async"
+          />
 
-              <span className="showcase__media-vignette" aria-hidden="true" />
-              <span className="showcase__media-grain" aria-hidden="true" />
+          <span className="work-card__shade" aria-hidden="true" />
 
-              <div className="showcase__counter" aria-live="polite">
-                <span className="showcase__counter-label">Showing Project</span>
-                <span className="showcase__counter-value" key={activeIndex}>
-                  {pad(activeIndex + 1)}
-                </span>
-                <span className="showcase__counter-total">/ {pad(total)}</span>
-              </div>
+          <span className="work-card__index">
+            {pad(index + 1)}
+            <span> / {pad(total)}</span>
+          </span>
 
-              <span className="showcase__media-index" aria-hidden="true">
-                {pad(activeIndex + 1)} — {pad(total)}
-              </span>
+          {hasLiveDemo && (
+            <span className="work-card__live">
+              <span className="work-card__live-dot" aria-hidden="true" />
+              Live
+            </span>
+          )}
 
-              <div className="showcase__media-nav">
-                <button
-                  type="button"
-                  className="showcase__media-arrow"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    goTo(activeIndex - 1);
-                  }}
-                  disabled={activeIndex === 0}
-                  aria-label="Previous project"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                    <path d="M19 12H5M11 18l-6-6 6-6" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  className="showcase__media-arrow"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    goTo(activeIndex + 1);
-                  }}
-                  disabled={activeIndex === total - 1}
-                  aria-label="Next project"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                    <path d="M5 12h14M13 6l6 6-6 6" />
-                  </svg>
-                </button>
-              </div>
+          <span className="work-card__view">
+            View visual
+            <ExternalIcon width="12" height="12" />
+          </span>
 
-              <div className="showcase__rail" aria-hidden="true">
-                <span
-                  className="showcase__rail-fill"
-                  style={{ transform: `scaleX(${progress.toFixed(4)})` }}
-                />
-              </div>
-            </div>
-          </div>
+          {imageCount > 1 && (
+            <span className="work-card__count" aria-hidden="true">
+              {imageCount} visuals
+            </span>
+          )}
+        </button>
+      </div>
 
-          <div className="showcase__meta-col">
-            <div className="showcase__meta">
-              <div className="showcase__meta-top" data-meta>
-                <span className="showcase__meta-index">
-                  {pad(activeIndex + 1)} — {pad(total)}
-                </span>
-                <span className="showcase__meta-metric">{activeProject.metric}</span>
-              </div>
+      <div className="work-card__body">
+        <p className="work-card__role">{project.role}</p>
+        <h3 className="work-card__title">{project.shortTitle || project.title}</h3>
+        <p className="work-card__desc">{project.desc}</p>
 
-              <h3 className="showcase__title" data-meta>
-                {activeProject.title}
-              </h3>
-
-              <p className="showcase__role" data-meta>
-                {activeProject.role}
-              </p>
-
-              <p className="showcase__desc" data-meta>
-                {activeProject.desc}
-              </p>
-
-              <div className="showcase__tags" data-meta>
-                {activeProject.tags.map((tag) => (
-                  <span key={tag} className="showcase__tag">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="showcase__pipeline-wrap" data-meta>
-                <IsometricPipeline3D
-                  project={activeProject}
-                  variant="showcase"
-                  onInspectDossier={onOpenDossier}
-                />
-              </div>
-
-              <div className="showcase__actions" data-meta>
-                <MagneticButton
-                  as="button"
-                  className="showcase__link showcase__link--primary"
-                  strength={0.2}
-                  onClick={() => onOpenDossier?.(activeProject)}
-                  data-cursor="Open"
-                >
-                  <span>System Architecture</span>
-                  <span className="showcase__link-arrow" aria-hidden="true">↗</span>
-                </MagneticButton>
-
-                <MagneticButton
-                  as="a"
-                  className="showcase__link"
-                  strength={0.2}
-                  href={activeProject.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-cursor="GitHub"
-                >
-                  <span>GitHub Repo</span>
-                  <span className="showcase__link-arrow" aria-hidden="true">↗</span>
-                </MagneticButton>
-              </div>
-
-              <div className="showcase__thumbs" data-meta>
-                {activeProject.images.map((image, index) => (
-                  <button
-                    key={image}
-                    type="button"
-                    className={`showcase__thumb${index === imageIndex ? ' is-active' : ''}`}
-                    onClick={() => setImageIndex(index)}
-                    aria-label={`Show visual ${index + 1} of ${activeProject.images.length}`}
-                    aria-pressed={index === imageIndex}
-                  >
-                    <img src={image} alt="" loading="lazy" decoding="async" />
-                    <span className="showcase__thumb-index">{pad(index + 1)}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="showcase__dots" role="tablist" aria-label="Featured projects">
-              {items.map((project, index) => (
-                <button
-                  key={project.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={index === activeIndex}
-                  className={`showcase__dot${index === activeIndex ? ' is-active' : ''}`}
-                  onClick={() => goTo(index)}
-                >
-                  <span className="showcase__dot-index">{pad(index + 1)}</span>
-                  <span className="showcase__dot-line" aria-hidden="true" />
-                  <span className="showcase__dot-label">{project.shortTitle}</span>
-                </button>
-              ))}
-            </div>
-
-            <p className="showcase__scroll-note" aria-hidden="true">
-              <span className="showcase__scroll-note-dot" />
-              Scroll to move through the archive · drag the image to switch
-            </p>
-          </div>
+        <div className="work-card__tags">
+          {project.tags.slice(0, 4).map((tag) => (
+            <span key={tag} className="work-card__tag">
+              {tag}
+            </span>
+          ))}
+          {project.tags.length > 4 && (
+            <span className="work-card__tag work-card__tag--more">
+              +{project.tags.length - 4}
+            </span>
+          )}
         </div>
       </div>
-    </div>
+
+      <div className="work-card__footer">
+        <div className="work-card__footer-links">
+          {hasLiveDemo ? (
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="work-card__demo"
+              data-cursor="Live"
+            >
+              Live Demo
+              <ExternalIcon />
+            </a>
+          ) : (
+            <span className="work-card__demo work-card__demo--disabled">
+              No Live Demo
+              <ExternalIcon />
+            </span>
+          )}
+
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="work-card__gh"
+              aria-label={`${project.title} on GitHub`}
+              data-cursor="GitHub"
+            >
+              <GitHubIcon />
+            </a>
+          )}
+        </div>
+
+        <MagneticButton
+          as="button"
+          className="work-card__details"
+          strength={0.16}
+          onClick={() => onOpenDossier?.(project)}
+          data-cursor="Open"
+        >
+          Details
+          <ArrowIcon />
+        </MagneticButton>
+      </div>
+    </article>
   );
 }
 
@@ -527,13 +475,10 @@ function ProjectLightbox({ image, onClose }) {
 }
 
 export default function Projects() {
-  const sectionRef = useRef(null);
+  const [gridRef, gridVisible] = useReveal({ threshold: 0.08 });
+  const { prefersReducedMotion } = useExperience();
   const [dossierProject, setDossierProject] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
-  const [shouldLoadShowcase, setShouldLoadShowcase] = useState(() =>
-    typeof window !== 'undefined' &&
-    ['#projects', '#notes', '#contact'].includes(window.location.hash),
-  );
 
   const openDossier = useCallback((project) => setDossierProject(project), []);
   const closeDossier = useCallback(() => setDossierProject(null), []);
@@ -541,60 +486,49 @@ export default function Projects() {
   const closeImage = useCallback(() => setLightboxImage(null), []);
 
   useEffect(() => {
-    if (shouldLoadShowcase) return undefined;
+    if (!gridVisible || prefersReducedMotion) return undefined;
 
-    const section = sectionRef.current;
-    if (!section) return undefined;
+    const grid = gridRef.current;
+    if (!grid) return undefined;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoadShowcase(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '900px 0px' },
-    );
+    const cards = gsap.utils.toArray(grid.querySelectorAll('[data-work-card]'));
+    if (!cards.length) return undefined;
 
-    observer.observe(section);
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        cards,
+        { y: 46, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.9,
+          ease: 'power3.out',
+          stagger: 0.09,
+          scrollTrigger: {
+            trigger: grid,
+            start: 'top 84%',
+            once: true,
+          },
+        },
+      );
+    }, grid);
 
-    const onHashOrAnchor = () => {
-      if (['#projects', '#notes', '#contact'].includes(window.location.hash)) {
-        setShouldLoadShowcase(true);
-        observer.disconnect();
-      }
-    };
+    ScrollTrigger.refresh();
 
-    window.addEventListener('hashchange', onHashOrAnchor);
+    return () => context.revert();
+  }, [gridVisible, gridRef, prefersReducedMotion]);
 
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('hashchange', onHashOrAnchor);
-    };
-  }, [shouldLoadShowcase]);
-
-  const fallback = (
-    <ProjectShowcaseFallback
-      items={projects}
-      onOpenDossier={openDossier}
-      onOpenImage={openImage}
-    />
-  );
+  const totalVisuals = projects.reduce((total, project) => total + project.images.length, 0);
 
   return (
-    <section
-      ref={sectionRef}
-      id="projects"
-      className="section showcase-section"
-      data-ghost="WORK"
-    >
+    <section id="projects" className="section showcase-section" data-ghost="WORK">
       <div className="container showcase__header">
         <p className="section-label">Featured Projects</p>
         <SectionTitle>Engineering &amp; Research Highlights</SectionTitle>
         <p className="section-subtitle">
           Selected machine learning architectures, statistical computing pipelines, and data
-          systems engineered for real-world impact. Scroll the archive, then open a case study
-          to inspect its architecture, mathematics and visual evidence.
+          systems engineered for real-world impact. Open a case study to inspect its
+          architecture, mathematics and visual evidence.
         </p>
 
         <div className="showcase__header-meta" aria-label="Archive telemetry">
@@ -616,11 +550,7 @@ export default function Projects() {
           <div className="showcase__meta-stat">
             <span className="showcase__meta-stat-top">
               <strong className="showcase__meta-stat-num">
-                <CountUp
-                  end={projects.reduce((total, project) => total + project.images.length, 0)}
-                  padStart={2}
-                  duration={1.65}
-                />
+                <CountUp end={totalVisuals} padStart={2} duration={1.65} />
               </strong>
               <span className="showcase__meta-stat-label">Visuals</span>
             </span>
@@ -649,17 +579,22 @@ export default function Projects() {
         </div>
       </div>
 
-      {shouldLoadShowcase ? (
-        <Suspense fallback={fallback}>
-          <WebGLProjectShowcase
-            projects={projects}
+      <div
+        ref={gridRef}
+        className={`work-grid${gridVisible ? ' is-visible' : ''}`}
+        aria-label="Featured project archive"
+      >
+        {projects.map((project, index) => (
+          <ProjectCard
+            key={project.slug}
+            project={project}
+            index={index}
+            total={projects.length}
             onOpenDossier={openDossier}
             onOpenImage={openImage}
           />
-        </Suspense>
-      ) : (
-        fallback
-      )}
+        ))}
+      </div>
 
       {dossierProject &&
         createPortal(

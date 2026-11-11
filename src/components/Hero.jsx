@@ -1,8 +1,9 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from '../lib/animations';
 import { useExperience } from '../context/ExperienceContext';
-import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import usePointerTilt from '../hooks/usePointerTilt';
+import usePortraitTether from '../hooks/usePortraitTether';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 import useSplitReveal from '../hooks/useSplitReveal';
 import CountUp from './CountUp';
 import HeroHud from './HeroHud';
@@ -26,12 +27,21 @@ export default function Hero() {
   const visualRef = useRef(null);
   const orbitsRef = useRef(null);
   const portraitStackRef = useRef(null);
+  const portraitDropRef = useRef(null);
+  const portraitWireRef = useRef(null);
   const cloneRefs = useRef([]);
   const chipRefs = useRef([]);
   const glowTopRef = useRef(null);
   const glowRightRef = useRef(null);
   const scrollHintRef = useRef(null);
   const tiltRef = usePointerTilt(4.5);
+
+  usePortraitTether({
+    active: introComplete && !prefersReducedMotion,
+    delay: 1.9,
+    dropRef: portraitDropRef,
+    wireRef: portraitWireRef,
+  });
 
   const nameRef = useSplitReveal({
     play: introComplete,
@@ -471,51 +481,70 @@ export default function Hero() {
             <HeroVortex />
 
             <div className="hero__card-tilt" ref={tiltRef}>
-              <div className="hero__glass-card">
-                <div className="hero__glass-card-glow" />
+              <svg
+                className="hero__portrait-wire"
+                ref={portraitWireRef}
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path className="hero__portrait-wire-halo" />
+                <path className="hero__portrait-wire-core" />
+                <g className="hero__portrait-wire-anchor">
+                  <circle className="hero__portrait-wire-anchor-halo" r="8" />
+                  <circle className="hero__portrait-wire-anchor-core" r="2.4" />
+                </g>
+                <g className="hero__portrait-wire-clamp">
+                  <rect x="-10" y="-2" width="20" height="4" rx="2" />
+                </g>
+              </svg>
 
-                <div className="hero__portrait-status">
-                  <span className="hero__status-indicator">
-                    <span className="hero__status-ping" />
-                    <span className="hero__status-core" />
-                  </span>
-                  <span className="hero__portrait-status-text">PORTRAIT_FEED // LIVE</span>
-                </div>
+              <div className="hero__portrait-drop" ref={portraitDropRef}>
+                <div className="hero__glass-card">
+                  <div className="hero__glass-card-glow" />
 
-                <div className="hero__image-container">
-                  <div className="hero__portrait-stack" ref={portraitStackRef}>
-                    <img
-                      src={denisPhoto}
-                      alt={`Portrait of ${site.name}, Data Science and Machine Learning Engineer`}
-                      className="hero__portrait-img"
-                      width="900"
-                      height="1200"
-                      loading="eager"
-                      fetchPriority="high"
-                      decoding="async"
-                    />
-                    <img
-                      src={denisPhoto}
-                      alt=""
-                      aria-hidden="true"
-                      draggable="false"
-                      className="hero__portrait-clone hero__portrait-clone--red"
-                      ref={(node) => {
-                        cloneRefs.current[0] = node;
-                      }}
-                    />
-                    <img
-                      src={denisPhoto}
-                      alt=""
-                      aria-hidden="true"
-                      draggable="false"
-                      className="hero__portrait-clone hero__portrait-clone--cyan"
-                      ref={(node) => {
-                        cloneRefs.current[1] = node;
-                      }}
-                    />
+                  <div className="hero__portrait-status">
+                    <span className="hero__status-indicator">
+                      <span className="hero__status-ping" />
+                      <span className="hero__status-core" />
+                    </span>
+                    <span className="hero__portrait-status-text">PORTRAIT_FEED // LIVE</span>
                   </div>
-                  <div className="hero__image-overlay" />
+
+                  <div className="hero__image-container">
+                    <div className="hero__portrait-stack" ref={portraitStackRef}>
+                      <img
+                        src={denisPhoto}
+                        alt={`Portrait of ${site.name}, Data Science and Machine Learning Engineer`}
+                        className="hero__portrait-img"
+                        width="900"
+                        height="1200"
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
+                      />
+                      <img
+                        src={denisPhoto}
+                        alt=""
+                        aria-hidden="true"
+                        draggable="false"
+                        className="hero__portrait-clone hero__portrait-clone--red"
+                        ref={(node) => {
+                          cloneRefs.current[0] = node;
+                        }}
+                      />
+                      <img
+                        src={denisPhoto}
+                        alt=""
+                        aria-hidden="true"
+                        draggable="false"
+                        className="hero__portrait-clone hero__portrait-clone--cyan"
+                        ref={(node) => {
+                          cloneRefs.current[1] = node;
+                        }}
+                      />
+                    </div>
+                    <div className="hero__image-overlay" />
+                  </div>
                 </div>
               </div>
             </div>
