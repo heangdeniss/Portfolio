@@ -456,6 +456,7 @@ function ProjectLightbox({ image, onClose }) {
         src={image.src}
         alt={image.alt}
         className="project-modal__img"
+        decoding="async"
         onClick={(event) => event.stopPropagation()}
       />
       <button

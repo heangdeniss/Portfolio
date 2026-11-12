@@ -5,6 +5,7 @@
 .vault-section {
   position: relative;
   overflow: clip;
+  contain: layout paint style;
 }
 
 .vault__header {

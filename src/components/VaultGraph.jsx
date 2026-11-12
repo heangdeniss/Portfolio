@@ -194,6 +194,8 @@ export default function VaultGraph() {
   const packetPrimaryElsRef = useRef(new Map());
   const packetSecondaryElsRef = useRef(new Map());
   const nodeElsRef = useRef(new Map());
+  const pointerFrameRef = useRef(0);
+  const pointerEventRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const { quality } = useExperience();
   const isWide = useMediaQuery('(min-width: 760px)');
@@ -225,6 +227,16 @@ export default function VaultGraph() {
     lastY: 0,
     userInteractedUntil: 0,
   });
+
+  useEffect(
+    () => () => {
+      if (pointerFrameRef.current) {
+        cancelAnimationFrame(pointerFrameRef.current);
+        pointerFrameRef.current = 0;
+      }
+    },
+    [],
+  );
 
   const activeConnections = useMemo(() => {
     if (!activeId) return null;
@@ -441,10 +453,18 @@ export default function VaultGraph() {
       }
     };
 
+    let lastRenderTime = 0;
+
     const tick = () => {
       if (!inView || document.hidden) return;
       if (prefersReducedMotion && !cameraRef.current.isDragging) return;
-      renderFrame(performance.now());
+
+      const now = performance.now();
+      // The constellation is decorative; 30fps on low quality keeps the
+      // scroll thread free for Lenis/ScrollTrigger.
+      if (quality === 'low' && now - lastRenderTime < 33) return;
+      lastRenderTime = now;
+      renderFrame(now);
     };
 
     // Initial render
@@ -466,7 +486,7 @@ export default function VaultGraph() {
       gsap.ticker.remove(tick);
       observer.disconnect();
     };
-  }, [activeId, edges, isWide, layout, prefersReducedMotion]);
+  }, [activeId, edges, isWide, layout, prefersReducedMotion, quality]);
 
   const onStagePointerDown = (event) => {
     if (event.button !== undefined && event.button !== 0) return;
@@ -479,7 +499,12 @@ export default function VaultGraph() {
     stageRef.current?.setPointerCapture?.(event.pointerId);
   };
 
-  const onStagePointerMove = (event) => {
+  const flushStagePointer = () => {
+    pointerFrameRef.current = 0;
+    const event = pointerEventRef.current;
+    pointerEventRef.current = null;
+    if (!event) return;
+
     const cam = cameraRef.current;
     if (panelRef.current) {
       const rect = panelRef.current.getBoundingClientRect();
@@ -504,6 +529,16 @@ export default function VaultGraph() {
     cam.targetRotY += dx * 0.0068;
     cam.targetRotX = Math.max(-1.08, Math.min(1.08, cam.targetRotX - dy * 0.0055));
     cam.userInteractedUntil = performance.now() + 2600;
+  };
+
+  const onStagePointerMove = (event) => {
+    pointerEventRef.current = {
+      clientX: event.clientX,
+      clientY: event.clientY,
+    };
+    if (!pointerFrameRef.current) {
+      pointerFrameRef.current = requestAnimationFrame(flushStagePointer);
+    }
   };
 
   const onStagePointerUp = (event) => {

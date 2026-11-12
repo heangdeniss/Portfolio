@@ -2,6 +2,39 @@ import { useEffect, useRef } from 'react';
 import { gsap } from '../lib/animations';
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 
+/*
+ * Every magnetic control used to attach its own window scroll + resize
+ * listener. On a page with dozens of buttons that meant dozens of callbacks
+ * per scroll frame. One shared listener fans out to the registered
+ * invalidators, and it is removed as soon as the last control unmounts.
+ */
+const invalidators = new Set();
+let globalListenersBound = false;
+
+const onGlobalScroll = () => {
+  invalidators.forEach((invalidate) => invalidate());
+};
+
+function subscribeInvalidate(invalidate) {
+  invalidators.add(invalidate);
+
+  if (!globalListenersBound) {
+    window.addEventListener('scroll', onGlobalScroll, { passive: true });
+    window.addEventListener('resize', onGlobalScroll, { passive: true });
+    globalListenersBound = true;
+  }
+
+  return () => {
+    invalidators.delete(invalidate);
+
+    if (invalidators.size === 0 && globalListenersBound) {
+      window.removeEventListener('scroll', onGlobalScroll);
+      window.removeEventListener('resize', onGlobalScroll);
+      globalListenersBound = false;
+    }
+  };
+}
+
 /**
  * Magnetic wrapper for links, buttons and pill-shaped navigation.
  * Caches bounding geometry on pointerenter to avoid layout reads during move,
@@ -73,16 +106,14 @@ export default function MagneticButton({
     element.addEventListener('pointermove', onPointerMove, { passive: true });
     element.addEventListener('pointerleave', reset);
     element.addEventListener('blur', reset);
-    window.addEventListener('scroll', invalidateRect, { passive: true });
-    window.addEventListener('resize', invalidateRect, { passive: true });
+    const unsubscribe = subscribeInvalidate(invalidateRect);
 
     return () => {
       element.removeEventListener('pointerenter', onPointerEnter);
       element.removeEventListener('pointermove', onPointerMove);
       element.removeEventListener('pointerleave', reset);
       element.removeEventListener('blur', reset);
-      window.removeEventListener('scroll', invalidateRect);
-      window.removeEventListener('resize', invalidateRect);
+      unsubscribe();
       gsap.killTweensOf(element);
       gsap.set(element, { x: 0, y: 0 });
     };

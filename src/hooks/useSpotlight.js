@@ -38,6 +38,8 @@ export default function useSpotlight(enabled = true) {
     let activeRect = null;
     let lastScrollTime = 0;
     let rafId = 0;
+    let pointerRafId = 0;
+    let pendingPointer = null;
 
     const getOrCreateState = (card) => {
       let state = states.get(card);
@@ -148,7 +150,12 @@ export default function useSpotlight(enabled = true) {
       activeRect = null;
     };
 
-    const onPointerMove = (event) => {
+    const flushPointer = () => {
+      pointerRafId = 0;
+      const event = pendingPointer;
+      pendingPointer = null;
+      if (!event) return;
+
       // Never read layout or trigger 3D card tilts while the page is actively scrolling
       if (performance.now() - lastScrollTime < 140) return;
 
@@ -185,6 +192,18 @@ export default function useSpotlight(enabled = true) {
       }
     };
 
+    const onPointerMove = (event) => {
+      // Coalesce high-frequency pointer events into one style write per frame.
+      pendingPointer = {
+        target: event.target,
+        clientX: event.clientX,
+        clientY: event.clientY,
+      };
+      if (!pointerRafId) {
+        pointerRafId = window.requestAnimationFrame(flushPointer);
+      }
+    };
+
     const onPointerLeaveWindow = () => {
       if (activeCard) {
         releaseCard(activeCard);
@@ -200,6 +219,7 @@ export default function useSpotlight(enabled = true) {
 
     return () => {
       if (rafId) window.cancelAnimationFrame(rafId);
+      if (pointerRafId) window.cancelAnimationFrame(pointerRafId);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
       document.removeEventListener('pointermove', onPointerMove);

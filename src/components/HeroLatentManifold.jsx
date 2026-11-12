@@ -99,6 +99,9 @@ export default function HeroLatentManifold() {
     let smoothScrollY = scrollYRef?.current || 0;
     let smoothVel = 0;
     let lastFrameTime = 0;
+    let lastRenderTime = 0;
+    let pointerRafId = 0;
+    let pendingPointer = null;
 
     // Cascading digital particles (data rain) — reacts to scroll velocity
     const dropRand = createRng(99173);
@@ -364,6 +367,9 @@ export default function HeroLatentManifold() {
 
     const tick = (time) => {
       if (!inView || document.hidden) return;
+      // Low-power devices get a 30fps canvas while the DOM stays at 60fps.
+      if ((isMobile || quality === 'low') && time - lastRenderTime < 1 / 30) return;
+      lastRenderTime = time;
       drawFrame(time);
     };
 
@@ -388,8 +394,12 @@ export default function HeroLatentManifold() {
     });
     resizeObserver.observe(canvas);
 
-    const onPointerMove = (event) => {
-      if (!inView || document.hidden) return;
+    const flushPointer = () => {
+      pointerRafId = 0;
+      const event = pendingPointer;
+      pendingPointer = null;
+      if (!event || !inView || document.hidden) return;
+
       const rect = canvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       const cx = width * (width > 968 ? 0.58 : 0.5);
@@ -397,6 +407,14 @@ export default function HeroLatentManifold() {
       pointer.nx = (event.clientX - rect.left - cx) / (width * 0.52);
       pointer.ny = (event.clientY - rect.top - cy) / (height * 0.52);
       pointer.active = true;
+    };
+
+    const onPointerMove = (event) => {
+      if (!inView || document.hidden) return;
+      pendingPointer = { clientX: event.clientX, clientY: event.clientY };
+      if (!pointerRafId) {
+        pointerRafId = requestAnimationFrame(flushPointer);
+      }
     };
 
     const onPointerLeave = () => {
@@ -410,6 +428,7 @@ export default function HeroLatentManifold() {
       gsap.ticker.remove(tick);
       observer.disconnect();
       resizeObserver.disconnect();
+      if (pointerRafId) cancelAnimationFrame(pointerRafId);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerleave', onPointerLeave);
     };

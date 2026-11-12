@@ -602,8 +602,9 @@ export default function WebGLProjectShowcase({
                   src={activeImage}
                   alt={`${activeProject.title} — visual ${imageIndex + 1}`}
                   className="showcase__fallback-img"
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
+                  fetchPriority="low"
                 />
               )}
 

@@ -46,7 +46,10 @@ function focusTargetSection(target) {
  * - One rAF loop (GSAP ticker) drives Lenis, ScrollTrigger and all GSAP tweens.
  * - Zero document.documentElement style mutations during scroll (all telemetry
  *   lives in refs so Chromium never recalculates document styles on scroll ticks).
- * - Fast, responsive inertial physics: lerp 0.135, wheelMultiplier 1.12, touchMultiplier 1.5.
+ * - Desktop wheel input gets Lenis inertia; touch devices intentionally keep
+ *   native compositor-driven momentum (syncTouch: false) for the smoothest
+ *   possible mobile scrolling.
+ * - Fast, responsive inertial physics: lerp 0.135, wheelMultiplier 1.12.
  */
 export default function SmoothScrollProvider({ children }) {
   const {

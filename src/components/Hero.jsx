@@ -214,33 +214,68 @@ export default function Hero() {
       ? gsap.quickTo(cyanClone, 'opacity', { duration: 0.38, ease: 'power3.out' })
       : null;
 
-    const onPointerMove = (event) => {
-      if (!inView || document.hidden) return;
-      const nx = event.clientX / Math.max(window.innerWidth, 1) - 0.5;
-      const ny = event.clientY / Math.max(window.innerHeight, 1) - 0.5;
+    let pointerRafId = 0;
+    let pendingPointer = null;
+    let pendingVisualPointer = null;
 
-      orbitX?.(-nx * 10);
-      orbitY?.(-ny * 8);
-      orbitRotX?.(-ny * 10);
-      orbitRotY?.(nx * 12);
-      orbitRotZ?.(nx * -3 + ny * 2);
-      portraitX?.(-nx * 9);
-      portraitY?.(-ny * 7);
+    const flushPointer = () => {
+      pointerRafId = 0;
+      if (!inView || document.hidden) return;
+
+      const event = pendingPointer;
+      pendingPointer = null;
+      if (event) {
+        const nx = event.clientX / Math.max(window.innerWidth, 1) - 0.5;
+        const ny = event.clientY / Math.max(window.innerHeight, 1) - 0.5;
+
+        orbitX?.(-nx * 10);
+        orbitY?.(-ny * 8);
+        orbitRotX?.(-ny * 10);
+        orbitRotY?.(nx * 12);
+        orbitRotZ?.(nx * -3 + ny * 2);
+        portraitX?.(-nx * 9);
+        portraitY?.(-ny * 7);
+      }
+
+      const visualEvent = pendingVisualPointer;
+      pendingVisualPointer = null;
+      if (visualEvent) {
+        const rect = visual.getBoundingClientRect();
+        if (rect.width) {
+          const dx = (visualEvent.clientX - rect.left) / rect.width - 0.5;
+          const intensity = Math.min(
+            1,
+            Math.hypot(
+              dx,
+              (visualEvent.clientY - rect.top) / rect.height - 0.5,
+            ) * 1.6,
+          );
+          redX?.(dx * -9);
+          cyanX?.(dx * 9);
+          redOpacity?.(0.06 + intensity * 0.09);
+          cyanOpacity?.(0.06 + intensity * 0.09);
+        }
+      }
+    };
+
+    const schedulePointer = () => {
+      if (!pointerRafId) {
+        pointerRafId = requestAnimationFrame(flushPointer);
+      }
+    };
+
+    const onPointerMove = (event) => {
+      pendingPointer = { clientX: event.clientX, clientY: event.clientY };
+      schedulePointer();
     };
 
     const onVisualMove = (event) => {
-      if (!inView) return;
-      const rect = visual.getBoundingClientRect();
-      if (!rect.width) return;
-      const dx = (event.clientX - rect.left) / rect.width - 0.5;
-      const intensity = Math.min(1, Math.hypot(dx, (event.clientY - rect.top) / rect.height - 0.5) * 1.6);
-      redX?.(dx * -9);
-      cyanX?.(dx * 9);
-      redOpacity?.(0.06 + intensity * 0.09);
-      cyanOpacity?.(0.06 + intensity * 0.09);
+      pendingVisualPointer = { clientX: event.clientX, clientY: event.clientY };
+      schedulePointer();
     };
 
     const onVisualLeave = () => {
+      pendingVisualPointer = null;
       redX?.(0);
       cyanX?.(0);
       redOpacity?.(0);
@@ -253,6 +288,7 @@ export default function Hero() {
 
     return () => {
       observer.disconnect();
+      if (pointerRafId) cancelAnimationFrame(pointerRafId);
       window.removeEventListener('pointermove', onPointerMove);
       visual.removeEventListener('pointermove', onVisualMove);
       visual.removeEventListener('pointerleave', onVisualLeave);
@@ -460,6 +496,8 @@ export default function Hero() {
                         aria-hidden="true"
                         draggable="false"
                         className="hero__portrait-clone hero__portrait-clone--red"
+                        loading="eager"
+                        decoding="async"
                         ref={(node) => {
                           cloneRefs.current[0] = node;
                         }}
@@ -470,6 +508,8 @@ export default function Hero() {
                         aria-hidden="true"
                         draggable="false"
                         className="hero__portrait-clone hero__portrait-clone--cyan"
+                        loading="eager"
+                        decoding="async"
                         ref={(node) => {
                           cloneRefs.current[1] = node;
                         }}
